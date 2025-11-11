@@ -1,0 +1,48 @@
+name: Rust CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          override: true
+
+      - name: Install Holochain CLI
+        run: | 
+          curl -L https://setup.holochain.love | bash
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Build Zomes
+        run: cargo build --release --target wasm32-unknown-unknown
+
+      - name: Run tests
+        run: cargo test
+
+      - name: Run clippy
+        run: cargo clippy -- -D warnings
+
+      - name: Run rustfmt
+        run: cargo fmt --all -- --check
+
+      - name: Pack DNA
+        run: hc dna pack dnas/rose_forest

@@ -1,0 +1,100 @@
+use hdk::prelude::*;
+use rose_forest_integrity::*;
+
+mod vector_ops;
+mod budget;
+
+use vector_ops::Vector;
+use budget::{consume_budget, get_budget_state, BudgetState};
+use budget::{COST_ADD_KNOWLEDGE, COST_LINK_EDGE, COST_CREATE_THOUGHT_CREDENTIAL};
+use std::collections::BTreeMap;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct AddNodeInput { pub content: String, pub embedding: Vec<f32>, pub license: String, pub metadata: BTreeMap<String,String> }
+#[derive(Serialize, Deserialize, Debug)]
+pub struct SearchInput { pub query_embedding: Vec<f32>, pub k: usize }
+#[derive(Serialize, Deserialize, Debug)]
+pub struct SearchResult { pub hash: ActionHash, pub score: f32, pub content: String }
+#[derive(Serialize, Deserialize, Debug)]
+pub struct AddEdgeInput { pub from: ActionHash, pub to: ActionHash, pub relationship: String, pub confidence: f32 }
+
+#[hdk_extern]
+pub fn add_knowledge(input: AddNodeInput) -> ExternResult<ActionHash> {
+    let agent = agent_info()?.agent_latest_pubkey;
+    consume_budget(&agent, COST_ADD_KNOWLEDGE)?; // Consume budget for cognitive output
+    let node = RoseNode { content: input.content.clone(), embedding: input.embedding, license: input.license, metadata: input.metadata };
+    let hash = create_entry(&node)?;
+    let all_nodes_path = Path::from("all_nodes");
+    create_link(all_nodes_path.path_entry_hash()?, hash.clone(), LinkTypes::AllNodes, ())?;
+    // Sharding based on the first byte of the ActionHash for distributed storage
+    let shard_key = format!("{:x}", hash.get_raw_36()[0]);
+    let shard_path = Path::from(format!("shard.{}", shard_key));
+    create_link(shard_path.path_entry_hash()?, hash.clone(), LinkTypes::ShardMember, ())?;
+    Ok(hash)
+}
+
+#[hdk_extern]
+pub fn vector_search(input: SearchInput) -> ExternResult<Vec<SearchResult>> {
+    let query = Vector::new(input.query_embedding);
+    let all_nodes_path = Path::from("all_nodes");
+    let links = get_links(GetLinksInputBuilder::try_new(all_nodes_path.path_entry_hash()?, LinkTypes::AllNodes)?.build())?;
+    let mut results: Vec<SearchResult> = Vec::new();
+    for link in links {
+        if let Some(record) = get(link.target.clone(), GetOptions::default())? {
+            if let Some(node) = record.entry().to_app_option::<RoseNode>()? {
+                let node_vec = Vector::new(node.embedding);
+                let score = query.cosine_similarity(&node_vec);
+                results.push(SearchResult { hash: link.target.into_action_hash().ok_or(wasm_error!(WasmErrorInner::Guest("Invalid hash".into())))?, score, content: node.content });
+            }
+        }
+    }
+    results.sort_by(|a,b| b.score.partial_cmp(&a.score).unwrap());
+    results.truncate(input.k);
+    Ok(results)
+}
+
+#[hdk_extern]
+pub fn link_edge(input: AddEdgeInput) -> ExternResult<ActionHash> {
+    let agent = agent_info()?.agent_latest_pubkey;
+    consume_budget(&agent, COST_LINK_EDGE)?; // Consume budget for cognitive linking
+    let edge = KnowledgeEdge { from: input.from.clone(), to: input.to.clone(), relationship: input.relationship, confidence: input.confidence };
+    let hash = create_entry(&edge)?;
+    create_link(input.from, hash.clone(), LinkTypes::Edge, ())?;
+    Ok(hash)
+}
+
+#[hdk_extern]
+pub fn budget_status(_: ()) -> ExternResult<BudgetState> { get_budget_state(&agent_info()?.agent_latest_pubkey) }
+
+
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct CreateThoughtCredentialInput {
+    pub content: Vec<f32>, // SemanticVector
+    pub connotation: i8, // TernaryScore: -1, 0, 1
+    pub resonance: Vec<AgentPubKey>, // AgentEndorsement
+    pub impact: f32, // WisdomMetric
+}
+
+#[hdk_extern]
+pub fn create_thought_credential(input: CreateThoughtCredentialInput) -> ExternResult<ActionHash> {
+    let agent = agent_info()?.agent_latest_pubkey;
+    // Define a cost for creating a ThoughtCredential, reflecting its significance
+    let cost_create_thought_credential: f32 = COST_CREATE_THOUGHT_CREDENTIAL;
+    consume_budget(&agent, cost_create_thought_credential)?; // Consume budget for creating a thoughtform
+
+    let thought_credential = ThoughtCredential {
+        content: input.content,
+        connotation: input.connotation,
+        provenance: agent.clone(),
+        resonance: input.resonance,
+        impact: input.impact,
+    };
+
+    let hash = create_entry(&thought_credential)?;
+    // Link the thought credential to the agent's path or a general thoughtforms path
+    let thoughtforms_path = Path::from("all_thought_credentials");
+    create_link(thoughtforms_path.path_entry_hash()?, hash.clone(), LinkTypes::AllNodes, ())?; // Using AllNodes for now, could be a specific LinkType
+
+    Ok(hash)
+}

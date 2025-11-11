@@ -1,0 +1,10 @@
+# Desktop Pony RSA Swarm Requirements
+# FLOSSI0ULLK Implementation
+
+# Core dependencies
+aiohttp>=3.9.0
+numpy>=1.24.0
+
+# Optional: For better embedding models (replace simple fallback)
+# sentence-transformers>=2.2.0
+# torch>=2.0.0

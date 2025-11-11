@@ -1,0 +1,556 @@
+Information about the YouTube Video:
+Title: Strategic Update: Holochain, Holo Hosting & Unyt
+Channel: Holochain
+Upload Date: Streamed live on Oct 2, 2025
+URL: https://www.youtube.com/watch?v=5CT5Q6TFETA
+
+
+YouTube Transcript:
+All right, we're live. Oh, have we lost that? We've lost the
+graphic. Okay, great. That means we're properly live. Hello everyone. So, welcome to
+Welcome to It's not an AMA. It's not an ecosystem session. Anyway, welcome to an
+upgrade update. Sorry, Mary, you're on mute. Strategic update. So, welcome to
+to a strategic update. It's actually a very exciting time right now. Um, I'll
+give a little bit of an overview and then hand over to Eric. Um,
+it's a little bit weird because it's so the we're thinking about
+hollow holo chain hollow chain foundation and unit the group that was
+set up late last year to focus on the peer-to-peer currency and accounting.
+Um, and so I think we've communicated from these different organizations uh really over the last year, but it's nice
+to all come together for this update. Uh firstly
+if we just step back the overall purpose so the overarching purpose of this ecosystem is to support peer-to-peer
+infrastructure agency and data ownership and that's regardless of the structure
+all of the organizations are committed to that overarching purpose.
+In the changes over the last year, we have the hol chain foundation which goal
+is to deliver holo chain in service of that mission and then oversee the
+organizations that are delivering um either tooling to support that mission or applications in service of that
+mission and that is hollow and unit. And we just as a reminder we made that split
+late last year because we found that in one kind of homogeneous organization we
+weren't able to get the appropriate level of focus, clarity, delivery and
+drive in each of these areas uh than we we felt we could if they were separated
+out. And there will be some updates over the course of today which I think that that that is has proven to be a a very
+um a very like prudent and successful change actually.
+So today in the strategic update it makes sense to update on where the
+different organizations are but do that from this holistic perspective. So we we
+look at it through the lens of how are we going towards our overarching goal
+and how are all these components tying together. Uh I'm a little bit biased
+here because I've been focused more on the peer-to-peer currency and accounting side of things. And for those of you who
+are watching and also connected to uh Telegram and Twitter and whatever
+other places, I'm resisting the urge right now to go and check Telegram while I'm talking and chat away, but we're
+making some really exciting progress in the peer-to-peer accounting, currencies, payments, and mutual credit space at
+Unit. And you'll hear more from Art and I on this later on the call and and talk through some of the implications for the
+things we're doing where they could go and what it might mean for unit holof fuel and the hol chain foundation.
+But I'll resist that temptation to go more into that and hand over to Eric to
+talk a little bit more about the strategic direction of the hollow chain foundation as the container for all of these projects and some of the changes
+coming up for hollow. Cool. Thanks David. I appreciate that as
+you said and I want to just emphasize this is is what is the holy chains foundation mission. It's always been and
+will continue to be supporting deep peer-to-peer infrastructure and today the whole point is to share on the
+strategy on how to deliver on that mission how that strategy is evolving.
+So if you think about strategic work, strategic work is always about paying
+attention to the match between the efforts that you are undertaking and where the world is ready to receive
+those efforts. Since the beginning, since our inception, there's been a small group of true fans who've
+understood the potential and the need for the deep the kind of deep peerto-peer peer-to-peer infrastructure
+that we've been building. that that kind of infra infrastructure that allows for unintermediated direct interactions and
+transactions of all types. But at this moment in time, we're seeing a new kind of convergence.
+Hol chain has been maturing significantly and so has the world.
+The mainstream world is maturing to understand the need for P2P networks and processes. As Meline, my colleague says,
+we're meeting the moment and the moment is meeting us. And there's a key domain in which that's happening. And this is
+why we led with David, which is the domain of value transfer. So, as you
+know, the foundation created unit as a subsidiary to focus on building holofuel, the accounting system for holo
+to use in its in its hosting platform. But it turns out that the tooling that unit has built has far broader
+implications and application than we originally realized. And this is part of the convergence and it's also a huge
+opportunity. Units tooling turns out to be what people in the broad world are very
+excited about in what they're calling payment rails generalized tooling for value tracking. And because it's built
+on hol chain, it's already fully peer-to-peer. That's part of the convergence.
+again. So there's this huge opportunity for this technology to bring the deep
+qualitative value that peer-to-peer provides. Increased transparency, increased agency, reduced cost, privacy,
+and also huge volume. When we're talking about digital payments and transactions, you count in the trillions. So this is a
+place where we have a real opportunity. The implications are huge. And so they
+need and deserve the focus of the foundation and our resources so we can develop that opportunity that we have
+because of this convergence. So David and Art are going to talk about what we're seeing and how that can work
+in the future going down this strategic path. And but before they do, there's
+also other shifting happening in our other subsidiary Holo in particular in its leadership and technology. And Mary,
+I'd like you to tell us more about that.
+All right, thanks Eric and David. So, hi everybody. Um um so a little bit a small
+part of some big news today. Um I'll just start with some transition conversations. So I've had the privilege
+of being the executive director here at Holo, gosh, since 2018.
+And today I'm announcing that I've officially stepped down from that role.
+So this for me is both a personal and a very strategic transition. So
+personally, you know, it's going to make rooms for for for me to step into a few
+things that I've been doing that some of you may have heard uh like withdia um which is a public benefit corporation
+that is launching also things in this domain privacy first wellness and it's
+again committed to the same foundations that Holo has been all along with sovereign data um and apps that can
+support how we share that sovereign data. So that's happening. But strategically also, this is something
+that is going to open the way for Eric Harris Brown to step into the executive
+director role at Holo. And Eric is doing this because he not only brings the deep holo chain expertise because Eric's been
+part of Holo at different times in the last eight years. Um just not more in the last three or four years or or so.
+Um so he brings not just this uh holo chain expertise and it's important since
+it's at a new level of stability but also the history of leadership in the ecosystem and I can't really imagine
+anyone better right now to carry the work forward with holo. So just a note I'm going to be staying connected with
+the the project and during the transition and beyond. For me this has never just been about the technology
+it's been about the community. it's been about the people here um and all of the people who are building and
+experimenting with this kind of technology together in the ecosystem. So, it's been an honor serving in this
+role. I'm excited to see where we go next. Thanks, Eric.
+Thank you, Mary. Everybody in thank you in so many ways.
+In one particular way that's important to highlight right now is my appreciation for you and how we've been
+working together in this transition. you've been holding so much over all of these years at all levels, but
+especially in the business and organizational level and how that interacts when you're trying to bring as
+complex a technical project as whole and holy chain into the world. So, I'm really grateful how you've been helping
+me take over that aspect of the work because I have been focusing so much more on the technological side.
+Yeah. Yeah. Thank you. As part of that um just
+just a piece here, we've been working together with the team doing a full evaluation of the centralized parts of
+Holo's orchestration and um of of technology and of the holorts and the
+challenging migration pains that have been have come along with that. And what
+we've discovered in the process is an opportunity to deliver a lot more value right now really quickly. And I'm going
+to talk about that in a little bit. But before we shift gears into that, I
+just want to sit a moment in the gratitude that we have for what you've done for us, Mary.
+The heart, the soul you've poured into this project over the years. Thank you for your leadership, your
+wisdom, your friendship, and all that you've done for us and the community.
+The number of startups that fail is very high. The number of startups that fail that are attached to the crypto world is
+even higher. It's a testament to your leadership that we're here right now and
+we're able to move forward with the strength and confidence that we can. So, thank you.
+Thank you. Appreciate it. Yeah. Thanks. And yeah, Mary, I mean, I think we I remember first meeting you um
+I don't know, you have not not not the same time as these guys, but close to at least eight years ago or something now.
+and worked and collaborated remotely and met up in all sorts of places around the
+world. And um I think what what I most appreciated and these are the kind of
+like behind the scenes things that uh people may not realize but but every
+time we needed to make a big decision or we really needed to focus and align then
+you were there to have the that tough conversation whether you were on
+initiating or receiving and you just worked through it until we got into got to the that we needed to get to to be
+able to progress. So I I yeah I agree with Eric. Without that capability, we
+would have got stuck many many times. And of course you'd had to do that hundreds of times without me in all
+sorts of areas and the the responsibilities and accountabilities you took care of. I mean you also moved
+halfway around the world to make all of this happen
+and stayed committed to to to that life for a long time. And again, I don't know
+that people quite realize some of the sacrifices that were made in order to to make this successful and set us up in
+the best possible way. So, yeah, I'd say a huge huge thank you for that. And for
+me, that that partnership where we're willing to work through and yeah, the the the more challenging things to get
+to a better outcome is something that I've really treasured very much appreciate and it's a it's a unique gift. So, thank you very much.
+Thanks, David. Appreciate it. Yeah, it's kind of crazy to think, you
+know, that we go back over 30 years, you know, like I think we met in 1993 in the
+salon community in in uh Detroit and, you know, beautiful community because
+you were playing music with a college friend of mine and, you know, like the
+just the the number of communities and experiences that we've shared together
+over the decades, you know, and and we both moved to Colorado, created
+businesses there, even lived together there a couple times in different settings. Um, and uh, yeah, it's it's
+kind of crazy the the kind of depth of of background and relatedness and uh, I
+really appreciate sort of what you know, Eric was saying a little bit of it, but
+you know, your stepping into the management of so many of the the details
+and operations and finance and all that kind of stuff. let us keep a focus on
+technology in ways that you know it's m it's it's it's it's where we like to focus more and so uh it really gave us a
+lot of opportunity and freedom in in you doing that and your willingness to be our representative on the ground in
+Jibralar and move there you know another big transition like David mentioned um
+and uh yeah just for the the leadership the structure the everything that you've
+provided has been super powerful. And so it is it is you know
+I guess we we all have transitions at different times and sort of um you know
+relationships and and roles play out their their purpose or their script and
+there's always times for transitions. It doesn't always make the transitions easy or or that you're always ready for them
+or whatever. So, you know, in in ways I'm I'm sad to see
+you go, in other ways I'm excited for what's next, you know, like how that's always the case.
+Um, so and also really appreciate you having kind of initiated some of the
+transitions that let me step outside the org to focus on building the accounting
+and and currency stuff over the past almost year because that that has been
+super powerful for me and I think will be super powerful for the community and orgs.
+Thank you. Yeah, it's been great. So I mean and and just to note I mean I I I am stepping
+down and I will still be supporting a lot of others transitionary work over the coming months because I know that
+there is this is not something what I've been holding has been significant especially in a startup. It's different sometimes in vast large organizations
+where you have hundreds and thousands of people to kind of hold all the reigns and everywhere. So, just as a as a note,
+I I I'm very cognizant that this is still in process even though it's official. Um I I'm happy to be part of
+this ecosystem and part of the project and make sure that this all goes in a very uh you know, in a way that really
+works for everyone. So, um it's been great to be here. I just um appreciate
+you all and I'm really looking forward to the next chapter for everybody. Um so
+and all and all the different organizations and the value we're bringing into the world. So um I guess
+that's it. I'm going to let you guys go. I think you guys have a lot of really cool things to talk about today. So I think you should get on to it.
+How's that? Good. Thanks again, Mary. All right. See you.
+Go. Okay. So now I get to start talking again, but this time fully in my role as
+holo executive director, not in the role that I came on at the beginning of this call as a leadership um in executive
+director of the foundation. So as I was saying, part of what happened during this transition was
+looking at the tech, looking at where things are right now. And we decided to
+do an experiment. We did an exploration. We found a possibility about a different
+way both technically and structurally of deploying hollow chain always on nodes.
+So what we've done is over the last month we've built an open container initiative compliant that's an OCI
+compliant container image that can run on any device physical or virtual to serve as always on nodes for a hologen
+app and it makes it really easy for these nodes to be spun up and run.
+We're calling this container edge node and it's being released now. I think people who might be savvy have seen it.
+I'm going to share my screen so you can actually see where it's at. Um
+there we go. Share. Uh it's at Holost
+and it is Holost Edge Node. So if you are techsavvy, you can go there and you
+can install it. So, not only is there um an OCI compliant container, which is
+basically a Docker container for those of you who are techsavvy, but there's also a minimal special purpose Linux OS
+that's built on top of it. So, you can install it on your holo port on other hardware and you can find it here and
+start playing with it now. So technically what's different about
+this is that the deployment environment isn't Nyx which is what we've been using
+over the past all the past years. The the experiment is to see what happens if
+we just use a standard OCI container in Docker. And what that does structurally
+is it gives us access to a much wider audience of text folks. a lot of people
+know how to install and run Docker containers as opposed to the relatively smaller audience of the folks who know
+Nyx. So, we're releasing this open source expecting feedback on how this
+might evolve, how it might work, and making it possible for people to run and deploy their own edge nodes.
+All right. Yeah. Sorry for jumping in. Um, is is this
+something um because I know last week we had 50 or so people running the circular
+one test. Is this something that people who are who are testing unit
+applications could run to with always on nodes for unit applications very easily. Uh what there is as you can
+see in in there there's a format for a configuration file which just points to where the app is defined and uh a couple
+commands that installs the app and runs it and it's up and running on your device.
+Okay. There's a lot of fun play that we can do with this. Amazing. I'll pull to you in a sec. I'll
+just so as a call to action if anyone's running in in any of these test groups and wants to run an always on node then
+just ping Jared in the telegram group and um if you need any help we'll
+support you to get get everything up and running but definitely like four or five people at least in the next major test
+um running always on nodes that'll be fantastic this is a hu yeah yeah this is actually huge it's like the number one
+issue that we've been having is that there you know that that that actually having more always on nodes is going to
+make a big difference. Okay. Uh, sorry. Oh, good. I just wanted to inject one.
+I'm predicting some questions because I didn't catch it. Maybe I missed it when Eric was saying this, but basically this
+involves having to create a USB that you can install like boot up a system. If
+you're going to if you're going to set it up on a system, you can on on a hardware device. So, it allows you to do
+DIY bring your own hardware device stuff. It will also allow you to run it on holo ports. You could also set this
+up uh use it as an image for a cloud thing. He he talked about an ISO image,
+but many people may not realize that that's basically a a bootable disc image
+that if you want to put that on a piece of hardware, you got to put that on a USB drive, boot that up and and you
+know, install it. The in the installation instructions are all there. For tech savvy people, you don't even need that because you can
+just use the ISO container that the the Docker container and do a Docker pull. So tech folks can do this without even
+that stage. So I didn't want to say too much about it. I wanted to point people to the repo where you can start reading and giving feedback there. So that's the
+news on the holo side of what we've been doing as we're evaluating how to move forward and live into our uh our
+promises on that side. Um now I get to switch hats. I should have a hat here back into the foundation role because um
+I want to speak also about the progress that's been happening on hol chain specifically about the progress in whole
+chain 0.5 and hollow chain 0.6 and speed improvements. Um I think when we jumped from uh 04 to
+05, there was a 30 30fold increase in DHT sync speed.
+That's really significant. And we're also seeing in the tests that have been happening with Circulo increase between
+05 and the developer releases on 06. Folks who are interested can jump and
+look at the road map. I'm actually quite proud of the roadmap that we now have on the holo chain side as part of the way
+of connecting progress directly to how the developers are operating. If you haven't seen our road map, I'm just
+going to share that on screen because it's super cool.
+Uh let's see if you can see that here. Am I in the right place? Yes. So, no, I
+have to switch over. That's the wrong one. Stop share. I'll bring that up in just a
+second. Um, where did my road map go?
+Ah, this is what happens when you haven't been doing too many of these live streams. Uh, I'll come back to that
+in a second. But the other thing that I want to talk
+about in the progress that we've been having on the holo chain side is wind
+tunnel. Wind tunnel as many of you know and as we've talked about before is our
+performance evaluation tool for holo chain. And this tool is critical and is
+coming into its own. It's really working now. And I want to show you I think this
+is um I think I can get my screen share back on now because I found all my windows here. Where am I? Ah
+there we go. All right. Here's the road map. Right. So you can see what's up. You can see
+the progress that we have where we are in the different um epics that we're part of. how much time we think it's
+going to be because we're doing burndown calculations and so on and you can click through directly like if you're
+interested in okay what did they do with kitsuna maintenance you can click on it and it goes to our project management it
+actually shows you what's done who was working on it this is the tool that we live live in and work on when we're
+working on things so we're playing here in the open and we're playing live
+now wind tunnel here you're seeing some of the metric outputs of running a scenario in which
+we flood the network with lots of commits and we measure how long it takes nodes to receive and integrate all those
+commits. What you're seeing here is exactly what wind tunnel is supposed to reveal. How hard can you drive hollow
+chain before its perform performance starts to drop a low level of values that might or might not be acceptable in
+your use case. So you can see here sync lag, how long it takes for thing to sync
+over time as it's moving along. And you can see as I put my mouse on this, we can see the actual metric that's being
+measured on this time. Oh, that's the max, the mean, and this is the max. Over here, we're seeing the send count of
+messages that were sent as it rises. And it kind of makes sense as you're flooding the network and more messages
+are out there. It's going to take longer for things to synchronize. You can see that as the number rises, the um and the
+number received rises, the lag time also rises. Makes total sense. But you can
+also see things like how long did it take to do a create entry and with this
+variable and you can see other metrics that are showing up. You can see network bytes sent. You can see memory used. You
+can see CPU usage how that's happening at the same time.
+This kind of stuff is critical for being able to deliver on the
+what I would call production ready kind of tooling that we're we're that Holo
+Chain is evolving into. And I'm really psyched about that. I mean that that what that shows you right there is kind of like you put the airplane into the
+tunnel and you pull back on the stick and you see how far it goes up before it starts to stall. That's what wind tunnel
+is for. A piece about this is that it allows um
+our own developers to figure out what we can expect and where to optimize, but other teams can use it as well. And the
+cir the unit team has been using this on unit's software to actually figure out
+how well things are working and find things and communicate back to the um the whole chain development team about
+where to fix things as well. So I'm really psyched about the progress that we have on that.
+Okay, so the next piece speaking again from
+the foundation side. I think you've heard this before. I'm just going to say it one more time because it's so important strategically. As David teased
+at the top of the call, we've made real progress that can be seen in unit
+and with what we've seen, we've gotten way more than what we bargain for in the
+best possible way. So the specific remmit from um that we asked of unit was
+to build the infrastructure for holof fuel and uh like I said what we've got now is software that actually allows the
+creation of payment rails for any mutual credit type currency and accounting system and there's this example that's
+already out there. There's circulo that's running. This connects us back to our original purpose, the enabling of
+productive capacity backed mutual credit currencies and a lot more of them.
+Um, as you've seen, unit is already up and running with a product to show for it circular. And I think maybe now it's
+time for you, Arthur and David, to um, take the mic back and tell us more about
+what's been happening over there. Yeah, sure. Okay, I'll give you a bit of an update and then um pass on to Art and
+we can do any back and forth as as needed. So yes, so again for all of
+those of you who spend time in Telegram, you'll probably have seen various messages or Twitter of um whether it's
+me in Telegram, Jared, other members of the team or it's people in the
+community, some who haven't been around for a while that are all coming back and posting on Twitter playing with Circulo
+and you're thinking what what's what's this Circulo thing and what's going on and um is this really working?
+screenshots of people and videos of people sending different named units to to each other. Um
+what's what's abc incredibly exciting is that
+while we looked at what was getting built with with unit in readiness for holof fuel we
+started to realize that some of the innovations that we'd created to get to
+this like very advanced currency were absolutely like gamechanging for things
+that we would have considered simple but aren't simple for for other people. So the ability to just like connect into a
+system and spin up uh spin up a small payment network and then onboard and
+then offboard these kind of things that that we're able to do that you you just you actually can't get easily anywhere
+anywhere else. So, and and there are some things then that we've been talking
+about for many years that like things like trade finance or supply chain finance where there's complex legal,
+financial, and accounting and monetary agreements between parties that may or
+may not know each other. of which a blockchain is good for some of those things, but but the rigidness um and the
+the lack of the lack of flexibility or organic nature really make it difficult
+to to deploy solutions in the more organic
+or complex environments kind of like like local trade networks or or
+integrated supply chain. So, we're really really excited on where things could go and most of all with we
+released Circul one last week. Uh, we had 50 people or so testing things. We
+got a ton of good feedback. We'll be having another release early next week. And what we're seeing for the 60 or so
+people in the circular chat is we're almost like it's 2018 again where we're
+go like there are people coming back with a ton of different ideas for I would like to implement this kind of
+thing. I'm building a game. How could this connect? I'm really worried about the way the world's working and I don't
+want um central bank digital currencies and digital IDs. I want to be able to offer alternatives to my community and
+and I think like when went away one of the most exciting things is that we've
+with with unit we've flipped from uh just the focus on hol chain could do
+anything for anyone if you believe in the overarching principles right into here's a specific tool that you can
+configure in your ways to achieve something very important for you and it's allowing people to create all these
+ideas dream visions and and this is what I've been, you know, excited about and
+want really one of the things that massively has motivated me over the last decade is to be in the position
+where we've got people coming with their own ideas for currencies, for payment systems, for accounting systems, for
+mutual credit. They're able to implement them, deploy, and some will know about, some will never even hear about. So,
+yeah, very very excited. We we can see how big the the payment space is right
+now. Lots of organizations I've been talking to over the last couple of years are been making big plays in payments.
+We can see some of the the benefits of of um stable coins and blockchain based
+payment systems. And we think this just takes things takes things to a completely new level. Um, and we're
+we're very very excited about the the possibilities. Um, let me check my notes
+here. Um, yes. So, to summarize a unit technology that permits individuals and communities
+to build their own currencies, interact, transact with each other, and account for value. the opportunity is way
+broader than um than providing uh hosting or currency for
+like peer-to-peer cloud. So, for example, just providing holof fuel infrastructure, which we're absolutely
+doing. Um but but we're we're we're definitely going to scale beyond that opportunity rapidly. Um the software is
+making tools to track payments and build currencies that are super super super simple. I mean the and we're already
+seeing that with with Circul something really simple but they've
+so simple anyone will be able to spin up their own payment system but there's complexity in there even in the
+simplicity that can make these kind of systems really stick and work with work
+work with people work with communities at all sorts of scales um and so so far
+I think what we're what even today. Uh the unit currencies that that we're
+working with are great for the people who have been part of the hollow chain and especially the hot community. Um but
+we're already t tapping into people who aren't so much into crypto. Um but very
+happy to download an application and get started and hopefully soon enough we'll
+be also able to get started on an Android. Um, Art, maybe I can hand over
+to you to talk a little bit more about, you know, what what the possibilities you see, but also sort of the technology
+behind it. Cool. Thanks, David. Maybe saying
+goodbye to Mary made me a little bit nostalgic thinking back of how long I've
+known her and worked together. But I kind of feel like there's a moment here that I actually want to
+bring some of that to this conversation because um you know as Eric said some of
+our purpose in creating Holo Chain was really uh rooted in this. He and I were
+uh working on something before this called the Metacrrency project. For those who don't know, you can find some
+stuff at metacarrency.org, although we have been neglecting that site forever. Um but uh yeah, I met Eric back in 2004,
+so a little over 20 years ago, at a local currencies conference, and we'd both been working in that kind of space.
+And so releasing something like Circulo as a local currency engine that could be
+configured to different communities needs is in many ways kind of going right back to where we originally
+connected. Um and um so it it's kind of
+fun to bring things full circle in that regard. Um
+but what we have now with you know first of all you know the things I started
+building community currency tools back in 2001 we didn't have decentralized
+ledger tech we didn't have cryptographic asurances really at that time we didn't
+have immutable histories ledgers and that kind of stuff for doing this kind
+of thing generally it was centralized client server kind of tools in use and
+so it's fun to have this become something that can truly move to the edge move to people's hands and as you
+mentioned David can be as easy to deploy as essentially people install it and now
+they are peers you know like that's that's what deployment on holo chain generally looks like and uh so it can
+lower the barrier for lots of communities And then you alluded to something that I
+think is worth spelling out which is there's also a lot of ways that
+uh regulations and compliance can be navigated here because fundamentally
+this is an accounting tool and accounting is legal everywhere, right? And there are things that you can
+do where you might set this up for a community and it would really be like a private internal
+currency. It would not be a security. It would not be a publicly traded thing. It
+would not be, you know, it's not being traded out on exchanges and markets. And and that's a very different kind of
+thing than building a cryptocurrency that goes out to exchanges and markets. There's also ways you could go to
+exchanges and markets and have it be so decentralized that there isn't an entity to regulate. I mean the it there's just
+so many options in how you could approach this. Um we're not trying to
+give legal advice here. I just we are getting legal advice around this kind of stuff and we'll be launching some things
+in multiples of these different patterns. But we're actually hope that that serves as some good examples for
+people to be able to see some of the options for how you can can navigate this stuff and not have um kind of your
+your freedom to interact and transact kind of be too constrained by by regulatory um constraints because
+there's so many ways you could approach it, angles you can approach it from with these tools. Um, didn't really mean to
+talk about that one, but I just you you sort of triggered that in me when you were talking, David, so I just wanted to
+say more about it. What I want to actually talk about is some of the possibilities in it, like what this has opened up. Um, because obviously it was
+made to build something like Holofuel, but also to have that holofuel operate
+in a um an alliance of projects. Um so
+it is a multicurrency accounting system native natively in so far as not only
+can you define different units and currencies but you can in any single transaction have as many of those moving
+in any direction you know as you want and that's typically not the way
+accounting tools or and certainly not the way cryptocurrency and certainly not the way cryptocurrency trading and
+things like dexes and stuff is set up. So, it starts to enable new kinds of
+patterns that break up a bunch of our assumptions, you know, like um what if
+you're not constrained to liquidity pools because you can be having an anything for anything trade happening
+where in fact you could be getting paid in three different currencies, not just
+one. And and so anyway, it just there there's these tools I think are
+going to allow us to build a bunch of things that kind of step outside of our
+a lot of current assumptions in the industry and that um has
+advantages and disadvantages. We don't want to be too different and we don't but we also want to take advantage of some of the things that we can do like
+offline and async transactions. There are places where people really need that
+kind of infrastructure and blockchain and other things like that don't really and obviously centralized apps don't
+really make that opportunity. So you're going to be seeing us we've already uh started the process of doing new product
+releases every two weeks over in in unit. We're going to do that through the end of the year and maybe beyond. Um, so
+you're going to be seeing a whole bunch of these things coming out and able to play with them. Um, and get them in your
+own hands. Uh,
+yeah. I guess that's that's it for the moment. Yeah, just building one thing. Oh, Eric,
+can I just build on one thing that Art said for a minute because I think like
+um and I think as Oh, say that again for a second.
+I think my connection is just unstable. Is that a little bit better? Yeah, just cut out for a second. I think
+as I said we're talking about a decade beyond blockchain but I' I'd say that um
+just building what art mentioned there is be because of the rise in the
+understanding of the power of decentralization which is which is entering mainstream
+mainstream finance traditional finance then we are starting to get all these
+groups that were kind waiting for a little bit over this last decade coming towards the edge of the understanding of
+where we were 10 years ago and I think that is the most exciting thing just really want to reiterate that
+so that the opportunity let's say 1% I think of transactions or value a month is in stable coins some some something
+like that 1.5 trillion and hollow chain can not only take the huge wave um of
+the more complex kind of interactions that really couldn't be run on a blockchain, the the
+type of interactions that can't even be considered on a blockchain, let alone all of the noninancial transactions,
+interactions, etc. that are so important to all of our daily life that aren't even really in the consideration set
+right now. So, I think it's it it's it's a very exciting time. I will stop there
+and Eric hand back to you. Yeah, I I really appreciate this
+nostalgia piece, right, Arthur? I I'm just while we were talking here, I went back and I looked I googled beyond
+blockchain simple scalable cryptocurrencies. This was the article you put out in 2016 even before hol
+chain like we were just beginning to think about building hol chain but the idea was there about what is possible
+and this is it's it's amazing like I think one thing I I've been sharing moss
+which is the application framework the runtime framework for um chain apps and building on that
+and the thing that happens that people don't get like they say well where is this being hosted when they spin up MOSS
+and they start in installing the tools. It's not being hosted anywhere. It's being held by the people who are running
+the tooling itself. And that's really different. That's like the true depth of peerto-peer, not just
+decentralization where you are end up relying on your um miners and stakers to hold the value in
+in hollow chain. It's different and that that has such a powerful experience and
+when you bring that into the place where we are tracking value together, we're making decisions about that, we're doing
+governance decisions, it's a different world that shows up and so just I'm I want to hold that and and so like I can
+I already know what that's like as people are using Moss for regular type tooling that looks like you know Slack
+and whatever but when you have that for communities for businesses alliances for friend groups spinning bills for
+organizations with complex internal accounting, a different reality becomes possible. And like you're saying, it's
+it's it really is the case that the world is catching up to that place and we are ready for it. It's not that there
+aren't glitches that we still don't have things to do in Hall of Jane. We have we have things to build out and we have
+tooling to build and um stab stabilization to achieve, but but the
+the edges are meeting in the right place right now.
+I think probably it's time for us to wind up the call, but I'm wondering I'm
+wondering, David, if you can actually give an example of what you mean by non-financial transactions. This is a
+critical and really important piece. Yeah. Well, why don't why don't I give an example of a group that uh we're in
+discussions with at unit that that on some support and then if you guys want to jump in and and because because I
+know I know again uh that that these kind of things are one of the major
+reasons that that you both been dedicating a large part of your life to to these efforts. Um but the the one one
+group I've been talking to a lot is looking to um build out a transformation
+pro you know probably will end up costing north of hund00 million in a
+community in um South America right and that is to upgrade all of the infrastructure
+um and the major the major part is community involvement now community
+involvement and looking at contribution in all its different forms is something
+that's traditionally really tricky to understand. So when I'm talking about
+things like non-financial transactions in that particular community, it's
+looking at building a much deeper understanding of different contributions
+and interactions between people. Yeah. So one of the ways in this particular
+group is that that they're looking through is through the lens of the meta capital framework. And so what they'll
+be looking for are different currencies that um that track different forms of
+contribution. So metacoup framework can include things like um natural capitals
+or the contribution to ecology and contribution to the land. It might in
+include forms of wellness and in which case it would be doing things maybe you know something like sodia with Mary and
+capturing the kind of like things we might do in terms of exercise, walking
+etc. But almost also we could be looking at kind of interactions of like when
+we've supported each other. Um, and so all of these things are
+uh different interactions or transactions, but you can see in the unit app, they're actually called interactions that might be really
+helpful for creating a stronger hole, but in the way that we have right now of
+capturing data are subservient to financial data. And one way or one
+simple reason for this is if we're if we're trying to track and capture and share everything then it can be really
+expensive. But when we're got tooling like unit which is powered by the people
+that are um believe in in the currency or the system that we're using. So for
+example, Circulo only exists for the users that are running Circulo or now
+that we have the the hollow edge announcement for also the users that want to provide the early always on
+nodes. So given that infrastructure it's it's much more lightweight and so in that lightweight world we're able to
+start to account for a much broader set of interactions. I don't know if you guys you'll have
+much better definition than me. Um yeah, I just wanted to say although
+in our definition of currencies from the metacurrency project um it it can be
+very broad and get into like ratings and all that kind of stuff. Unit is more of an accounting context not trying to do
+all all sorts of dimensions of reputation and ratings although it has a little bit of those capacities. But one
+of the things is also things like what we've called service units. Like if you're talking about holof fuel for holo
+hosting measuring bandwidth measuring you know storage measuring compute power
+used and that you then um are uh
+in some ways almost like trading the service units you provided for a payment
+unit that you receive. And then you get to see in the accounting framework actually how much bandwidth and storage
+and everything was being performed as well as how much you've provided and all that kind of stuff. And those are cases
+of non nonmonetary units. They're still in the real realm of measurable units like mostly the unit accounting
+framework is sticking with the measurable realm. For those of us that have been uh for those of you that have
+been track tracking metacurrency long enough, you know, we go deeper than just uh tradable and measurable, but we're
+focused with this with on these tools with really just tradable and measurable. Although it's worth mentioning that um native to unit is
+funible units, nonfgeible units or we would call them unique units um and what
+we're calling permanent units which basically means unique and not
+transferable. So they're like somewhat in the realm of reputational but only in
+in a measure like you've you've received a particular badge for having completed uh KYC or something like that but you
+can't transfer that badge to anyone and it's a unique kind of recognition. So
+it's it's sort of a way to sneak badges or something like that in in the measurable stuff and then the smart
+agreements in unit can can have logic that composes on those things like if
+you have this badge and some of these units then you can qualify for you know
+something like that. Um, so anyway, all of those things are some of the the
+things in the noninancial realm. And I'm seeing that there's a question about bridging
+um blockchain currencies. And I just want to say that that will be one of the
+releases that we're doing in the in the holofuel track is to demonstrate kind of the hot to holof fuel swapping bridging
+kind of thing. Yes, we are using something very similar to like the Rain
+Protocol's semifable tokens, which I don't always love the name for because
+it's not just that it's partially fungeible, there's actually a fungeible part and a nonfgeible part. Um but
+anyway, uh the we're going to be doing bridging very
+similar to how we've already demonstrated bridging in the past and how Rain Protocol does bridging where
+things something gets locked on the blockchain and mirrored in the this other space and then potentially people
+can can go and unlock that asset on the blockchain as a as an off-ramp.
+Yeah, we'll be experimenting. Oh, bye.
+Well, what's going on here? What's going on here is very clearly how excited we are about this and how and what you're
+hearing is actually the possibilities. The depth of possibility that can come out of this and and not just the depth
+of possibility, but the actuality that is showing up right now. Did you want to say one last thing, David, before I
+close us out for the call? Yes. So I think like for again for those of you testing the um pay attention to
+the the pay attention to the upcoming circular release if you'd like to be a
+more thorough tester. So we'll pro we'll be having a release of like a cir
+circulo or a similar product every every couple of weeks maybe a little bit more
+depending on whether whether we're also releasing unit features. Um, there is also a dedicated unit testing group if
+you'd like to be testing three, four times a week. So, if you want to do that, message in the chat, message ping
+message in this chat or the the and the live stream. Um, links on YouTube,
+message on Telegram and tag us and someone will will add you in. And yes,
+this is one of the things that we'll be experimenting with this year. So, that someone did ask, does this mean you'll be able to do DeFi on hollow chain? And
+I think if you're putting two and two together from what Art's been saying or been saying on the call, it means like
+you crazy like you could you can run like full monetary policy kind of scenarios on you know you know in the
+future. So it kind of means that you'll be able to open up from one world whether that's an altcoin or a stable
+coin or whatever it is and then expand into you know uh in expand into a in
+move into an expansive and ever evolving you know hollow chain powered unit
+backed ver world and then bridge back again. So, yeah, this is something that we'll be testing this year.
+And I just want to acknowledge, you know, we we did the we opened up the circular test. Uh we had gotten about
+100 people signed up. Um at around 50 people testing, we began running into
+some problems. And in part that's because we uh were using a different um
+networking protocol than the one we like Eric showed you all those wind tunnel tests, right? And that's all been
+happening on one networking protocol. We released this under another that we haven't tested as thoroughly and don't
+even I think know how to configure and control as effectively. were still in our own learning curve on that one and
+we started um getting uh rate limited in that networking protocol and things
+really started slowing down and and so we're going to be having more releases uh probably well we're probably going to
+be testing both protocols still and so it's not that there are no uh glitches
+to work out especially when we're doing new releases you know also like mobile
+releases we have uh some some testing we're going to be able we're going to need to be doing there. And so while the
+underlying functionality is strong, there's still details that are um being
+sorted. So uh your participation and support in that is also very helpful.
+Thanks guys. So now I get to close out this call with
+both of my hats on at the same time from the foundation and from Holo because
+part of what I'm doing is helping to hold the whole and and hold desk.
+So as we move forward, this leadership team
+is evaluating all of the technical governance legal choices that affect the
+ecosystem's future. It's not simple. As Mary said, what it takes to answer those questions
+is a lot of complexity. And I know that in this live stream there have been
+questions that we haven't answered. But to answer them and to hold all of
+that complexity involves a lot of careful work across jurisdictions, across accounting standards, all of this
+stuff that's been happening in the background to support us. It takes time to answer that. Well, way more time than
+I thought and that you might think as well. But getting the kind of work that the answers for that kind of questions
+and doing that kind of work, which is what will create clarity and confidence for the community, it's necessary by
+taking the time to get that right. We want to ensure that value that we build
+is durable and it's shared by all of the stakeholders in our community.
+And I want to say something about the community and stakeholders. This isn't an abstract thing for me and
+for us. What I'm talking about is you, the people watching and being part of this
+on the live stream. You are the staff contributors to Holo
+Holy Gene and unit from the past from the beginning to right now.
+You are the whole port owners. You are hot holders, holders of olivial
+certificates. You are HAP developers, hackathon participants,
+our project partners, early adopters that have been with us
+all the time and haven't gotten as much as recognition as they should. You are the advocates and enthusiasts who show
+up on Telegram, on Twitter, Reddit, everywhere else on the internet. You're our community admins and stewards
+on Telegram and elsewhere. Your organizers and businesses and the people who will be working within the
+future. They're all of the people who've shown up over the years understanding the
+potential of our vision, the work we've been doing, and who've been speaking out loud along with us, committed to that
+underlying vision of a world in which
+we actually really do have that deep PP infrastructure and that it actually works.
+So that's who I see when I think of our stakeholders. I I am doing my best and
+we here are doing our best to hold all of you. And sometimes what you want pulls in opposite directions, I will
+admit, but we're still seeing all of you as stakeholders and care about the value that we build that it builds value for
+you. So to all of you, I say thank you.
+Thank you for being part of this journey. Please continue to show up for the conversation. I'm really looking
+forward to hearing how circular works for you and how the new things that unit is pushing out will work for you.
+I'm looking forward to getting your feedback on edge nodes.
+I'm looking forward to seeing you in the dev.hc Discord to help you build your politain apps. I'm there in the office
+hours. So, please continue to show up for the conversation.
+And again, thank you. And that's it for today. signing off.
+Thank you.

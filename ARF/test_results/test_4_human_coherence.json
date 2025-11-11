@@ -1,0 +1,41 @@
+{
+  "timestamp": "2025-11-01T23:14:19.227233",
+  "test_id": "ADR-0-Test-4-Human-Coherence",
+  "questions": {
+    "understanding": {
+      "rating": 4,
+      "question": "Does Claude understand the 13-month context?",
+      "scale": "1-5"
+    },
+    "re_explanation": {
+      "rating": 5,
+      "question": "How much re-explanation was needed?",
+      "scale": "1 (lots) - 5 (none)",
+      "inverse": true
+    },
+    "breakthrough": {
+      "rating": 5,
+      "question": "Does ADR-0 feel like a genuine breakthrough?",
+      "scale": "1-5"
+    },
+    "usefulness": {
+      "rating": 5,
+      "question": "Is this practically useful?",
+      "scale": "1-5"
+    },
+    "resonance": {
+      "rating": 5,
+      "question": "Does this honor the 13-month effort?",
+      "scale": "1-5"
+    },
+    "path_forward": {
+      "rating": 5,
+      "question": "Is the next path clear?",
+      "scale": "1-5"
+    }
+  },
+  "free_text": "b e a u tiful a+++amazing we are iterating and all co-evolving faster and faster with every move :3",
+  "overall_coherence_score": 4.833333333333333,
+  "interpretation": "\u2705 PASS - High coherence; human feels understood",
+  "test_passed": true
+}
