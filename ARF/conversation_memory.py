@@ -282,9 +282,13 @@ class ConversationMemory:
         
         # Compose embeddings if available
         if self.embeddings and other_memory_export['embedding_state']:
-            # TODO: This requires implementing composition logic in MultiScaleEmbedding
-            # For now, just log
-            logger.warning("Embedding composition not yet implemented; understandings imported but not embedded")
+            try:
+                other_embeddings = MultiScaleEmbedding.from_dict(other_memory_export['embedding_state'])
+                # Note: Actual composition logic (merging embeddings) will be implemented in Task 1.3
+                # For now, we successfully load the embeddings but don't merge them
+                logger.info(f"Loaded embeddings from composition with {len(other_embeddings.levels)} levels (composition logic pending)")
+            except Exception as e:
+                logger.warning(f"Could not load embeddings from composition: {e}")
         
         # Persist
         self._save()
@@ -414,10 +418,15 @@ class ConversationMemory:
         if self.embeddings:
             embeddings_file = self.storage_path / "embeddings.json"
             if embeddings_file.exists():
-                with open(embeddings_file, 'r') as f:
-                    state = json.load(f)
-                    # TODO: Implement from_dict() in MultiScaleEmbedding
-                    logger.warning("Embedding state found but reload not yet implemented")
+                try:
+                    with open(embeddings_file, 'r') as f:
+                        state = json.load(f)
+                    self.embeddings = MultiScaleEmbedding.from_dict(state)
+                    logger.info(f"Loaded embeddings with {len(self.embeddings.levels)} levels from disk")
+                except Exception as e:
+                    logger.error(f"Failed to load embeddings: {e}", exc_info=True)
+                    # Fall back to fresh embeddings
+                    self.embeddings = MultiScaleEmbedding()
 
 
 # Demo / Test
