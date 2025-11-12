@@ -265,3 +265,297 @@ class MultiScaleEmbedding:
 
     def __repr__(self) -> str:
         return f"MultiScaleEmbedding(levels={list(self.levels.keys())})"
+
+    # =========================================================================
+    # Dictionary-like interface for composition support
+    # =========================================================================
+
+    @property
+    def dimension(self) -> int:
+        """Get the dimension of embeddings in this instance.
+
+        Returns the dimension of the first embedding found, or 0 if empty.
+        Assumes all embeddings have the same dimension.
+        """
+        for level_embeddings in self.levels.values():
+            for emb in level_embeddings.values():
+                return len(emb.vector)
+        return 0
+
+    def items(self, level: str = 'default') -> Iterable[tuple[str, np.ndarray]]:
+        """Iterate over (key, vector) pairs at a given level.
+
+        Parameters
+        ----------
+        level:
+            Level to iterate over. Defaults to 'default'.
+
+        Yields
+        ------
+        tuple[str, np.ndarray]
+            Pairs of (embedding_id, vector)
+        """
+        if level not in self.levels:
+            return
+        for emb_id, emb in self.levels[level].items():
+            yield (emb_id, emb.vector)
+
+    def add(self, key: str, vector: np.ndarray, level: str = 'default', metadata: Optional[Dict[str, Any]] = None) -> None:
+        """Add an embedding with a simpler interface.
+
+        This is a convenience method for the dictionary-like interface.
+
+        Parameters
+        ----------
+        key:
+            Identifier for the embedding
+        vector:
+            Embedding vector
+        level:
+            Level to add to. Defaults to 'default'.
+        metadata:
+            Optional metadata
+        """
+        if level not in self.levels:
+            self.levels[level] = {}
+        # Allow overwriting in this interface (unlike add_embedding)
+        emb = Embedding(vector=vector, metadata=metadata or {})
+        self.levels[level][key] = emb
+        logger.debug("Added/updated embedding %s at level %s", key, level)
+
+    def get(self, key: str, level: str = 'default') -> Optional[np.ndarray]:
+        """Get an embedding vector by key.
+
+        Parameters
+        ----------
+        key:
+            Identifier for the embedding
+        level:
+            Level to retrieve from. Defaults to 'default'.
+
+        Returns
+        -------
+        Optional[np.ndarray]
+            The embedding vector, or None if not found
+        """
+        if level not in self.levels:
+            return None
+        emb = self.levels[level].get(key)
+        return emb.vector if emb else None
+
+    def __contains__(self, key: str, level: str = 'default') -> bool:
+        """Check if a key exists at the given level.
+
+        Parameters
+        ----------
+        key:
+            Identifier to check
+        level:
+            Level to check in. Defaults to 'default'.
+
+        Returns
+        -------
+        bool
+            True if key exists at the level
+        """
+        return level in self.levels and key in self.levels[level]
+
+    def __len__(self, level: str = 'default') -> int:
+        """Get the number of embeddings at the given level.
+
+        Parameters
+        ----------
+        level:
+            Level to count. Defaults to 'default'.
+
+        Returns
+        -------
+        int
+            Number of embeddings at the level
+        """
+        return len(self.levels.get(level, {}))
+
+    # =========================================================================
+    # Composition methods
+    # =========================================================================
+
+    def compose(
+        self,
+        other: 'MultiScaleEmbedding',
+        strategy: str = 'merge',
+        similarity_threshold: float = 0.95,
+        level: str = 'default'
+    ) -> 'MultiScaleEmbedding':
+        """
+        Compose embeddings from another MultiScaleEmbedding instance.
+
+        Merges embeddings from `other` into this instance according to the
+        specified strategy. This enables multi-agent memory composition.
+
+        Args:
+            other: Another MultiScaleEmbedding instance to compose with
+            strategy: Composition strategy - one of:
+                - 'merge': Add new items, skip near-duplicates (default)
+                - 'average': Average embeddings for near-duplicates
+                - 'append': Keep all items with unique keys
+            similarity_threshold: Cosine similarity threshold for duplicate detection
+                (only used with 'merge' and 'average' strategies)
+            level: Which level to compose. Defaults to 'default'.
+
+        Returns:
+            self (for method chaining)
+
+        Raises:
+            ValueError: If dimensions don't match or invalid strategy
+            TypeError: If other is not MultiScaleEmbedding
+
+        Example:
+            >>> memory1 = MultiScaleEmbedding()
+            >>> memory1.add("concept_a", embedding_a)
+            >>> memory2 = MultiScaleEmbedding()
+            >>> memory2.add("concept_b", embedding_b)
+            >>> memory1.compose(memory2, strategy='merge')
+            >>> len(memory1)  # Now contains both concepts
+            2
+        """
+        # Validate inputs
+        if not isinstance(other, MultiScaleEmbedding):
+            raise TypeError(f"Can only compose with MultiScaleEmbedding, got {type(other)}")
+
+        # Validate strategy first (before early return)
+        valid_strategies = ['merge', 'average', 'append']
+        if strategy not in valid_strategies:
+            raise ValueError(f"Invalid strategy '{strategy}'. Must be one of {valid_strategies}")
+
+        # Check if other has the level we're trying to compose
+        if level not in other.levels:
+            logger.debug(f"Other MultiScaleEmbedding has no level '{level}', nothing to compose")
+            return self
+
+        # Check dimensions if both have embeddings
+        if self.dimension > 0 and other.dimension > 0:
+            if self.dimension != other.dimension:
+                raise ValueError(
+                    f"Dimension mismatch: self has {self.dimension}, other has {other.dimension}"
+                )
+
+        # Execute strategy
+        if strategy == 'merge':
+            self._compose_merge(other, similarity_threshold, level)
+        elif strategy == 'average':
+            self._compose_average(other, similarity_threshold, level)
+        elif strategy == 'append':
+            self._compose_append(other, level)
+
+        return self
+
+    def _compose_merge(self, other: 'MultiScaleEmbedding', threshold: float, level: str) -> None:
+        """Merge strategy: add new items, skip duplicates."""
+        for key, embedding in other.items(level):
+            # Check if we already have a similar embedding
+            is_duplicate = False
+            for existing_key, existing_emb in self.items(level):
+                # Normalize vectors for cosine similarity
+                emb_norm = embedding / (np.linalg.norm(embedding) + 1e-10)
+                existing_norm = existing_emb / (np.linalg.norm(existing_emb) + 1e-10)
+                similarity = np.dot(emb_norm, existing_norm)
+                if similarity > threshold:
+                    logger.debug(f"Skipping '{key}' (duplicate of '{existing_key}', sim={similarity:.3f})")
+                    is_duplicate = True
+                    break
+
+            if not is_duplicate:
+                # Add with original key (may overwrite exact key match)
+                self.add(key, embedding, level)
+                logger.debug(f"Added '{key}' from composition")
+
+    def _compose_average(self, other: 'MultiScaleEmbedding', threshold: float, level: str) -> None:
+        """Average strategy: blend embeddings for duplicates."""
+        for key, embedding in other.items(level):
+            # Find most similar existing embedding
+            best_match = None
+            best_similarity = 0.0
+
+            for existing_key, existing_emb in self.items(level):
+                # Normalize vectors for cosine similarity
+                emb_norm = embedding / (np.linalg.norm(embedding) + 1e-10)
+                existing_norm = existing_emb / (np.linalg.norm(existing_emb) + 1e-10)
+                similarity = np.dot(emb_norm, existing_norm)
+                if similarity > best_similarity:
+                    best_similarity = similarity
+                    best_match = existing_key
+
+            if best_match and best_similarity > threshold:
+                # Average with best match
+                existing_emb = self.get(best_match, level)
+                averaged = (existing_emb + embedding) / 2
+                # Renormalize
+                norm = np.linalg.norm(averaged)
+                if norm > 1e-10:
+                    averaged = averaged / norm
+                self.add(best_match, averaged, level)
+                logger.debug(f"Averaged '{key}' with '{best_match}' (sim={best_similarity:.3f})")
+            else:
+                # Add as new item
+                self.add(key, embedding, level)
+                logger.debug(f"Added '{key}' (no match found)")
+
+    def _compose_append(self, other: 'MultiScaleEmbedding', level: str) -> None:
+        """Append strategy: keep all items with unique keys."""
+        for key, embedding in other.items(level):
+            # Ensure unique key
+            unique_key = key
+            counter = 2
+            while self.__contains__(unique_key, level):
+                unique_key = f"{key}_{counter}"
+                counter += 1
+
+            self.add(unique_key, embedding, level)
+            if unique_key != key:
+                logger.debug(f"Added '{key}' as '{unique_key}' (key conflict)")
+
+    # =========================================================================
+    # Serialization methods
+    # =========================================================================
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Export embeddings to a dictionary for serialization.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Dictionary containing all levels and embeddings
+        """
+        result = {}
+        for level, embeddings in self.levels.items():
+            result[level] = {}
+            for emb_id, emb in embeddings.items():
+                result[level][emb_id] = {
+                    'vector': emb.vector.tolist(),
+                    'metadata': emb.metadata
+                }
+        return result
+
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> 'MultiScaleEmbedding':
+        """Load embeddings from a dictionary.
+
+        Parameters
+        ----------
+        data:
+            Dictionary from to_dict()
+
+        Returns
+        -------
+        MultiScaleEmbedding
+            New instance with loaded embeddings
+        """
+        mse = MultiScaleEmbedding()
+        for level, embeddings in data.items():
+            mse.levels[level] = {}
+            for emb_id, emb_data in embeddings.items():
+                vector = np.array(emb_data['vector'])
+                metadata = emb_data.get('metadata', {})
+                mse.levels[level][emb_id] = Embedding(vector=vector, metadata=metadata)
+        logger.debug(f"Loaded MultiScaleEmbedding with {len(mse.levels)} level(s)")
+        return mse

@@ -156,25 +156,23 @@ class ConversationMemory:
         if self.embeddings is not None:
             # Simple text encoding for now (in production, use proper embedding model)
             vector = self._encode_text(understanding.content)
-            
-            embedding = Embedding(
+
+            metadata = {
+                'agent_id': self.agent_id,
+                'timestamp': understanding.timestamp,
+                'context': understanding.context,
+                'coherence': understanding.coherence_score,
+                'is_decision': understanding.is_decision
+            }
+
+            # Add to multiscale embedding structure using the new interface
+            self.embeddings.add(
+                key=f"understanding-{len(self.understandings)}",
                 vector=vector,
-                metadata={
-                    'agent_id': self.agent_id,
-                    'timestamp': understanding.timestamp,
-                    'context': understanding.context,
-                    'coherence': understanding.coherence_score,
-                    'is_decision': understanding.is_decision
-                }
+                level='default',  # Use default level for composition support
+                metadata=metadata
             )
-            
-            # Add to multiscale embedding structure
-            self.embeddings.add_embedding(
-                embedding=embedding,
-                level=0,  # Start at finest granularity
-                name=f"understanding-{len(self.understandings)}"
-            )
-            
+
             understanding.embedding_ref = understanding.hash()
         
         # Store
@@ -282,9 +280,24 @@ class ConversationMemory:
         
         # Compose embeddings if available
         if self.embeddings and other_memory_export['embedding_state']:
-            # TODO: This requires implementing composition logic in MultiScaleEmbedding
-            # For now, just log
-            logger.warning("Embedding composition not yet implemented; understandings imported but not embedded")
+            try:
+                # Load other agent's embeddings
+                from embedding_frames_of_scale import MultiScaleEmbedding
+                other_embeddings = MultiScaleEmbedding.from_dict(other_memory_export['embedding_state'])
+
+                # Compose using merge strategy (avoid duplicates)
+                initial_count = len(self.embeddings.levels.get('default', {}))
+                self.embeddings.compose(other_embeddings, strategy='merge')
+                final_count = len(self.embeddings.levels.get('default', {}))
+                added_count = final_count - initial_count
+
+                logger.info(
+                    f"Composed embeddings: {added_count} new items added "
+                    f"(total: {final_count})"
+                )
+            except Exception as e:
+                logger.error(f"Failed to compose embeddings: {e}", exc_info=True)
+                # Continue without embedding composition (understandings still imported)
         
         # Persist
         self._save()
