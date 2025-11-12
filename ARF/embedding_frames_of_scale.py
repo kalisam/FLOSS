@@ -263,5 +263,151 @@ class MultiScaleEmbedding:
             raise KeyError(f"Level '{level}' does not exist")
         return self.levels[level].copy()
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize the multi-scale embedding to a dictionary.
+
+        Converts all numpy arrays to lists for JSON serialization.
+        Preserves all embedding metadata and level structure.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Dictionary representation suitable for JSON serialization.
+
+        Example
+        -------
+        >>> mse = MultiScaleEmbedding()
+        >>> mse.add_embedding('fine', 'node1', np.array([1.0, 2.0]))
+        >>> data = mse.to_dict()
+        >>> 'levels' in data
+        True
+        """
+        serialized_levels = {}
+        for level_name, embeddings in self.levels.items():
+            serialized_levels[level_name] = {}
+            for emb_id, embedding in embeddings.items():
+                serialized_levels[level_name][emb_id] = {
+                    'vector': embedding.vector.tolist(),
+                    'metadata': embedding.metadata,
+                }
+
+        return {
+            'levels': serialized_levels,
+            'is_default_aggregator': self.aggregator == self._default_aggregator,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'MultiScaleEmbedding':
+        """Reconstruct a MultiScaleEmbedding instance from dictionary representation.
+
+        This is the inverse of to_dict(), enabling serialization round-trips.
+
+        Parameters
+        ----------
+        data:
+            Dictionary produced by to_dict().
+
+        Returns
+        -------
+        MultiScaleEmbedding
+            New MultiScaleEmbedding instance with restored state.
+
+        Raises
+        ------
+        ValueError
+            If data is malformed or missing required fields.
+        TypeError
+            If data types don't match expected schema.
+
+        Example
+        -------
+        >>> original = MultiScaleEmbedding()
+        >>> original.add_embedding('fine', 'test', np.array([1.0, 2.0]))
+        >>> serialized = original.to_dict()
+        >>> restored = MultiScaleEmbedding.from_dict(serialized)
+        >>> np.allclose(
+        ...     original.get_embedding('fine', 'test').vector,
+        ...     restored.get_embedding('fine', 'test').vector
+        ... )
+        True
+        """
+        # Validate input type
+        if not isinstance(data, dict):
+            raise TypeError(f"Expected dict, got {type(data).__name__}")
+
+        # Validate required fields
+        if 'levels' not in data:
+            raise ValueError("Missing required field: 'levels'")
+
+        # Create instance with appropriate aggregator
+        # For now, only support default aggregator in deserialization
+        # Custom aggregators would need separate handling
+        is_default = data.get('is_default_aggregator', True)
+        if not is_default:
+            logger.warning(
+                "Custom aggregator detected but not supported in deserialization; "
+                "using default aggregator"
+            )
+
+        instance = cls()
+
+        # Restore embeddings at each level
+        levels_data = data['levels']
+        if not isinstance(levels_data, dict):
+            raise TypeError(f"Expected 'levels' to be dict, got {type(levels_data).__name__}")
+
+        for level_name, embeddings_dict in levels_data.items():
+            if not isinstance(embeddings_dict, dict):
+                raise TypeError(
+                    f"Expected embeddings at level '{level_name}' to be dict, "
+                    f"got {type(embeddings_dict).__name__}"
+                )
+
+            for emb_id, emb_data in embeddings_dict.items():
+                # Validate embedding data structure
+                if not isinstance(emb_data, dict):
+                    raise TypeError(
+                        f"Expected embedding data for '{emb_id}' to be dict, "
+                        f"got {type(emb_data).__name__}"
+                    )
+
+                if 'vector' not in emb_data:
+                    raise ValueError(f"Missing 'vector' field in embedding '{emb_id}' at level '{level_name}'")
+
+                # Convert list back to numpy array
+                vector_data = emb_data['vector']
+                if isinstance(vector_data, list):
+                    try:
+                        vector = np.array(vector_data, dtype=np.float32)
+                    except (ValueError, TypeError) as e:
+                        raise ValueError(
+                            f"Failed to convert vector for '{emb_id}' at level '{level_name}': {e}"
+                        ) from e
+                elif isinstance(vector_data, np.ndarray):
+                    vector = vector_data.astype(np.float32)
+                else:
+                    raise TypeError(
+                        f"Invalid vector type for '{emb_id}' at level '{level_name}': "
+                        f"expected list or ndarray, got {type(vector_data).__name__}"
+                    )
+
+                # Restore metadata (default to empty dict if not present)
+                metadata = emb_data.get('metadata', {})
+                if not isinstance(metadata, dict):
+                    raise TypeError(
+                        f"Expected metadata for '{emb_id}' to be dict, "
+                        f"got {type(metadata).__name__}"
+                    )
+
+                # Add the embedding to the instance
+                instance.add_embedding(level_name, emb_id, vector, metadata)
+
+        logger.debug(
+            "Deserialized MultiScaleEmbedding with %d levels",
+            len(instance.levels)
+        )
+
+        return instance
+
     def __repr__(self) -> str:
         return f"MultiScaleEmbedding(levels={list(self.levels.keys())})"
