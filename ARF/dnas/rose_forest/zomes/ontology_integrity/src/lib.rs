@@ -2,6 +2,8 @@ use hdi::prelude::*;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
+pub mod inference;
+
 /// Errors that can occur during ontology validation
 #[derive(Error, Debug, Clone, Serialize, Deserialize)]
 pub enum OntologyError {
@@ -205,7 +207,27 @@ pub fn infer_type(entity_id: &str) -> Result<String, OntologyError> {
 
     // Default heuristics based on entity_id patterns
     // These help during bootstrap before all types are asserted
-    if entity_id.ends_with("_concept") || entity_id.ends_with("_type") {
+
+    // AI/ML type heuristics
+    if entity_id.contains("GPT") || entity_id.contains("Claude") ||
+       entity_id.contains("Llama") || entity_id.contains("Gemini") ||
+       entity_id.ends_with("-LLM") || entity_id.ends_with("_llm") {
+        Ok("LLM".to_string())
+    } else if entity_id.ends_with("_model") || entity_id.ends_with("-model") ||
+              entity_id.contains("Model") {
+        Ok("AIModel".to_string())
+    } else if entity_id.ends_with("_dataset") || entity_id.ends_with("-dataset") ||
+              entity_id.contains("Dataset") {
+        Ok("Dataset".to_string())
+    } else if entity_id.ends_with("_capability") || entity_id.ends_with("-capability") {
+        Ok("Capability".to_string())
+    } else if entity_id.ends_with("_benchmark") || entity_id.ends_with("-benchmark") {
+        Ok("Benchmark".to_string())
+    } else if entity_id.ends_with("_training") || entity_id.ends_with("-training") {
+        Ok("TrainingRun".to_string())
+    }
+    // Base type heuristics
+    else if entity_id.ends_with("_concept") || entity_id.ends_with("_type") {
         Ok("Concept".to_string())
     } else if entity_id.ends_with("_agent") {
         Ok("Agent".to_string())
@@ -286,6 +308,51 @@ fn get_relation(relation_id: &str) -> Result<OntologyRelation, OntologyError> {
             description: "Property attribution - subject has the property specified in object".into(),
             created_at: timestamp,
         }),
+        // AI/ML Domain Relations
+        "trained_on" => Ok(OntologyRelation {
+            relation_id: "trained_on".into(),
+            name: "trained on".into(),
+            domain: vec!["AIModel".into(), "LLM".into()],
+            range: vec!["Dataset".into()],
+            is_transitive: false,
+            is_symmetric: false,
+            is_reflexive: false,
+            description: "Model was trained on dataset".into(),
+            created_at: timestamp,
+        }),
+        "improves_upon" => Ok(OntologyRelation {
+            relation_id: "improves_upon".into(),
+            name: "improves upon".into(),
+            domain: vec!["AIModel".into(), "LLM".into()],
+            range: vec!["AIModel".into(), "LLM".into()],
+            is_transitive: true,  // Important for inference!
+            is_symmetric: false,
+            is_reflexive: false,
+            description: "Model improves upon another model".into(),
+            created_at: timestamp,
+        }),
+        "capable_of" => Ok(OntologyRelation {
+            relation_id: "capable_of".into(),
+            name: "capable of".into(),
+            domain: vec!["AIModel".into(), "LLM".into(), "Agent".into()],
+            range: vec!["Capability".into()],
+            is_transitive: false,
+            is_symmetric: false,
+            is_reflexive: false,
+            description: "Model or agent has capability".into(),
+            created_at: timestamp,
+        }),
+        "evaluated_on" => Ok(OntologyRelation {
+            relation_id: "evaluated_on".into(),
+            name: "evaluated on".into(),
+            domain: vec!["AIModel".into(), "LLM".into()],
+            range: vec!["Benchmark".into()],
+            is_transitive: false,
+            is_symmetric: false,
+            is_reflexive: false,
+            description: "Model evaluated on benchmark".into(),
+            created_at: timestamp,
+        }),
         _ => Err(OntologyError::UnknownRelation(relation_id.to_string())),
     }
 }
@@ -347,6 +414,49 @@ fn get_type_definition(type_id: &str) -> Result<OntologyType, OntologyError> {
             description: "Literal values and data".into(),
             created_at: timestamp,
         }),
+        // AI/ML Domain Types
+        "AIModel" => Ok(OntologyType {
+            type_id: "AIModel".into(),
+            name: "AI Model".into(),
+            parent: Some("Agent".into()),
+            description: "Artificial intelligence model".into(),
+            created_at: timestamp,
+        }),
+        "LLM" => Ok(OntologyType {
+            type_id: "LLM".into(),
+            name: "Large Language Model".into(),
+            parent: Some("AIModel".into()),
+            description: "Large language model".into(),
+            created_at: timestamp,
+        }),
+        "Dataset" => Ok(OntologyType {
+            type_id: "Dataset".into(),
+            name: "Dataset".into(),
+            parent: Some("Entity".into()),
+            description: "Training or evaluation dataset".into(),
+            created_at: timestamp,
+        }),
+        "Capability" => Ok(OntologyType {
+            type_id: "Capability".into(),
+            name: "Capability".into(),
+            parent: Some("Concept".into()),
+            description: "A capability or skill".into(),
+            created_at: timestamp,
+        }),
+        "Benchmark" => Ok(OntologyType {
+            type_id: "Benchmark".into(),
+            name: "Benchmark".into(),
+            parent: Some("Entity".into()),
+            description: "Evaluation benchmark".into(),
+            created_at: timestamp,
+        }),
+        "TrainingRun" => Ok(OntologyType {
+            type_id: "TrainingRun".into(),
+            name: "Training Run".into(),
+            parent: Some("Event".into()),
+            description: "A model training execution".into(),
+            created_at: timestamp,
+        }),
         _ => Err(OntologyError::UnknownType(type_id.to_string())),
     }
 }
@@ -356,6 +466,103 @@ fn query_type_assertion(_entity_id: &str) -> Option<String> {
     // TODO: Query DHT for TypeAssertion entries
     // For now, return None to use default heuristics
     None
+}
+
+/// Bootstrap AI/ML domain ontology
+/// Returns the list of AI/ML types and relations that were bootstrapped
+pub fn bootstrap_ai_ml_ontology() -> (Vec<OntologyType>, Vec<OntologyRelation>) {
+    let timestamp = Timestamp::from_micros(0);
+
+    let ai_ml_types = vec![
+        OntologyType {
+            type_id: "AIModel".into(),
+            name: "AI Model".into(),
+            parent: Some("Agent".into()),
+            description: "Artificial intelligence model".into(),
+            created_at: timestamp,
+        },
+        OntologyType {
+            type_id: "LLM".into(),
+            name: "Large Language Model".into(),
+            parent: Some("AIModel".into()),
+            description: "Large language model".into(),
+            created_at: timestamp,
+        },
+        OntologyType {
+            type_id: "Dataset".into(),
+            name: "Dataset".into(),
+            parent: Some("Entity".into()),
+            description: "Training or evaluation dataset".into(),
+            created_at: timestamp,
+        },
+        OntologyType {
+            type_id: "Capability".into(),
+            name: "Capability".into(),
+            parent: Some("Concept".into()),
+            description: "A capability or skill".into(),
+            created_at: timestamp,
+        },
+        OntologyType {
+            type_id: "Benchmark".into(),
+            name: "Benchmark".into(),
+            parent: Some("Entity".into()),
+            description: "Evaluation benchmark".into(),
+            created_at: timestamp,
+        },
+        OntologyType {
+            type_id: "TrainingRun".into(),
+            name: "Training Run".into(),
+            parent: Some("Event".into()),
+            description: "A model training execution".into(),
+            created_at: timestamp,
+        },
+    ];
+
+    // Get AI/ML relations
+    let ai_ml_relation_ids = ["trained_on", "improves_upon", "capable_of", "evaluated_on"];
+    let ai_ml_relations: Vec<OntologyRelation> = ai_ml_relation_ids
+        .iter()
+        .filter_map(|id| get_relation(id).ok())
+        .collect();
+
+    (ai_ml_types, ai_ml_relations)
+}
+
+/// Bootstrap with real AI/ML examples
+/// Returns example triples demonstrating the ontology
+pub fn bootstrap_ai_examples() -> Vec<(String, String, String)> {
+    vec![
+        // GPT models
+        ("GPT-4".to_string(), "is_a".to_string(), "LLM".to_string()),
+        ("GPT-4".to_string(), "capable_of".to_string(), "coding".to_string()),
+        ("GPT-4".to_string(), "capable_of".to_string(), "writing".to_string()),
+        ("GPT-4".to_string(), "improves_upon".to_string(), "GPT-3.5".to_string()),
+        ("GPT-3.5".to_string(), "is_a".to_string(), "LLM".to_string()),
+
+        // Claude models
+        ("Claude-Sonnet-4.5".to_string(), "is_a".to_string(), "LLM".to_string()),
+        ("Claude-Sonnet-4.5".to_string(), "improves_upon".to_string(), "Claude-Sonnet-4".to_string()),
+        ("Claude-Sonnet-4".to_string(), "is_a".to_string(), "LLM".to_string()),
+        ("Claude-Sonnet-4".to_string(), "capable_of".to_string(), "coding".to_string()),
+        ("Claude-Sonnet-4".to_string(), "capable_of".to_string(), "reasoning".to_string()),
+        ("Claude-Sonnet-4".to_string(), "improves_upon".to_string(), "Claude-Sonnet-3.5".to_string()),
+
+        // Capabilities as concepts
+        ("coding".to_string(), "is_a".to_string(), "Capability".to_string()),
+        ("reasoning".to_string(), "is_a".to_string(), "Capability".to_string()),
+        ("writing".to_string(), "is_a".to_string(), "Capability".to_string()),
+
+        // Datasets
+        ("WebText".to_string(), "is_a".to_string(), "Dataset".to_string()),
+        ("CommonCrawl".to_string(), "is_a".to_string(), "Dataset".to_string()),
+        ("GPT-4".to_string(), "trained_on".to_string(), "WebText".to_string()),
+
+        // Benchmarks
+        ("HumanEval".to_string(), "is_a".to_string(), "Benchmark".to_string()),
+        ("MMLU".to_string(), "is_a".to_string(), "Benchmark".to_string()),
+        ("GPT-4".to_string(), "evaluated_on".to_string(), "HumanEval".to_string()),
+        ("Claude-Sonnet-4.5".to_string(), "evaluated_on".to_string(), "MMLU".to_string()),
+    ]
 }
 
 /// Bootstrap base ontology with minimal types and relations
@@ -684,6 +891,199 @@ mod tests {
         let (types, relations) = bootstrap_base_ontology();
         assert_eq!(types.len(), 7, "Should have 7 base types");
         assert_eq!(relations.len(), 4, "Should have 4 base relations");
+    }
+
+    // ===== AI/ML Ontology Tests =====
+
+    #[test]
+    fn test_bootstrap_ai_ml_ontology() {
+        let (types, relations) = bootstrap_ai_ml_ontology();
+        assert_eq!(types.len(), 6, "Should have 6 AI/ML types");
+        assert_eq!(relations.len(), 4, "Should have 4 AI/ML relations");
+    }
+
+    #[test]
+    fn test_ai_ml_types_retrievable() {
+        let ai_ml_types = vec!["AIModel", "LLM", "Dataset", "Capability", "Benchmark", "TrainingRun"];
+
+        for type_id in ai_ml_types {
+            let result = get_type_definition(type_id);
+            assert!(result.is_ok(), "Should be able to get AI/ML type {}", type_id);
+        }
+    }
+
+    #[test]
+    fn test_ai_ml_relations_retrievable() {
+        let ai_ml_relations = vec!["trained_on", "improves_upon", "capable_of", "evaluated_on"];
+
+        for relation_id in ai_ml_relations {
+            let result = get_relation(relation_id);
+            assert!(result.is_ok(), "Should be able to get AI/ML relation {}", relation_id);
+        }
+    }
+
+    #[test]
+    fn test_llm_inherits_from_ai_model() {
+        let llm = get_type_definition("LLM").unwrap();
+        assert_eq!(llm.parent, Some("AIModel".to_string()), "LLM should inherit from AIModel");
+    }
+
+    #[test]
+    fn test_ai_model_inherits_from_agent() {
+        let ai_model = get_type_definition("AIModel").unwrap();
+        assert_eq!(ai_model.parent, Some("Agent".to_string()), "AIModel should inherit from Agent");
+    }
+
+    #[test]
+    fn test_improves_upon_is_transitive() {
+        let relation = get_relation("improves_upon").unwrap();
+        assert!(relation.is_transitive, "improves_upon should be transitive");
+        assert!(!relation.is_symmetric, "improves_upon should not be symmetric");
+    }
+
+    #[test]
+    fn test_trained_on_validates_types() {
+        // Valid: LLM trained_on Dataset
+        let valid = KnowledgeTriple {
+            subject: "GPT-4".into(),
+            predicate: "trained_on".into(),
+            object: "WebText_dataset".into(),  // Use _dataset suffix to match heuristic
+            confidence: 1.0,
+            source: fake_agent_pub_key(),
+            created_at: fake_timestamp(),
+        };
+        assert!(validate_triple(&valid).is_ok(), "LLM trained_on Dataset should be valid");
+    }
+
+    #[test]
+    fn test_trained_on_rejects_invalid_domain() {
+        // Invalid: Dataset cannot be trained (wrong subject type)
+        let invalid = KnowledgeTriple {
+            subject: "WebText".into(),  // Dataset, not AIModel
+            predicate: "trained_on".into(),
+            object: "GPT-4".into(),
+            confidence: 1.0,
+            source: fake_agent_pub_key(),
+            created_at: fake_timestamp(),
+        };
+        let result = validate_triple(&invalid);
+        assert!(result.is_err(), "Dataset trained_on should fail validation");
+
+        if let Err(OntologyError::DomainViolation { .. }) = result {
+            // Expected error type
+        } else {
+            panic!("Expected DomainViolation error");
+        }
+    }
+
+    #[test]
+    fn test_capable_of_validates_range() {
+        // Valid: LLM capable_of Capability
+        let valid = KnowledgeTriple {
+            subject: "Claude-Sonnet-4.5".into(),
+            predicate: "capable_of".into(),
+            object: "coding_capability".into(),
+            confidence: 1.0,
+            source: fake_agent_pub_key(),
+            created_at: fake_timestamp(),
+        };
+        assert!(validate_triple(&valid).is_ok(), "LLM capable_of Capability should be valid");
+    }
+
+    #[test]
+    fn test_improves_upon_validates_domain_and_range() {
+        // Valid: LLM improves_upon LLM
+        let valid = KnowledgeTriple {
+            subject: "Claude-Sonnet-4.5".into(),
+            predicate: "improves_upon".into(),
+            object: "Claude-Sonnet-4".into(),
+            confidence: 1.0,
+            source: fake_agent_pub_key(),
+            created_at: fake_timestamp(),
+        };
+        assert!(validate_triple(&valid).is_ok(), "LLM improves_upon LLM should be valid");
+    }
+
+    #[test]
+    fn test_infer_type_gpt() {
+        let result = infer_type("GPT-4");
+        assert_eq!(result.unwrap(), "LLM", "GPT-4 should be inferred as LLM");
+    }
+
+    #[test]
+    fn test_infer_type_claude() {
+        let result = infer_type("Claude-Sonnet-4.5");
+        assert_eq!(result.unwrap(), "LLM", "Claude should be inferred as LLM");
+    }
+
+    #[test]
+    fn test_infer_type_dataset() {
+        let result = infer_type("CommonCrawl_dataset");
+        assert_eq!(result.unwrap(), "Dataset", "Should infer Dataset type");
+    }
+
+    #[test]
+    fn test_infer_type_capability() {
+        let result = infer_type("coding_capability");
+        assert_eq!(result.unwrap(), "Capability", "Should infer Capability type");
+    }
+
+    #[test]
+    fn test_infer_type_benchmark() {
+        let result = infer_type("HumanEval_benchmark");
+        assert_eq!(result.unwrap(), "Benchmark", "Should infer Benchmark type");
+    }
+
+    #[test]
+    fn test_bootstrap_ai_examples() {
+        let examples = bootstrap_ai_examples();
+        assert!(!examples.is_empty(), "Should have AI examples");
+
+        // Check that GPT-4 is in examples
+        assert!(examples.iter().any(|(s, p, o)|
+            s == "GPT-4" && p == "is_a" && o == "LLM"
+        ), "Should include GPT-4 as LLM");
+
+        // Check that Claude is in examples
+        assert!(examples.iter().any(|(s, p, o)|
+            s == "Claude-Sonnet-4.5" && p == "is_a" && o == "LLM"
+        ), "Should include Claude as LLM");
+
+        // Check improvement relation
+        assert!(examples.iter().any(|(s, p, o)|
+            s == "Claude-Sonnet-4.5" && p == "improves_upon" && o == "Claude-Sonnet-4"
+        ), "Should include improvement relation");
+
+        // Check capability relation
+        assert!(examples.iter().any(|(s, p, o)|
+            s == "Claude-Sonnet-4" && p == "capable_of" && o == "coding"
+        ), "Should include capability relation");
+    }
+
+    #[test]
+    fn test_evaluated_on_relation() {
+        let relation = get_relation("evaluated_on").unwrap();
+        assert_eq!(relation.relation_id, "evaluated_on");
+        assert_eq!(relation.domain, vec!["AIModel", "LLM"]);
+        assert_eq!(relation.range, vec!["Benchmark"]);
+    }
+
+    #[test]
+    fn test_capability_type_hierarchy() {
+        let capability = get_type_definition("Capability").unwrap();
+        assert_eq!(capability.parent, Some("Concept".to_string()), "Capability should inherit from Concept");
+    }
+
+    #[test]
+    fn test_dataset_type_hierarchy() {
+        let dataset = get_type_definition("Dataset").unwrap();
+        assert_eq!(dataset.parent, Some("Entity".to_string()), "Dataset should inherit from Entity");
+    }
+
+    #[test]
+    fn test_training_run_type_hierarchy() {
+        let training_run = get_type_definition("TrainingRun").unwrap();
+        assert_eq!(training_run.parent, Some("Event".to_string()), "TrainingRun should inherit from Event");
     }
 
     #[test]

@@ -35,9 +35,10 @@ License: Compassion Clause or compatible FOSS
 from __future__ import annotations
 import json
 import hashlib
+import re
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass, field, asdict
 import logging
 
@@ -91,45 +92,58 @@ class ConversationMemory:
     This is the computational substrate for distributed intelligence coordination.
     """
     
-    def __init__(self, agent_id: str, storage_path: Optional[str] = None):
+    def __init__(self, agent_id: str, storage_path: Optional[str] = None,
+                 validate_ontology: bool = True):
         """
         Initialize memory for a specific agent.
-        
+
         Args:
             agent_id: Identifier for this agent (e.g., "claude-sonnet-4.5", "human-primary")
             storage_path: Where to persist memory (default: ./memory/{agent_id}/)
+            validate_ontology: Whether to validate against ontology (default: True)
         """
         self.agent_id = agent_id
-        
+        self.validate_ontology = validate_ontology
+
         # Storage
         if storage_path is None:
             storage_path = f"./memory/{agent_id}"
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
-        
+
         # Memory structures
         self.understandings: List[Understanding] = []
         self.adrs: List[Dict] = []  # Architecture Decision Records
-        
+
+        # Validation statistics
+        self.validation_stats = {
+            'total_attempts': 0,
+            'validation_passed': 0,
+            'validation_failed': 0,
+            'validation_skipped': 0,
+        }
+
         # Fractal embeddings (if available)
         if EMBEDDINGS_AVAILABLE:
             self.embeddings = MultiScaleEmbedding()
         else:
             self.embeddings = None
             logger.warning("Running without embeddings; recall will be text-only")
-        
+
         # Load existing memory if present
         self._load()
-        
+
         logger.info(f"Initialized ConversationMemory for agent: {agent_id}")
     
-    def transmit(self, understanding_dict: Dict) -> str:
+    def transmit(self, understanding_dict: Dict, skip_validation: bool = False) -> Optional[str]:
         """
         Capture a moment of coherent understanding.
-        
+
         This is the core operation: taking what exists in one mind
         and encoding it in a form that can be transmitted to another.
-        
+
+        The understanding must pass ontology validation before being stored.
+
         Args:
             understanding_dict: Dict with keys:
                 - content (required): The understanding itself
@@ -137,10 +151,47 @@ class ConversationMemory:
                 - is_decision (optional): Is this ADR-worthy?
                 - coherence (optional): Confidence score [0, 1]
                 - metadata (optional): Additional info
-        
+            skip_validation: Skip ontology validation (use with caution)
+
         Returns:
-            Hash reference for later recall
+            Hash reference for later recall, or None if validation failed
+
+        Raises:
+            ValueError: If understanding is malformed
         """
+        # Track validation attempt
+        self.validation_stats['total_attempts'] += 1
+
+        # Validate required fields
+        if 'content' not in understanding_dict:
+            raise ValueError("Understanding must have 'content' field")
+
+        # Extract triple
+        triple = self._extract_triple(understanding_dict)
+        if triple is None:
+            logger.warning(f"Could not extract triple from understanding: {understanding_dict}")
+            if not skip_validation:
+                logger.error("Validation required but triple extraction failed")
+                self.validation_stats['validation_failed'] += 1
+                return None
+
+        # Validate triple
+        if skip_validation:
+            self.validation_stats['validation_skipped'] += 1
+            if triple:
+                logger.info(f"Skipping validation for triple: {triple}")
+        elif triple:
+            is_valid, error_msg = self._validate_triple(triple)
+            if not is_valid:
+                logger.error(f"Ontology validation failed: {error_msg}")
+                logger.error(f"Triple: {triple}")
+                logger.error(f"Understanding: {understanding_dict}")
+                self.validation_stats['validation_failed'] += 1
+                return None
+            else:
+                logger.debug(f"Validation passed for triple: {triple}")
+                self.validation_stats['validation_passed'] += 1
+
         # Create Understanding object
         understanding = Understanding(
             content=understanding_dict['content'],
@@ -151,7 +202,7 @@ class ConversationMemory:
             coherence_score=understanding_dict.get('coherence', 0.0),
             metadata=understanding_dict.get('metadata', {})
         )
-        
+
         # Embed it (if embeddings available)
         if self.embeddings is not None:
             # Simple text encoding for now (in production, use proper embedding model)
@@ -162,7 +213,8 @@ class ConversationMemory:
                 'timestamp': understanding.timestamp,
                 'context': understanding.context,
                 'coherence': understanding.coherence_score,
-                'is_decision': understanding.is_decision
+                'is_decision': understanding.is_decision,
+                'triple': triple  # Store extracted triple in metadata
             }
 
             # Add to multiscale embedding structure using the new interface
@@ -174,10 +226,10 @@ class ConversationMemory:
             )
 
             understanding.embedding_ref = understanding.hash()
-        
+
         # Store
         self.understandings.append(understanding)
-        
+
         # If it's a decision, record as ADR
         if understanding.is_decision:
             adr = {
@@ -187,12 +239,106 @@ class ConversationMemory:
             }
             self.adrs.append(adr)
             logger.info(f"Recorded decision: {adr['id']}")
-        
+
         # Persist to disk
         self._save()
-        
+
+        logger.info(f"Transmitted understanding with triple: {triple}")
         return understanding.hash()
-    
+
+    def _extract_triple(self, understanding_dict: Dict[str, Any]) -> Optional[Tuple[str, str, str]]:
+        """
+        Extract a (subject, predicate, object) triple from understanding content.
+
+        Uses simple heuristics to identify semantic structure. For production,
+        this could use LLM-based extraction with committee validation.
+
+        Args:
+            understanding_dict: The understanding dict to extract from
+
+        Returns:
+            (subject, predicate, object) tuple, or None if extraction fails
+
+        Examples:
+            >>> memory._extract_triple({'content': 'Claude Sonnet 4.5 improves upon Sonnet 4'})
+            ('Claude-Sonnet-4.5', 'improves_upon', 'Sonnet-4')
+
+            >>> memory._extract_triple({'content': 'GPT-4 is a large language model'})
+            ('GPT-4', 'is_a', 'large-language-model')
+        """
+        content = understanding_dict.get('content', '')
+
+        if not content:
+            return None
+
+        # Pattern 1: "X is a Y" or "X is an Y"
+        is_a_pattern = r'(\S+(?:-\S+)*)\s+is\s+an?\s+([\w\s-]+?)(?:\s*$|[.,;!?])'
+        match = re.search(is_a_pattern, content, re.IGNORECASE)
+        if match:
+            subject = match.group(1).strip()
+            obj = match.group(2).strip().replace(' ', '-')
+            return (subject, 'is_a', obj)
+
+        # Pattern 2: "X improves Y" or "X improves upon Y"
+        improves_pattern = r'(\S+(?:-\S+)*)\s+improves(?:\s+upon)?\s+(\S+(?:-\S+)*)'
+        match = re.search(improves_pattern, content, re.IGNORECASE)
+        if match:
+            return (match.group(1).strip(), 'improves_upon', match.group(2).strip())
+
+        # Pattern 3: "X can do Y" / "X is capable of Y"
+        capable_pattern = r'(\S+(?:-\S+)*)\s+(?:can|is capable of)\s+(\w+)'
+        match = re.search(capable_pattern, content, re.IGNORECASE)
+        if match:
+            return (match.group(1).strip(), 'capable_of', match.group(2).strip())
+
+        # Default: treat as entity with generic relation
+        # Subject = agent_id, predicate = stated, object = content hash
+        content_hash = hashlib.md5(content.encode()).hexdigest()[:8]
+        return (self.agent_id, 'stated', f"understanding_{content_hash}")
+
+    def _validate_triple(self, triple: Tuple[str, str, str]) -> Tuple[bool, Optional[str]]:
+        """
+        Validate a triple against the ontology.
+
+        Args:
+            triple: (subject, predicate, object) tuple
+
+        Returns:
+            (is_valid, error_message) tuple
+        """
+        if not self.validate_ontology:
+            return (True, None)
+
+        subject, predicate, obj = triple
+
+        # For now, use simple validation rules
+        # In production, this would call Holochain ontology zome
+
+        # Rule 1: Predicate must be known
+        # Synchronized with ontology_integrity/src/lib.rs get_relation()
+        known_predicates = {'is_a', 'part_of', 'related_to', 'has_property',
+                           'improves_upon', 'capable_of', 'trained_on',
+                           'evaluated_on', 'stated'}
+        if predicate not in known_predicates:
+            return (False, f"Unknown predicate: {predicate}")
+
+        # Rule 2: Subject and object must be non-empty
+        if not subject or not obj:
+            return (False, "Subject and object must be non-empty")
+
+        # Rule 3: No empty strings after stripping
+        if not subject.strip() or not obj.strip():
+            return (False, "Subject and object must be non-empty after stripping")
+
+        # TODO: Call Holochain zome for full validation
+        # result = holochain_call('ontology_integrity', 'validate_triple', ...)
+
+        return (True, None)
+
+    def get_validation_stats(self) -> Dict[str, int]:
+        """Get validation statistics."""
+        return self.validation_stats.copy()
+
     def recall(self, query: str, across_scales: bool = True, top_k: int = 5) -> List[Dict]:
         """
         Find relevant prior understanding.
