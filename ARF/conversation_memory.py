@@ -297,20 +297,28 @@ class ConversationMemory:
     
     def _encode_text(self, text: str) -> np.ndarray:
         """
-        Simple text encoding for demonstration.
-        
-        In production, this would use a proper embedding model (e.g., sentence-transformers).
-        For now, just use a hash-based projection to high-dimensional space.
+        Encode text using sentence-transformers for semantic embeddings.
+
+        Args:
+            text: Input text to encode
+
+        Returns:
+            384-dimensional normalized embedding vector
         """
-        # Hash to get deterministic seed
-        seed = int(hashlib.md5(text.encode()).hexdigest(), 16) % (2**32)
-        np.random.seed(seed)
-        
-        # Project to 384-dimensional space (common embedding size)
-        vector = np.random.randn(384)
-        vector = vector / np.linalg.norm(vector)  # Normalize
-        
-        return vector
+        # Lazy load model on first use
+        if not hasattr(self, '_embedding_model'):
+            from sentence_transformers import SentenceTransformer
+            logger.info("Loading sentence-transformers model (one-time setup)...")
+            self._embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+            logger.info("Model loaded successfully")
+
+        # Encode text to embedding
+        embedding = self._embedding_model.encode(
+            text,
+            normalize_embeddings=True  # L2 normalize (same as before)
+        )
+
+        return embedding
     
     def _search_at_level(self, query_vector: np.ndarray, level: int, top_k: int) -> List[Dict]:
         """Search at a specific granularity level"""
