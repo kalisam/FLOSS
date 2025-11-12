@@ -1,0 +1,4154 @@
+Directory structure:
+└── holochain-holochain/
+    ├── README.md
+    ├── Cargo.toml
+    ├── CHANGELOG.md
+    ├── clippy.toml
+    ├── config.nix
+    ├── CONTRIBUTING.md
+    ├── default.nix
+    ├── flake.lock
+    ├── flake.nix
+    ├── LICENSE
+    ├── Makefile
+    ├── PRINCIPLES.md
+    ├── RELEASE.md
+    ├── release.toml
+    ├── RELEASE_TEST_LOG.md
+    ├── rust-toolchain.toml
+    ├── rustfmt.toml
+    ├── shell-rustup.nix
+    ├── shell.nix
+    ├── .cursorignore
+    ├── .envrc
+    ├── crates/
+    │   ├── fixt/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── src/
+    │   │   │   ├── bool.rs
+    │   │   │   ├── bytes.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── number.rs
+    │   │   │   ├── prelude.rs
+    │   │   │   ├── rng.rs
+    │   │   │   ├── serialized_bytes.rs
+    │   │   │   ├── string.rs
+    │   │   │   └── unit.rs
+    │   │   └── test/
+    │   │       ├── Cargo.toml
+    │   │       ├── CHANGELOG.md
+    │   │       └── src/
+    │   │           └── lib.rs
+    │   ├── hc/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── external_subcommands.rs
+    │   │       ├── lib.rs
+    │   │       └── bin/
+    │   │           └── hc.rs
+    │   ├── hc_bundle/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── schema/
+    │   │   │   ├── dna-manifest.schema.json
+    │   │   │   ├── happ-manifest.schema.json
+    │   │   │   └── web-happ-manifest.schema.json
+    │   │   ├── src/
+    │   │   │   ├── cli.rs
+    │   │   │   ├── error.rs
+    │   │   │   ├── init.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── packing.rs
+    │   │   │   ├── bin/
+    │   │   │   │   ├── hc-app.rs
+    │   │   │   │   ├── hc-dna.rs
+    │   │   │   │   └── hc-web-app.rs
+    │   │   │   └── packing/
+    │   │   │       ├── wasmer_sys.rs
+    │   │   │       └── wasmer_wamr.rs
+    │   │   └── tests/
+    │   │       ├── test_cli.rs
+    │   │       └── fixtures/
+    │   │           ├── .gitignore
+    │   │           ├── my-app/
+    │   │           │   ├── happ.yaml
+    │   │           │   └── dnas/
+    │   │           │       ├── dna1/
+    │   │           │       │   ├── dna.yaml
+    │   │           │       │   └── zomes/
+    │   │           │       │       ├── zome1.wasm
+    │   │           │       │       └── zome2.wasm
+    │   │           │       ├── dna2/
+    │   │           │       │   ├── dna.yaml
+    │   │           │       │   └── zomes/
+    │   │           │       │       ├── zome1.wasm
+    │   │           │       │       └── zome2.wasm
+    │   │           │       ├── dna3/
+    │   │           │       │   └── dna.yaml
+    │   │           │       ├── dna4/
+    │   │           │       │   └── dna.yaml
+    │   │           │       └── dna5/
+    │   │           │           └── dna.yaml
+    │   │           └── web-app/
+    │   │               ├── ui.zip
+    │   │               ├── web-happ.yaml
+    │   │               └── ui/
+    │   │                   └── index.html
+    │   ├── hc_deepkey_sdk/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       └── lib.rs
+    │   ├── hc_deepkey_types/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── app_binding.rs
+    │   │       ├── authority_spec.rs
+    │   │       ├── authorized_spec_change.rs
+    │   │       ├── change_rule.rs
+    │   │       ├── key_anchor.rs
+    │   │       ├── key_meta.rs
+    │   │       ├── key_registration.rs
+    │   │       ├── keyset_root.rs
+    │   │       └── lib.rs
+    │   ├── hc_demo_cli/
+    │   │   ├── README.md
+    │   │   ├── build.rs
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── coordinator.wasm.gz
+    │   │       ├── coordinator_wasm.rs
+    │   │       ├── demo.rs
+    │   │       ├── integrity.wasm.gz
+    │   │       ├── integrity_wasm.rs
+    │   │       ├── lib.rs
+    │   │       ├── test.rs
+    │   │       └── bin/
+    │   │           └── hc-demo-cli.rs
+    │   ├── hc_run_local_services/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── lib.rs
+    │   │       └── bin/
+    │   │           └── hc-run-local-services.rs
+    │   ├── hc_sandbox/
+    │   │   ├── README.md
+    │   │   ├── build.rs
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── examples/
+    │   │   │   └── setup_5.rs
+    │   │   ├── src/
+    │   │   │   ├── bundles.rs
+    │   │   │   ├── calls.rs
+    │   │   │   ├── cli.rs
+    │   │   │   ├── cmds.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── ports.rs
+    │   │   │   ├── run.rs
+    │   │   │   ├── sandbox.rs
+    │   │   │   ├── save.rs
+    │   │   │   ├── zome_call.rs
+    │   │   │   └── bin/
+    │   │   │       └── hc-sandbox.rs
+    │   │   └── tests/
+    │   │       ├── cli.rs
+    │   │       └── fixtures/
+    │   │           ├── roles-settings.yaml
+    │   │           ├── .gitignore
+    │   │           ├── my-app/
+    │   │           │   ├── happ.yaml
+    │   │           │   └── dna/
+    │   │           │       ├── dna.yaml
+    │   │           │       └── zomes/
+    │   │           │           └── test_wasm_foo.wasm
+    │   │           └── my-app-deferred/
+    │   │               ├── happ.yaml
+    │   │               └── dna/
+    │   │                   ├── dna.yaml
+    │   │                   └── zomes/
+    │   │                       └── test_wasm_foo.wasm
+    │   ├── hc_service_check/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       └── main.rs
+    │   ├── hdi/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── release.toml
+    │   │   ├── src/
+    │   │   │   ├── agent.rs
+    │   │   │   ├── chain.rs
+    │   │   │   ├── ed25519.rs
+    │   │   │   ├── entry.rs
+    │   │   │   ├── flat_op.rs
+    │   │   │   ├── hash.rs
+    │   │   │   ├── hash_path.rs
+    │   │   │   ├── hdi.rs
+    │   │   │   ├── info.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── link.rs
+    │   │   │   ├── map_extern.rs
+    │   │   │   ├── op.rs
+    │   │   │   ├── prelude.rs
+    │   │   │   ├── test_utils.rs
+    │   │   │   ├── trace.rs
+    │   │   │   ├── x_salsa20_poly1305.rs
+    │   │   │   ├── entry/
+    │   │   │   │   └── examples.rs
+    │   │   │   ├── flat_op/
+    │   │   │   │   ├── flat_op_activity.rs
+    │   │   │   │   ├── flat_op_entry.rs
+    │   │   │   │   └── flat_op_record.rs
+    │   │   │   ├── hash_path/
+    │   │   │   │   ├── anchor.rs
+    │   │   │   │   ├── path.rs
+    │   │   │   │   └── shard.rs
+    │   │   │   ├── link/
+    │   │   │   │   └── examples.rs
+    │   │   │   ├── op/
+    │   │   │   │   └── test.rs
+    │   │   │   └── test_utils/
+    │   │   │       └── short_hand.rs
+    │   │   └── tests/
+    │   │       ├── integration.rs
+    │   │       └── op/
+    │   │           └── mod.rs
+    │   ├── hdk/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── ON-WASM.md
+    │   │   ├── release.toml
+    │   │   ├── src/
+    │   │   │   ├── agent.rs
+    │   │   │   ├── capability.rs
+    │   │   │   ├── chain.rs
+    │   │   │   ├── clone.rs
+    │   │   │   ├── countersigning.rs
+    │   │   │   ├── ed25519.rs
+    │   │   │   ├── entry.rs
+    │   │   │   ├── hash.rs
+    │   │   │   ├── hash_path.rs
+    │   │   │   ├── hdk.rs
+    │   │   │   ├── info.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── link.rs
+    │   │   │   ├── map_extern.rs
+    │   │   │   ├── migrate.rs
+    │   │   │   ├── p2p.rs
+    │   │   │   ├── prelude.rs
+    │   │   │   ├── random.rs
+    │   │   │   ├── time.rs
+    │   │   │   ├── trace.rs
+    │   │   │   ├── validation_receipt.rs
+    │   │   │   ├── x_salsa20_poly1305.rs
+    │   │   │   ├── hash_path/
+    │   │   │   │   ├── anchor.rs
+    │   │   │   │   └── path.rs
+    │   │   │   └── link/
+    │   │   │       └── builder.rs
+    │   │   └── tests/
+    │   │       ├── integration.rs
+    │   │       └── tests/
+    │   │           ├── mod.rs
+    │   │           ├── samples.rs
+    │   │           └── samples/
+    │   │               ├── no_timestamp_now.rs
+    │   │               └── no_timestamp_now.stderr
+    │   ├── hdk_derive/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── LICENSE_CAL-1.0
+    │   │   ├── src/
+    │   │   │   ├── dna_properties.rs
+    │   │   │   ├── entry_helper.rs
+    │   │   │   ├── entry_type_registration.rs
+    │   │   │   ├── entry_types.rs
+    │   │   │   ├── entry_types_conversions.rs
+    │   │   │   ├── entry_types_name_registration.rs
+    │   │   │   ├── entry_zomes.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── link_types.rs
+    │   │   │   ├── link_zomes.rs
+    │   │   │   ├── to_coordinates.rs
+    │   │   │   ├── unit_enum.rs
+    │   │   │   └── util.rs
+    │   │   └── tests/
+    │   │       ├── hdk_extern.rs
+    │   │       ├── macros.rs
+    │   │       ├── hdk_extern/
+    │   │       │   ├── genesis_self_check_infallible_invalid_return.rs
+    │   │       │   ├── genesis_self_check_infallible_invalid_return.stderr
+    │   │       │   ├── genesis_self_check_invalid_return.rs
+    │   │       │   ├── genesis_self_check_invalid_return.stderr
+    │   │       │   ├── hdk_extern_infallible_invalid_return.rs
+    │   │       │   ├── hdk_extern_infallible_invalid_return.stderr
+    │   │       │   ├── hdk_extern_invalid_return.rs
+    │   │       │   ├── hdk_extern_invalid_return.stderr
+    │   │       │   ├── init_infallible_invalid_return.rs
+    │   │       │   ├── init_infallible_invalid_return.stderr
+    │   │       │   ├── init_invalid_return.rs
+    │   │       │   ├── init_invalid_return.stderr
+    │   │       │   ├── validate_infallible_invalid_return.rs
+    │   │       │   ├── validate_infallible_invalid_return.stderr
+    │   │       │   ├── validate_invalid_return.rs
+    │   │       │   └── validate_invalid_return.stderr
+    │   │       └── macros/
+    │   │           ├── entry_type_conversions_wrong_enum.rs
+    │   │           ├── entry_type_conversions_wrong_enum.stderr
+    │   │           ├── entry_type_registration_bad_opts.rs
+    │   │           ├── entry_type_registration_bad_opts.stderr
+    │   │           ├── entry_type_registration_bad_opts_types.rs
+    │   │           ├── entry_type_registration_bad_opts_types.stderr
+    │   │           ├── entry_type_registration_bad_vis.rs
+    │   │           ├── entry_type_registration_bad_vis.stderr
+    │   │           ├── hdk_to_coordinates_not_enum.rs
+    │   │           ├── hdk_to_coordinates_not_enum.stderr
+    │   │           ├── unit_enum_no_unit.rs
+    │   │           └── unit_enum_no_unit.stderr
+    │   ├── holo_hash/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── .gitignore
+    │   │   └── src/
+    │   │       ├── aliases.rs
+    │   │       ├── encode.rs
+    │   │       ├── encode_raw.rs
+    │   │       ├── error.rs
+    │   │       ├── fixt.rs
+    │   │       ├── has_hash.rs
+    │   │       ├── hash.rs
+    │   │       ├── hash_b64.rs
+    │   │       ├── hash_ext.rs
+    │   │       ├── hash_type.rs
+    │   │       ├── hashable_content.rs
+    │   │       ├── hashed.rs
+    │   │       ├── lib.rs
+    │   │       ├── ser.rs
+    │   │       ├── tests.rs
+    │   │       └── hash_type/
+    │   │           ├── composite.rs
+    │   │           └── primitive.rs
+    │   ├── holochain/
+    │   │   ├── README.md
+    │   │   ├── build.rs
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── benches/
+    │   │   │   ├── bench.rs
+    │   │   │   ├── consistency.rs
+    │   │   │   └── websocket.rs
+    │   │   ├── examples/
+    │   │   │   ├── hc-stress-test-behavior-1.rs
+    │   │   │   ├── hc-stress-test-behavior-2.rs
+    │   │   │   └── websocket_install_dna.rs
+    │   │   ├── src/
+    │   │   │   ├── conductor.rs
+    │   │   │   ├── core.rs
+    │   │   │   ├── docs.rs
+    │   │   │   ├── fixt.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── local_network_tests.rs
+    │   │   │   ├── perf.rs
+    │   │   │   ├── test_utils.rs
+    │   │   │   ├── bin/
+    │   │   │   │   └── holochain/
+    │   │   │   │       └── main.rs
+    │   │   │   ├── conductor/
+    │   │   │   │   ├── api.rs
+    │   │   │   │   ├── cell.rs
+    │   │   │   │   ├── chc.rs
+    │   │   │   │   ├── conductor.rs
+    │   │   │   │   ├── config.rs
+    │   │   │   │   ├── entry_def_store.rs
+    │   │   │   │   ├── error.rs
+    │   │   │   │   ├── interface.rs
+    │   │   │   │   ├── kitsune_host_impl.rs
+    │   │   │   │   ├── logger.rs
+    │   │   │   │   ├── metrics.rs
+    │   │   │   │   ├── p2p_agent_store.rs
+    │   │   │   │   ├── paths.rs
+    │   │   │   │   ├── ribosome_store.rs
+    │   │   │   │   ├── space.rs
+    │   │   │   │   ├── state.rs
+    │   │   │   │   ├── api/
+    │   │   │   │   │   ├── api_cell.rs
+    │   │   │   │   │   ├── api_dpki.rs
+    │   │   │   │   │   ├── api_external.rs
+    │   │   │   │   │   ├── error.rs
+    │   │   │   │   │   └── api_external/
+    │   │   │   │   │       ├── admin_interface.rs
+    │   │   │   │   │       └── app_interface.rs
+    │   │   │   │   ├── cell/
+    │   │   │   │   │   ├── error.rs
+    │   │   │   │   │   ├── gossip_test.rs
+    │   │   │   │   │   └── test.rs
+    │   │   │   │   ├── conductor/
+    │   │   │   │   │   ├── agent_key_operations.rs
+    │   │   │   │   │   ├── app_auth_token_store.rs
+    │   │   │   │   │   ├── app_broadcast.rs
+    │   │   │   │   │   ├── builder.rs
+    │   │   │   │   │   ├── chc.rs
+    │   │   │   │   │   ├── graft_records_onto_source_chain.rs
+    │   │   │   │   │   ├── tests.rs
+    │   │   │   │   │   ├── zome_call_signature_verification.rs
+    │   │   │   │   │   └── tests/
+    │   │   │   │   │       ├── agent_key_revocation.rs
+    │   │   │   │   │       ├── agent_lineage.rs
+    │   │   │   │   │       └── test_dpki.rs
+    │   │   │   │   ├── entry_def_store/
+    │   │   │   │   │   └── error.rs
+    │   │   │   │   ├── interface/
+    │   │   │   │   │   ├── error.rs
+    │   │   │   │   │   └── websocket.rs
+    │   │   │   │   ├── kitsune_host_impl/
+    │   │   │   │   │   ├── query_region_op_hashes.rs
+    │   │   │   │   │   ├── query_region_set.rs
+    │   │   │   │   │   └── query_size_limited_regions.rs
+    │   │   │   │   ├── manager/
+    │   │   │   │   │   ├── error.rs
+    │   │   │   │   │   └── mod.rs
+    │   │   │   │   └── tests/
+    │   │   │   │       ├── app_info.rs
+    │   │   │   │       ├── cell_cloning.rs
+    │   │   │   │       ├── install_app_bundle.rs
+    │   │   │   │       ├── mod.rs
+    │   │   │   │       ├── network_info.rs
+    │   │   │   │       ├── network_seed_regression.rs
+    │   │   │   │       ├── request_dna_def.rs
+    │   │   │   │       └── signed_zome_call.rs
+    │   │   │   ├── core/
+    │   │   │   │   ├── metrics.rs
+    │   │   │   │   ├── queue_consumer.rs
+    │   │   │   │   ├── ribosome.rs
+    │   │   │   │   ├── share.rs
+    │   │   │   │   ├── sys_validate.rs
+    │   │   │   │   ├── validation.rs
+    │   │   │   │   ├── workflow.rs
+    │   │   │   │   ├── queue_consumer/
+    │   │   │   │   │   ├── app_validation_consumer.rs
+    │   │   │   │   │   ├── countersigning_consumer.rs
+    │   │   │   │   │   ├── integrate_dht_ops_consumer.rs
+    │   │   │   │   │   ├── publish_dht_ops_consumer.rs
+    │   │   │   │   │   ├── sys_validation_consumer.rs
+    │   │   │   │   │   ├── tests.rs
+    │   │   │   │   │   ├── validation_receipt_consumer.rs
+    │   │   │   │   │   └── witnessing_consumer.rs
+    │   │   │   │   ├── ribosome/
+    │   │   │   │   │   ├── check_clone_access.rs
+    │   │   │   │   │   ├── error.rs
+    │   │   │   │   │   ├── guest_callback.rs
+    │   │   │   │   │   ├── host_fn.rs
+    │   │   │   │   │   ├── real_ribosome.rs
+    │   │   │   │   │   ├── guest_callback/
+    │   │   │   │   │   │   ├── entry_defs.rs
+    │   │   │   │   │   │   ├── genesis_self_check.rs
+    │   │   │   │   │   │   ├── init.rs
+    │   │   │   │   │   │   ├── post_commit.rs
+    │   │   │   │   │   │   ├── validate.rs
+    │   │   │   │   │   │   └── genesis_self_check/
+    │   │   │   │   │   │       ├── v1.rs
+    │   │   │   │   │   │       └── v2.rs
+    │   │   │   │   │   ├── host_fn/
+    │   │   │   │   │   │   ├── accept_countersigning_preflight_request.rs
+    │   │   │   │   │   │   ├── agent_info.rs
+    │   │   │   │   │   │   ├── block_agent.rs
+    │   │   │   │   │   │   ├── call.rs
+    │   │   │   │   │   │   ├── call_info.rs
+    │   │   │   │   │   │   ├── capability_claims.rs
+    │   │   │   │   │   │   ├── capability_grants.rs
+    │   │   │   │   │   │   ├── capability_info.rs
+    │   │   │   │   │   │   ├── close_chain.rs
+    │   │   │   │   │   │   ├── count_links.rs
+    │   │   │   │   │   │   ├── create.rs
+    │   │   │   │   │   │   ├── create_clone_cell.rs
+    │   │   │   │   │   │   ├── create_link.rs
+    │   │   │   │   │   │   ├── create_x25519_keypair.rs
+    │   │   │   │   │   │   ├── delete.rs
+    │   │   │   │   │   │   ├── delete_clone_cell.rs
+    │   │   │   │   │   │   ├── delete_link.rs
+    │   │   │   │   │   │   ├── disable_clone_cell.rs
+    │   │   │   │   │   │   ├── dna_info_1.rs
+    │   │   │   │   │   │   ├── dna_info_2.rs
+    │   │   │   │   │   │   ├── ed_25519_x_salsa20_poly1305_decrypt.rs
+    │   │   │   │   │   │   ├── ed_25519_x_salsa20_poly1305_encrypt.rs
+    │   │   │   │   │   │   ├── emit_signal.rs
+    │   │   │   │   │   │   ├── enable_clone_cell.rs
+    │   │   │   │   │   │   ├── get.rs
+    │   │   │   │   │   │   ├── get_agent_activity.rs
+    │   │   │   │   │   │   ├── get_agent_key_lineage.rs
+    │   │   │   │   │   │   ├── get_details.rs
+    │   │   │   │   │   │   ├── get_link_details.rs
+    │   │   │   │   │   │   ├── get_links.rs
+    │   │   │   │   │   │   ├── get_validation_receipts.rs
+    │   │   │   │   │   │   ├── hash.rs
+    │   │   │   │   │   │   ├── is_same_agent.rs
+    │   │   │   │   │   │   ├── must_get_action.rs
+    │   │   │   │   │   │   ├── must_get_agent_activity.rs
+    │   │   │   │   │   │   ├── must_get_entry.rs
+    │   │   │   │   │   │   ├── must_get_valid_record.rs
+    │   │   │   │   │   │   ├── open_chain.rs
+    │   │   │   │   │   │   ├── query.rs
+    │   │   │   │   │   │   ├── random_bytes.rs
+    │   │   │   │   │   │   ├── schedule.rs
+    │   │   │   │   │   │   ├── send_remote_signal.rs
+    │   │   │   │   │   │   ├── sign.rs
+    │   │   │   │   │   │   ├── sign_ephemeral.rs
+    │   │   │   │   │   │   ├── sleep.rs
+    │   │   │   │   │   │   ├── sys_time.rs
+    │   │   │   │   │   │   ├── trace.rs
+    │   │   │   │   │   │   ├── unblock_agent.rs
+    │   │   │   │   │   │   ├── update.rs
+    │   │   │   │   │   │   ├── verify_signature.rs
+    │   │   │   │   │   │   ├── version.rs
+    │   │   │   │   │   │   ├── x_25519_x_salsa20_poly1305_decrypt.rs
+    │   │   │   │   │   │   ├── x_25519_x_salsa20_poly1305_encrypt.rs
+    │   │   │   │   │   │   ├── x_salsa20_poly1305_decrypt.rs
+    │   │   │   │   │   │   ├── x_salsa20_poly1305_encrypt.rs
+    │   │   │   │   │   │   ├── x_salsa20_poly1305_shared_secret_create_random.rs
+    │   │   │   │   │   │   ├── x_salsa20_poly1305_shared_secret_export.rs
+    │   │   │   │   │   │   ├── x_salsa20_poly1305_shared_secret_ingest.rs
+    │   │   │   │   │   │   └── zome_info.rs
+    │   │   │   │   │   └── real_ribosome/
+    │   │   │   │   │       ├── wasmer_sys.rs
+    │   │   │   │   │       └── wasmer_wamr.rs
+    │   │   │   │   ├── sys_validate/
+    │   │   │   │   │   ├── error.rs
+    │   │   │   │   │   └── tests.rs
+    │   │   │   │   └── workflow/
+    │   │   │   │       ├── app_validation_workflow.rs
+    │   │   │   │       ├── call_zome_workflow.rs
+    │   │   │   │       ├── countersigning_workflow.rs
+    │   │   │   │       ├── error.rs
+    │   │   │   │       ├── genesis_workflow.rs
+    │   │   │   │       ├── incoming_dht_ops_workflow.rs
+    │   │   │   │       ├── initialize_zomes_workflow.rs
+    │   │   │   │       ├── integrate_dht_ops_workflow.rs
+    │   │   │   │       ├── publish_dht_ops_workflow.rs
+    │   │   │   │       ├── sys_validation_workflow.rs
+    │   │   │   │       ├── validation_receipt_workflow.rs
+    │   │   │   │       ├── witnessing_workflow.rs
+    │   │   │   │       ├── app_validation_workflow/
+    │   │   │   │       │   ├── error.rs
+    │   │   │   │       │   ├── get_zomes_to_invoke_tests.rs
+    │   │   │   │       │   ├── run_validation_callback_tests.rs
+    │   │   │   │       │   ├── tests.rs
+    │   │   │   │       │   ├── types.rs
+    │   │   │   │       │   └── validation_tests.rs
+    │   │   │   │       ├── call_zome_workflow/
+    │   │   │   │       │   └── validation_test.rs
+    │   │   │   │       ├── countersigning_workflow/
+    │   │   │   │       │   ├── accept.rs
+    │   │   │   │       │   ├── complete.rs
+    │   │   │   │       │   ├── incomplete.rs
+    │   │   │   │       │   ├── refresh.rs
+    │   │   │   │       │   ├── success.rs
+    │   │   │   │       │   └── tests.rs
+    │   │   │   │       ├── incoming_dht_ops_workflow/
+    │   │   │   │       │   ├── incoming_ops_batch.rs
+    │   │   │   │       │   └── tests.rs
+    │   │   │   │       ├── integrate_dht_ops_workflow/
+    │   │   │   │       │   └── tests.rs
+    │   │   │   │       ├── publish_dht_ops_workflow/
+    │   │   │   │       │   ├── publish_query.rs
+    │   │   │   │       │   └── unit_tests.rs
+    │   │   │   │       ├── sys_validation_workflow/
+    │   │   │   │       │   ├── chain_test.rs
+    │   │   │   │       │   ├── tests.rs
+    │   │   │   │       │   ├── types.rs
+    │   │   │   │       │   ├── unit_tests.rs
+    │   │   │   │       │   ├── validate_op_tests.rs
+    │   │   │   │       │   ├── validation_deps.rs
+    │   │   │   │       │   └── validation_query.rs
+    │   │   │   │       └── validation_receipt_workflow/
+    │   │   │   │           ├── tests.rs
+    │   │   │   │           └── unit_tests.rs
+    │   │   │   ├── fixt/
+    │   │   │   │   └── curve.rs
+    │   │   │   ├── sweettest/
+    │   │   │   │   ├── mod.rs
+    │   │   │   │   ├── sweet_agents.rs
+    │   │   │   │   ├── sweet_app.rs
+    │   │   │   │   ├── sweet_app_installation.rs
+    │   │   │   │   ├── sweet_cell.rs
+    │   │   │   │   ├── sweet_conductor.rs
+    │   │   │   │   ├── sweet_conductor_batch.rs
+    │   │   │   │   ├── sweet_conductor_config.rs
+    │   │   │   │   ├── sweet_conductor_config_rendezvous.rs
+    │   │   │   │   ├── sweet_conductor_handle.rs
+    │   │   │   │   ├── sweet_consistency.rs
+    │   │   │   │   ├── sweet_dna.rs
+    │   │   │   │   └── sweet_zome.rs
+    │   │   │   └── test_utils/
+    │   │   │       ├── big_stack_test.rs
+    │   │   │       ├── conductor_setup.rs
+    │   │   │       ├── consistency.rs
+    │   │   │       ├── hc_stress_test.rs
+    │   │   │       ├── host_fn_caller.rs
+    │   │   │       ├── inline_zomes.rs
+    │   │   │       ├── network_simulation.rs
+    │   │   │       ├── wait_for.rs
+    │   │   │       ├── hc_stress_test/
+    │   │   │       │   ├── local_behavior_1.rs
+    │   │   │       │   └── local_behavior_2.rs
+    │   │   │       └── test_conductor/
+    │   │   │           └── test_handle.rs
+    │   │   └── tests/
+    │   │       ├── integration.rs
+    │   │       └── tests/
+    │   │           ├── agent_activity.rs
+    │   │           ├── app_interface_security.rs
+    │   │           ├── countersigning.rs
+    │   │           ├── graft_records_onto_source_chain.rs
+    │   │           ├── hc_stress_test.rs
+    │   │           ├── init.rs
+    │   │           ├── migration.rs
+    │   │           ├── mod.rs
+    │   │           ├── send_signal.rs
+    │   │           ├── validate.rs
+    │   │           ├── websocket_stress.rs
+    │   │           ├── agent_scaling/
+    │   │           │   └── mod.rs
+    │   │           ├── app_installation/
+    │   │           │   └── mod.rs
+    │   │           ├── authored_test/
+    │   │           │   └── mod.rs
+    │   │           ├── clone_cell/
+    │   │           │   └── mod.rs
+    │   │           ├── conductor_services/
+    │   │           │   └── mod.rs
+    │   │           ├── countersigning/
+    │   │           │   └── session_interaction_over_websocket.rs
+    │   │           ├── dht_arc/
+    │   │           │   └── mod.rs
+    │   │           ├── dna_properties/
+    │   │           │   └── mod.rs
+    │   │           ├── inline_zome_spec/
+    │   │           │   └── mod.rs
+    │   │           ├── integrity_zome/
+    │   │           │   └── mod.rs
+    │   │           ├── lair_in_proc_restart/
+    │   │           │   └── mod.rs
+    │   │           ├── multi_conductor/
+    │   │           │   └── mod.rs
+    │   │           ├── new_lair/
+    │   │           │   └── mod.rs
+    │   │           ├── publish/
+    │   │           │   └── mod.rs
+    │   │           ├── regression/
+    │   │           │   ├── mod.rs
+    │   │           │   └── must_get_agent_activity_saturation.rs
+    │   │           ├── ser_regression/
+    │   │           │   └── mod.rs
+    │   │           ├── sharded_gossip/
+    │   │           │   └── mod.rs
+    │   │           ├── signals/
+    │   │           │   └── mod.rs
+    │   │           ├── test_cli/
+    │   │           │   └── mod.rs
+    │   │           ├── test_utils/
+    │   │           │   └── mod.rs
+    │   │           └── websocket/
+    │   │               └── mod.rs
+    │   ├── holochain_cascade/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── src/
+    │   │   │   ├── agent_activity.rs
+    │   │   │   ├── authority.rs
+    │   │   │   ├── error.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── metrics.rs
+    │   │   │   ├── test_utils.rs
+    │   │   │   ├── authority/
+    │   │   │   │   ├── get_agent_activity_query.rs
+    │   │   │   │   ├── get_entry_ops_query.rs
+    │   │   │   │   ├── get_links_ops_query.rs
+    │   │   │   │   ├── get_record_query.rs
+    │   │   │   │   ├── test.rs
+    │   │   │   │   └── get_agent_activity_query/
+    │   │   │   │       ├── deterministic.rs
+    │   │   │   │       ├── hashes.rs
+    │   │   │   │       ├── must_get_agent_activity.rs
+    │   │   │   │       ├── records.rs
+    │   │   │   │       └── must_get_agent_activity/
+    │   │   │   │           └── test.rs
+    │   │   │   └── test_utils/
+    │   │   │       ├── activity_test_data.rs
+    │   │   │       ├── entry_test_data.rs
+    │   │   │       └── record_test_data.rs
+    │   │   └── tests/
+    │   │       ├── integration.rs
+    │   │       └── tests/
+    │   │           ├── count_links.rs
+    │   │           ├── get_activity.rs
+    │   │           ├── get_entry.rs
+    │   │           ├── get_links.rs
+    │   │           └── mod.rs
+    │   ├── holochain_chc/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── chc_http.rs
+    │   │       ├── chc_local.rs
+    │   │       └── lib.rs
+    │   ├── holochain_conductor_api/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── admin_interface.rs
+    │   │       ├── app_interface.rs
+    │   │       ├── config.rs
+    │   │       ├── docs.rs
+    │   │       ├── lib.rs
+    │   │       ├── signal_subscription.rs
+    │   │       ├── state_dump.rs
+    │   │       ├── storage_info.rs
+    │   │       └── config/
+    │   │           ├── conductor.rs
+    │   │           ├── interface.rs
+    │   │           └── conductor/
+    │   │               ├── admin_interface_config.rs
+    │   │               ├── dpki_config.rs
+    │   │               ├── error.rs
+    │   │               ├── keystore_config.rs
+    │   │               ├── logger_config.rs
+    │   │               ├── paths.rs
+    │   │               ├── process.rs
+    │   │               └── signal_config.rs
+    │   ├── holochain_conductor_config/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── config.rs
+    │   │       ├── generate.rs
+    │   │       ├── lib.rs
+    │   │       └── ports.rs
+    │   ├── holochain_conductor_services/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── app_store_service.rs
+    │   │       ├── dpki_service.rs
+    │   │       ├── lib.rs
+    │   │       └── dpki_service/
+    │   │           ├── deepkey.rs
+    │   │           └── derivation_paths.rs
+    │   ├── holochain_integrity_types/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── action.rs
+    │   │       ├── capability.rs
+    │   │       ├── chain.rs
+    │   │       ├── countersigning.rs
+    │   │       ├── dna_modifiers.rs
+    │   │       ├── entry.rs
+    │   │       ├── entry_def.rs
+    │   │       ├── genesis.rs
+    │   │       ├── hash.rs
+    │   │       ├── info.rs
+    │   │       ├── lib.rs
+    │   │       ├── link.rs
+    │   │       ├── op.rs
+    │   │       ├── prelude.rs
+    │   │       ├── rate_limit.rs
+    │   │       ├── record.rs
+    │   │       ├── signature.rs
+    │   │       ├── trace.rs
+    │   │       ├── validate.rs
+    │   │       ├── x_salsa20_poly1305.rs
+    │   │       ├── zome.rs
+    │   │       ├── zome_io.rs
+    │   │       ├── action/
+    │   │       │   ├── builder.rs
+    │   │       │   └── conversions.rs
+    │   │       ├── capability/
+    │   │       │   ├── claim.rs
+    │   │       │   ├── grant.rs
+    │   │       │   └── secret.rs
+    │   │       ├── chain/
+    │   │       │   └── test.rs
+    │   │       ├── countersigning/
+    │   │       │   └── error.rs
+    │   │       ├── entry/
+    │   │       │   ├── app_entry_bytes.rs
+    │   │       │   └── error.rs
+    │   │       ├── info/
+    │   │       │   └── test.rs
+    │   │       └── x_salsa20_poly1305/
+    │   │           ├── data.rs
+    │   │           ├── encrypted_data.rs
+    │   │           ├── key_ref.rs
+    │   │           ├── nonce.rs
+    │   │           └── x25519.rs
+    │   ├── holochain_keystore/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── src/
+    │   │   │   ├── agent_pubkey_ext.rs
+    │   │   │   ├── crude_mock_keystore.rs
+    │   │   │   ├── error.rs
+    │   │   │   ├── lair_keystore.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── meta_lair_client.rs
+    │   │   │   ├── paths.rs
+    │   │   │   ├── test_keystore.rs
+    │   │   │   └── bin/
+    │   │   │       └── test-keystore-srv.rs
+    │   │   └── tests/
+    │   │       └── test_reconnect.rs
+    │   ├── holochain_metrics/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── lib.rs
+    │   │       └── dashboards/
+    │   │           ├── conductor.json
+    │   │           ├── database.json
+    │   │           ├── networkstats.json
+    │   │           └── tx5.json
+    │   ├── holochain_nonce/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       └── lib.rs
+    │   ├── holochain_p2p/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── src/
+    │   │   │   ├── lib.rs
+    │   │   │   ├── peer_meta_store.rs
+    │   │   │   ├── spawn.rs
+    │   │   │   ├── test.rs
+    │   │   │   ├── types.rs
+    │   │   │   ├── spawn/
+    │   │   │   │   └── actor.rs
+    │   │   │   └── types/
+    │   │   │       ├── actor.rs
+    │   │   │       ├── event.rs
+    │   │   │       └── wire.rs
+    │   │   └── tests/
+    │   │       └── peer_meta_store.rs
+    │   ├── holochain_secure_primitive/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── lib.rs
+    │   │       └── types.rs
+    │   ├── holochain_sqlite/
+    │   │   ├── README.md
+    │   │   ├── build.rs
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── loom_tests.sh
+    │   │   ├── src/
+    │   │   │   ├── error.rs
+    │   │   │   ├── exports.rs
+    │   │   │   ├── fatal.rs
+    │   │   │   ├── functions.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── nonce.rs
+    │   │   │   ├── prelude.rs
+    │   │   │   ├── schema.rs
+    │   │   │   ├── sql.rs
+    │   │   │   ├── stats.rs
+    │   │   │   ├── swansong.rs
+    │   │   │   ├── table.rs
+    │   │   │   ├── db/
+    │   │   │   │   ├── access.rs
+    │   │   │   │   ├── conn.rs
+    │   │   │   │   ├── databases.rs
+    │   │   │   │   ├── guard.rs
+    │   │   │   │   ├── key.rs
+    │   │   │   │   ├── kind.rs
+    │   │   │   │   ├── metrics.rs
+    │   │   │   │   ├── mod.rs
+    │   │   │   │   ├── pool.rs
+    │   │   │   │   └── tests.rs
+    │   │   │   ├── sql/
+    │   │   │   │   ├── cell/
+    │   │   │   │   │   ├── action_hash_by_prev.sql
+    │   │   │   │   │   ├── activity_integrated_upper_bound.sql
+    │   │   │   │   │   ├── all_activity_authors.sql
+    │   │   │   │   │   ├── all_ready_activity.sql
+    │   │   │   │   │   ├── delete_actions_after_seq.sql
+    │   │   │   │   │   ├── fetch_op_region.sql
+    │   │   │   │   │   ├── fetch_ops_by_region.sql
+    │   │   │   │   │   ├── fetch_publishable_op.sql
+    │   │   │   │   │   ├── fetch_region_op_hashes.sql
+    │   │   │   │   │   ├── select_valid_agent_pub_key.sql
+    │   │   │   │   │   ├── set_add_link_ops_to_integrated.sql
+    │   │   │   │   │   ├── set_chain_integrity_warrant_ops_to_integrated.sql
+    │   │   │   │   │   ├── set_delete_link_ops_to_integrated.sql
+    │   │   │   │   │   ├── sum_of_received_bytes_since_timestamp.sql
+    │   │   │   │   │   ├── update_dep_activity.sql
+    │   │   │   │   │   ├── update_dep_store_entry.sql
+    │   │   │   │   │   ├── update_dep_store_record.sql
+    │   │   │   │   │   ├── update_store_entry.sql
+    │   │   │   │   │   ├── update_store_record.sql
+    │   │   │   │   │   ├── agent_activity/
+    │   │   │   │   │   │   ├── action_hash_to_seq.sql
+    │   │   │   │   │   │   └── must_get_agent_activity.sql
+    │   │   │   │   │   ├── fetch_hashes/
+    │   │   │   │   │   │   ├── fetch_op_hashes_p1.sql
+    │   │   │   │   │   │   └── fetch_op_hashes_p2.sql
+    │   │   │   │   │   ├── schedule/
+    │   │   │   │   │   │   ├── delete.sql
+    │   │   │   │   │   │   ├── delete_all_ephemeral.sql
+    │   │   │   │   │   │   ├── delete_live_ephemeral.sql
+    │   │   │   │   │   │   ├── expired.sql
+    │   │   │   │   │   │   └── update.sql
+    │   │   │   │   │   ├── schema/
+    │   │   │   │   │   │   ├── 0.sql
+    │   │   │   │   │   │   ├── 1-up.sql
+    │   │   │   │   │   │   ├── 1.sql
+    │   │   │   │   │   │   ├── 2-up.sql
+    │   │   │   │   │   │   ├── 2.sql
+    │   │   │   │   │   │   ├── 3-up.sql
+    │   │   │   │   │   │   ├── 3.sql
+    │   │   │   │   │   │   ├── 4-up.sql
+    │   │   │   │   │   │   └── 4.sql
+    │   │   │   │   │   └── state_dump/
+    │   │   │   │   │       ├── dht_ops_in_integration_limbo.sql
+    │   │   │   │   │       ├── dht_ops_in_validation_limbo.sql
+    │   │   │   │   │       ├── dht_ops_integrated.sql
+    │   │   │   │   │       └── dht_ops_row_id.sql
+    │   │   │   │   ├── conductor/
+    │   │   │   │   │   ├── delete_expired_nonce.sql
+    │   │   │   │   │   ├── from_block_span_where_overlapping.sql
+    │   │   │   │   │   ├── is_blocked.sql
+    │   │   │   │   │   ├── nonce_already_seen.sql
+    │   │   │   │   │   ├── select_valid_cap_grant_for_cap_secret.sql
+    │   │   │   │   │   ├── select_valid_unrestricted_cap_grant.sql
+    │   │   │   │   │   └── schema/
+    │   │   │   │   │       ├── 0.sql
+    │   │   │   │   │       └── 1-up.sql
+    │   │   │   │   ├── p2p_agent_store/
+    │   │   │   │   │   ├── delete.sql
+    │   │   │   │   │   ├── extrapolated_coverage.sql
+    │   │   │   │   │   ├── insert.sql
+    │   │   │   │   │   ├── prune.sql
+    │   │   │   │   │   ├── select_all.sql
+    │   │   │   │   │   └── schema/
+    │   │   │   │   │       └── 0.sql
+    │   │   │   │   ├── p2p_metrics/
+    │   │   │   │   │   ├── insert.sql
+    │   │   │   │   │   ├── prune.sql
+    │   │   │   │   │   └── schema/
+    │   │   │   │   │       └── 0.sql
+    │   │   │   │   ├── peer_meta_store/
+    │   │   │   │   │   ├── delete.sql
+    │   │   │   │   │   ├── get.sql
+    │   │   │   │   │   ├── insert.sql
+    │   │   │   │   │   ├── prune.sql
+    │   │   │   │   │   └── schema/
+    │   │   │   │   │       └── 0.sql
+    │   │   │   │   └── wasm/
+    │   │   │   │       └── schema/
+    │   │   │   │           └── 0.sql
+    │   │   │   └── store/
+    │   │   │       ├── mod.rs
+    │   │   │       ├── p2p_agent_store.rs
+    │   │   │       ├── p2p_metrics.rs
+    │   │   │       ├── p2p_agent_store/
+    │   │   │       │   └── p2p_test.rs
+    │   │   │       └── p2p_metrics/
+    │   │   │           └── p2p_metrics_test.rs
+    │   │   └── tests/
+    │   │       ├── integration.rs
+    │   │       └── tests/
+    │   │           ├── db_wrapper.rs
+    │   │           ├── loom.rs
+    │   │           ├── migrate_unencrypted.rs
+    │   │           ├── mod.rs
+    │   │           ├── peer_meta_store.rs
+    │   │           ├── schema.rs
+    │   │           └── common/
+    │   │               └── mod.rs
+    │   ├── holochain_state/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── src/
+    │   │   │   ├── block.rs
+    │   │   │   ├── chain_lock.rs
+    │   │   │   ├── dna_def.rs
+    │   │   │   ├── entry_def.rs
+    │   │   │   ├── host_fn_workspace.rs
+    │   │   │   ├── integrate.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── mutations.rs
+    │   │   │   ├── nonce.rs
+    │   │   │   ├── prelude.rs
+    │   │   │   ├── query.rs
+    │   │   │   ├── schedule.rs
+    │   │   │   ├── scratch.rs
+    │   │   │   ├── source_chain.rs
+    │   │   │   ├── test_utils.rs
+    │   │   │   ├── validation_db.rs
+    │   │   │   ├── validation_receipts.rs
+    │   │   │   ├── wasm.rs
+    │   │   │   ├── workspace.rs
+    │   │   │   ├── mutations/
+    │   │   │   │   └── error.rs
+    │   │   │   ├── query/
+    │   │   │   │   ├── chain_head.rs
+    │   │   │   │   ├── entry_details.rs
+    │   │   │   │   ├── error.rs
+    │   │   │   │   ├── link.rs
+    │   │   │   │   ├── link_count.rs
+    │   │   │   │   ├── link_details.rs
+    │   │   │   │   ├── live_entry.rs
+    │   │   │   │   ├── live_record.rs
+    │   │   │   │   ├── record_details.rs
+    │   │   │   │   ├── test_data.rs
+    │   │   │   │   ├── tests.rs
+    │   │   │   │   ├── live_entry/
+    │   │   │   │   │   └── test.rs
+    │   │   │   │   ├── live_record/
+    │   │   │   │   │   └── test.rs
+    │   │   │   │   └── tests/
+    │   │   │   │       ├── details.rs
+    │   │   │   │       ├── links.rs
+    │   │   │   │       ├── links_test.rs
+    │   │   │   │       └── store.rs
+    │   │   │   ├── source_chain/
+    │   │   │   │   └── error.rs
+    │   │   │   └── test_utils/
+    │   │   │       └── mutations_helpers.rs
+    │   │   └── tests/
+    │   │       ├── integration.rs
+    │   │       ├── cache_tests/
+    │   │       │   └── mod.rs
+    │   │       └── corrupt_db/
+    │   │           └── mod.rs
+    │   ├── holochain_state_types/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       └── lib.rs
+    │   ├── holochain_terminal/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── app.rs
+    │   │       ├── cli.rs
+    │   │       ├── client.rs
+    │   │       ├── components.rs
+    │   │       ├── event.rs
+    │   │       ├── main.rs
+    │   │       ├── tui.rs
+    │   │       └── components/
+    │   │           ├── bootstrap.rs
+    │   │           ├── common.rs
+    │   │           ├── home.rs
+    │   │           └── network_info.rs
+    │   ├── holochain_trace/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── examples/
+    │   │   │   ├── channel_wrap.rs
+    │   │   │   ├── channels.rs
+    │   │   │   ├── metrics.rs
+    │   │   │   ├── socket_client.rs
+    │   │   │   └── socket_server.rs
+    │   │   ├── src/
+    │   │   │   ├── flames.rs
+    │   │   │   ├── fmt.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── metrics.rs
+    │   │   │   ├── open.rs
+    │   │   │   ├── writer.rs
+    │   │   │   └── open/
+    │   │   │       ├── context_wrap.rs
+    │   │   │       └── off.rs
+    │   │   └── tests/
+    │   │       └── open_telemetry.rs
+    │   ├── holochain_types/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── access.rs
+    │   │       ├── action.rs
+    │   │       ├── activity.rs
+    │   │       ├── app.rs
+    │   │       ├── autonomic.rs
+    │   │       ├── chain.rs
+    │   │       ├── combinators.rs
+    │   │       ├── countersigning.rs
+    │   │       ├── db.rs
+    │   │       ├── db_cache.rs
+    │   │       ├── dht_op.rs
+    │   │       ├── dna.rs
+    │   │       ├── entry.rs
+    │   │       ├── fixt.rs
+    │   │       ├── inline_zome.rs
+    │   │       ├── lib.rs
+    │   │       ├── link.rs
+    │   │       ├── macros.rs
+    │   │       ├── metadata.rs
+    │   │       ├── prelude.rs
+    │   │       ├── rate_limit.rs
+    │   │       ├── record.rs
+    │   │       ├── share.rs
+    │   │       ├── signal.rs
+    │   │       ├── sql.rs
+    │   │       ├── test_utils.rs
+    │   │       ├── validation_receipt.rs
+    │   │       ├── warrant.rs
+    │   │       ├── web_app.rs
+    │   │       ├── websocket.rs
+    │   │       ├── zome_types.rs
+    │   │       ├── app/
+    │   │       │   ├── app_bundle.rs
+    │   │       │   ├── app_manifest.rs
+    │   │       │   ├── error.rs
+    │   │       │   ├── app_bundle/
+    │   │       │   │   ├── error.rs
+    │   │       │   │   └── tests.rs
+    │   │       │   └── app_manifest/
+    │   │       │       ├── app_manifest_v1.rs
+    │   │       │       ├── app_manifest_validated.rs
+    │   │       │       ├── current.rs
+    │   │       │       └── error.rs
+    │   │       ├── chain/
+    │   │       │   ├── chain_item.rs
+    │   │       │   └── test.rs
+    │   │       ├── db_cache/
+    │   │       │   ├── error.rs
+    │   │       │   └── tests.rs
+    │   │       ├── dht_op/
+    │   │       │   ├── error.rs
+    │   │       │   └── tests.rs
+    │   │       ├── dna/
+    │   │       │   ├── coordinator_bundle.rs
+    │   │       │   ├── dna_bundle.rs
+    │   │       │   ├── dna_file.rs
+    │   │       │   ├── dna_manifest.rs
+    │   │       │   ├── dna_store.rs
+    │   │       │   ├── dna_with_role.rs
+    │   │       │   ├── error.rs
+    │   │       │   ├── ribosome_store.rs
+    │   │       │   ├── wasm.rs
+    │   │       │   ├── dna_bundle/
+    │   │       │   │   └── test.rs
+    │   │       │   ├── dna_file/
+    │   │       │   │   └── test.rs
+    │   │       │   └── dna_manifest/
+    │   │       │       ├── dna_manifest_v1.rs
+    │   │       │       └── test.rs
+    │   │       ├── record/
+    │   │       │   └── error.rs
+    │   │       ├── sql/
+    │   │       │   └── test.rs
+    │   │       ├── test_utils/
+    │   │       │   └── chain.rs
+    │   │       ├── web_app/
+    │   │       │   ├── web_app_bundle.rs
+    │   │       │   ├── web_app_manifest.rs
+    │   │       │   └── web_app_manifest/
+    │   │       │       ├── current.rs
+    │   │       │       └── web_app_manifest_v1.rs
+    │   │       └── zome_types/
+    │   │           ├── error.rs
+    │   │           └── test.rs
+    │   ├── holochain_util/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       ├── hex.rs
+    │   │       ├── jsonschema.rs
+    │   │       ├── lib.rs
+    │   │       ├── pw.rs
+    │   │       ├── time.rs
+    │   │       ├── tokio_helper.rs
+    │   │       └── ffs/
+    │   │           ├── io_error.rs
+    │   │           └── mod.rs
+    │   ├── holochain_websocket/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── benches/
+    │   │   │   ├── bench.rs
+    │   │   │   └── full_connect.rs
+    │   │   └── src/
+    │   │       ├── lib.rs
+    │   │       └── test.rs
+    │   ├── holochain_zome_types/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── proptest-regressions/
+    │   │   │   └── record/
+    │   │   │       └── facts.txt
+    │   │   └── src/
+    │   │       ├── action.rs
+    │   │       ├── agent_activity.rs
+    │   │       ├── block.rs
+    │   │       ├── bytes.rs
+    │   │       ├── call.rs
+    │   │       ├── capability.rs
+    │   │       ├── cell.rs
+    │   │       ├── chain.rs
+    │   │       ├── clone.rs
+    │   │       ├── countersigning.rs
+    │   │       ├── crdt.rs
+    │   │       ├── dna_def.rs
+    │   │       ├── entry.rs
+    │   │       ├── entry_def.rs
+    │   │       ├── fixt.rs
+    │   │       ├── genesis.rs
+    │   │       ├── hash.rs
+    │   │       ├── info.rs
+    │   │       ├── init.rs
+    │   │       ├── judged.rs
+    │   │       ├── lib.rs
+    │   │       ├── link.rs
+    │   │       ├── metadata.rs
+    │   │       ├── op.rs
+    │   │       ├── prelude.rs
+    │   │       ├── properties.rs
+    │   │       ├── query.rs
+    │   │       ├── rate_limit.rs
+    │   │       ├── record.rs
+    │   │       ├── request.rs
+    │   │       ├── schedule.rs
+    │   │       ├── signal.rs
+    │   │       ├── signature.rs
+    │   │       ├── test_utils.rs
+    │   │       ├── trace.rs
+    │   │       ├── validate.rs
+    │   │       ├── version.rs
+    │   │       ├── warrant.rs
+    │   │       ├── x_salsa20_poly1305.rs
+    │   │       ├── zome.rs
+    │   │       ├── zome_io.rs
+    │   │       ├── capability/
+    │   │       │   └── grant.rs
+    │   │       ├── entry/
+    │   │       │   └── app_entry_bytes.rs
+    │   │       └── zome/
+    │   │           ├── error.rs
+    │   │           ├── inline_zome.rs
+    │   │           └── inline_zome/
+    │   │               └── error.rs
+    │   ├── kitsune_p2p/
+    │   │   ├── bin_data/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   └── src/
+    │   │   │       ├── fixt.rs
+    │   │   │       └── lib.rs
+    │   │   ├── block/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   └── src/
+    │   │   │       └── lib.rs
+    │   │   ├── bootstrap/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   ├── benches/
+    │   │   │   │   └── bench.rs
+    │   │   │   └── src/
+    │   │   │       ├── clear.rs
+    │   │   │       ├── error.rs
+    │   │   │       ├── lib.rs
+    │   │   │       ├── main.rs
+    │   │   │       ├── now.rs
+    │   │   │       ├── proxy_list.rs
+    │   │   │       ├── put.rs
+    │   │   │       ├── random.rs
+    │   │   │       └── store.rs
+    │   │   ├── bootstrap_client/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   └── src/
+    │   │   │       └── lib.rs
+    │   │   ├── dht/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   ├── proptest-regressions/
+    │   │   │   │   ├── arq.txt
+    │   │   │   │   ├── coords.txt
+    │   │   │   │   ├── quantum.txt
+    │   │   │   │   ├── test_utils.txt
+    │   │   │   │   └── arq/
+    │   │   │   │       └── arq_set.txt
+    │   │   │   ├── src/
+    │   │   │   │   ├── arq.rs
+    │   │   │   │   ├── error.rs
+    │   │   │   │   ├── hash.rs
+    │   │   │   │   ├── lib.rs
+    │   │   │   │   ├── op.rs
+    │   │   │   │   ├── persistence.rs
+    │   │   │   │   ├── region.rs
+    │   │   │   │   ├── region_set.rs
+    │   │   │   │   ├── spacetime.rs
+    │   │   │   │   ├── test_utils.rs
+    │   │   │   │   ├── arq/
+    │   │   │   │   │   ├── arq_set.rs
+    │   │   │   │   │   ├── ascii.rs
+    │   │   │   │   │   ├── peer_view.rs
+    │   │   │   │   │   └── strat.rs
+    │   │   │   │   ├── region/
+    │   │   │   │   │   ├── region_coords.rs
+    │   │   │   │   │   └── region_data.rs
+    │   │   │   │   ├── region_set/
+    │   │   │   │   │   └── ltcs.rs
+    │   │   │   │   ├── spacetime/
+    │   │   │   │   │   ├── quantum.rs
+    │   │   │   │   │   ├── segment.rs
+    │   │   │   │   │   ├── telescoping_times.rs
+    │   │   │   │   │   └── topology.rs
+    │   │   │   │   └── test_utils/
+    │   │   │   │       ├── gossip_direct.rs
+    │   │   │   │       ├── min_redundancy.rs
+    │   │   │   │       ├── op_data.rs
+    │   │   │   │       ├── op_store.rs
+    │   │   │   │       └── test_node.rs
+    │   │   │   └── tests/
+    │   │   │       ├── arc_resizing.rs
+    │   │   │       ├── arc_stability.proptest-regressions
+    │   │   │       ├── arc_stability.rs
+    │   │   │       ├── gossip.rs
+    │   │   │       └── common/
+    │   │   │           ├── continuous.rs
+    │   │   │           ├── mod.rs
+    │   │   │           └── quantized.rs
+    │   │   ├── dht_arc/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   └── src/
+    │   │   │       ├── defaults.rs
+    │   │   │       ├── dht_arc.rs
+    │   │   │       ├── dht_arc_redundancy.rs
+    │   │   │       ├── dht_arc_set.rs
+    │   │   │       ├── dht_location.rs
+    │   │   │       ├── lib.rs
+    │   │   │       ├── loc8.rs
+    │   │   │       └── test/
+    │   │   │           ├── ascii.rs
+    │   │   │           ├── intersection.rs
+    │   │   │           ├── mod.rs
+    │   │   │           ├── test_ascii.rs
+    │   │   │           └── union.rs
+    │   │   ├── fetch/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   ├── proptest-regressions/
+    │   │   │   │   └── rough_sized.txt
+    │   │   │   └── src/
+    │   │   │       ├── backoff.rs
+    │   │   │       ├── lib.rs
+    │   │   │       ├── pool.rs
+    │   │   │       ├── queue.rs
+    │   │   │       ├── respond.rs
+    │   │   │       ├── rough_sized.rs
+    │   │   │       ├── source.rs
+    │   │   │       ├── test_utils.rs
+    │   │   │       └── pool/
+    │   │   │           └── pool_reader.rs
+    │   │   ├── kitsune_p2p/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   ├── src/
+    │   │   │   │   ├── gossip.rs
+    │   │   │   │   ├── host_api.rs
+    │   │   │   │   ├── lib.rs
+    │   │   │   │   ├── metrics.rs
+    │   │   │   │   ├── spawn.rs
+    │   │   │   │   ├── test.rs
+    │   │   │   │   ├── test_util.rs
+    │   │   │   │   ├── types.rs
+    │   │   │   │   ├── gossip/
+    │   │   │   │   │   ├── common.rs
+    │   │   │   │   │   ├── sharded_gossip.rs
+    │   │   │   │   │   └── sharded_gossip/
+    │   │   │   │   │       ├── accept.rs
+    │   │   │   │   │       ├── agents.rs
+    │   │   │   │   │       ├── bandwidth.rs
+    │   │   │   │   │       ├── bloom.rs
+    │   │   │   │   │       ├── initiate.rs
+    │   │   │   │   │       ├── next_target.rs
+    │   │   │   │   │       ├── ops.rs
+    │   │   │   │   │       ├── state_map.rs
+    │   │   │   │   │       ├── store.rs
+    │   │   │   │   │       ├── test_utils.rs
+    │   │   │   │   │       ├── tests.rs
+    │   │   │   │   │       └── tests/
+    │   │   │   │   │           ├── bloom.rs
+    │   │   │   │   │           ├── common.rs
+    │   │   │   │   │           ├── ops.rs
+    │   │   │   │   │           └── test_two_nodes.rs
+    │   │   │   │   ├── host_api/
+    │   │   │   │   │   ├── host_default_error.rs
+    │   │   │   │   │   └── host_stub.rs
+    │   │   │   │   ├── spawn/
+    │   │   │   │   │   ├── actor.rs
+    │   │   │   │   │   └── actor/
+    │   │   │   │   │       ├── discover.rs
+    │   │   │   │   │       ├── fetch.rs
+    │   │   │   │   │       ├── meta_net.rs
+    │   │   │   │   │       ├── meta_net_task.rs
+    │   │   │   │   │       ├── space.rs
+    │   │   │   │   │       ├── test_util.rs
+    │   │   │   │   │       ├── discover/
+    │   │   │   │   │       │   ├── test_get_cached_remotes_near_basis.rs
+    │   │   │   │   │       │   ├── test_search_and_discover_peer_connect.rs
+    │   │   │   │   │       │   └── test_search_remotes_covering_basis.rs
+    │   │   │   │   │       ├── fetch/
+    │   │   │   │   │       │   ├── fetch_task.rs
+    │   │   │   │   │       │   └── response_config.rs
+    │   │   │   │   │       ├── meta_net/
+    │   │   │   │   │       │   └── tests.rs
+    │   │   │   │   │       ├── space/
+    │   │   │   │   │       │   ├── agent_info_update.rs
+    │   │   │   │   │       │   ├── bootstrap_task.rs
+    │   │   │   │   │       │   ├── metric_exchange.rs
+    │   │   │   │   │       │   └── rpc_multi_logic.rs
+    │   │   │   │   │       └── test_util/
+    │   │   │   │   │           ├── internal_stub.rs
+    │   │   │   │   │           ├── legacy_host_stub.rs
+    │   │   │   │   │           └── space_internal_stub.rs
+    │   │   │   │   ├── test_util/
+    │   │   │   │   │   ├── data.rs
+    │   │   │   │   │   ├── harness_actor.rs
+    │   │   │   │   │   ├── harness_agent.rs
+    │   │   │   │   │   ├── harness_event.rs
+    │   │   │   │   │   └── scenario_def_local.rs
+    │   │   │   │   └── types/
+    │   │   │   │       ├── actor.rs
+    │   │   │   │       ├── event.rs
+    │   │   │   │       ├── gossip.rs
+    │   │   │   │       ├── metrics.rs
+    │   │   │   │       └── wire.rs
+    │   │   │   └── tests/
+    │   │   │       ├── peer_restart.rs
+    │   │   │       ├── performance.rs
+    │   │   │       ├── sharding.rs
+    │   │   │       ├── tests.rs
+    │   │   │       └── common/
+    │   │   │           ├── data.rs
+    │   │   │           ├── harness.rs
+    │   │   │           ├── mod.rs
+    │   │   │           ├── test_host.rs
+    │   │   │           ├── test_keystore.rs
+    │   │   │           ├── test_legacy_host.rs
+    │   │   │           └── util.rs
+    │   │   ├── mdns/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   ├── examples/
+    │   │   │   │   ├── broadcast.rs
+    │   │   │   │   └── discover.rs
+    │   │   │   └── src/
+    │   │   │       └── lib.rs
+    │   │   ├── timestamp/
+    │   │   │   ├── README.md
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   └── src/
+    │   │   │       ├── chrono_ext.rs
+    │   │   │       ├── error.rs
+    │   │   │       ├── human.rs
+    │   │   │       ├── lib.rs
+    │   │   │       └── noise.rs
+    │   │   └── types/
+    │   │       ├── README.md
+    │   │       ├── Cargo.toml
+    │   │       ├── CHANGELOG.md
+    │   │       ├── benches/
+    │   │       │   └── api_thru.rs
+    │   │       ├── examples/
+    │   │       │   └── codec.rs
+    │   │       └── src/
+    │   │           ├── agent_info.rs
+    │   │           ├── async_lazy.rs
+    │   │           ├── bootstrap.rs
+    │   │           ├── codec.rs
+    │   │           ├── combinators.rs
+    │   │           ├── config.rs
+    │   │           ├── consistency.rs
+    │   │           ├── fetch_pool.rs
+    │   │           ├── fixt.rs
+    │   │           ├── lib.rs
+    │   │           ├── metrics.rs
+    │   │           ├── task_agg.rs
+    │   │           ├── timeout.rs
+    │   │           ├── tls.rs
+    │   │           ├── tx_utils.rs
+    │   │           └── tx_utils/
+    │   │               ├── active.rs
+    │   │               ├── framed.rs
+    │   │               ├── latency.rs
+    │   │               ├── logic_chan.rs
+    │   │               ├── mem_chan.rs
+    │   │               ├── notify_all.rs
+    │   │               ├── pool_buf.rs
+    │   │               ├── proxy_url.rs
+    │   │               ├── resource_bucket.rs
+    │   │               ├── share.rs
+    │   │               ├── t_chan.rs
+    │   │               └── tx_url.rs
+    │   ├── mock_hdi/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   └── src/
+    │   │       └── lib.rs
+    │   ├── mr_bundle/
+    │   │   ├── README.md
+    │   │   ├── Cargo.toml
+    │   │   ├── CHANGELOG.md
+    │   │   ├── .gitignore
+    │   │   ├── src/
+    │   │   │   ├── bundle.rs
+    │   │   │   ├── encoding.rs
+    │   │   │   ├── error.rs
+    │   │   │   ├── lib.rs
+    │   │   │   ├── location.rs
+    │   │   │   ├── manifest.rs
+    │   │   │   ├── packing.rs
+    │   │   │   ├── resource.rs
+    │   │   │   └── util.rs
+    │   │   └── tests/
+    │   │       └── integration.rs
+    │   ├── release-automation/
+    │   │   ├── README.md
+    │   │   ├── Cargo.lock
+    │   │   ├── Cargo.toml
+    │   │   ├── crate-hashes.json
+    │   │   ├── default.nix
+    │   │   ├── examples/
+    │   │   │   ├── cleanup-gh-workflow-runs.rs
+    │   │   │   └── fix-json.rs
+    │   │   └── src/
+    │   │       ├── main.rs
+    │   │       └── lib/
+    │   │           ├── changelog.rs
+    │   │           ├── check.rs
+    │   │           ├── common.rs
+    │   │           ├── crate_.rs
+    │   │           ├── mod.rs
+    │   │           ├── release.rs
+    │   │           ├── crate_selection/
+    │   │           │   ├── forest.rs
+    │   │           │   ├── mod.rs
+    │   │           │   └── tests/
+    │   │           │       └── mod.rs
+    │   │           └── tests/
+    │   │               ├── cli.rs
+    │   │               ├── mod.rs
+    │   │               └── workspace_mocker.rs
+    │   ├── test_utils/
+    │   │   ├── wasm/
+    │   │   │   ├── README.md
+    │   │   │   ├── build.rs
+    │   │   │   ├── Cargo.toml
+    │   │   │   ├── CHANGELOG.md
+    │   │   │   ├── src/
+    │   │   │   │   └── lib.rs
+    │   │   │   ├── tests/
+    │   │   │   │   └── integrations.rs
+    │   │   │   └── wasm_workspace/
+    │   │   │       ├── Cargo.lock
+    │   │   │       ├── Cargo.toml
+    │   │   │       ├── fetch-hc-stress-test.bash
+    │   │   │       ├── agent_info/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── agent_key_lineage/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── anchor/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── app_validation/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── bench/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── capability/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── clone/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── coordinator_zome/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── coordinator_zome_update/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── countersigning/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── crd/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── create_entry/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── crud/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       ├── lib.rs
+    │   │   │       │       └── coordinator/
+    │   │   │       │           └── countree.rs
+    │   │   │       ├── debug/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── dna_properties/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── emit_signal/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── entry_defs/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── foo/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── genesis_self_check_1/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── genesis_self_check_invalid/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── genesis_self_check_legacy/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── genesis_self_check_requires_properties/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── genesis_self_check_valid/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── hash_entry/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── hash_path/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── hc-stress-test-coordinator/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── all_images.rs
+    │   │   │       │       ├── file.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── hc-stress-test-integrity/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── file.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── hdk_extern/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── init_fail/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── init_invalid_params/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── init_pass/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── init_single/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── integrity_zome/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── link/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── migrate_initial/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── migrate_new/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── multiple_calls/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── must_get/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── must_get_agent_activity/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── post_commit_signal/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── post_commit_success/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── post_commit_volley/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── query/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── random_bytes/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── schedule/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── ser_regression/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── sign/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── sys_time/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── the_incredible_halt/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── update_entry/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── validate/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── validate_invalid/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── validate_invalid_params/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── validate_link/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── validate_link_add_invalid/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── validate_link_add_valid/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── validate_reject_app_types/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── validate_valid/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── coordinator.rs
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── whoami/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       ├── x_salsa20_poly1305/
+    │   │   │       │   ├── Cargo.toml
+    │   │   │       │   └── src/
+    │   │   │       │       ├── integrity.rs
+    │   │   │       │       └── lib.rs
+    │   │   │       └── zome_info/
+    │   │   │           ├── Cargo.toml
+    │   │   │           └── src/
+    │   │   │               ├── coordinator.rs
+    │   │   │               ├── integrity.rs
+    │   │   │               └── lib.rs
+    │   │   └── wasm_common/
+    │   │       ├── README.md
+    │   │       ├── Cargo.toml
+    │   │       ├── CHANGELOG.md
+    │   │       └── src/
+    │   │           └── lib.rs
+    │   └── timestamp/
+    │       ├── README.md
+    │       ├── Cargo.toml
+    │       ├── CHANGELOG.md
+    │       └── src/
+    │           ├── chrono_ext.rs
+    │           ├── error.rs
+    │           ├── human.rs
+    │           └── lib.rs
+    ├── docs/
+    │   ├── core_testing.md
+    │   ├── developer_setup.md
+    │   ├── happ_dev_setup_windows.md
+    │   ├── README.apache.tpl
+    │   ├── README.cal.tpl
+    │   ├── release/
+    │   │   └── release.md
+    │   └── specs/
+    │       └── src/
+    │           ├── README.md
+    │           ├── _hwp_B_additional_specs.md
+    │           ├── _hwp_C_countersigning_spec.md
+    │           ├── _hwp_D_rate_limiting_spec.md
+    │           ├── build.sh
+    │           ├── holochain-players-of-ludos.md
+    │           ├── holochain-white-paper-alpha.tex
+    │           ├── hwp_1_intro.md
+    │           ├── hwp_2_overview.md
+    │           ├── hwp_3_correctness.md
+    │           ├── hwp_4_formal.md
+    │           ├── hwp_5_conclusion.md
+    │           ├── hwp_A_implementation_spec.md
+    │           ├── pandoc-template.latex
+    │           ├── .gitignore
+    │           └── diagram-1.0.0/
+    │               ├── README.md
+    │               ├── diagram.lua
+    │               ├── LICENSE
+    │               ├── Makefile
+    │               └── _extensions/
+    │                   └── diagram/
+    │                       └── _extension.yaml
+    ├── holonix/
+    │   ├── README.md
+    │   ├── default.nix
+    │   ├── VERSIONS.md
+    │   ├── examples/
+    │   │   ├── custom_holochain_feature/
+    │   │   │   ├── flake.lock
+    │   │   │   └── flake.nix
+    │   │   └── custom_versions/
+    │   │       ├── flake.lock
+    │   │       └── flake.nix
+    │   ├── legacy/
+    │   │   └── default.nix
+    │   └── test/
+    │       ├── hc-sandbox.bats
+    │       ├── holochain-binaries.bats
+    │       ├── launcher.bats
+    │       ├── mold_openssl.bats
+    │       ├── rust.bats
+    │       ├── scaffolding.bats
+    │       ├── shell-setup-linux.bats
+    │       ├── shell-setup.bats
+    │       └── mold_openssl/
+    │           ├── Cargo.lock
+    │           ├── Cargo.toml
+    │           ├── .gitignore
+    │           └── src/
+    │               ├── lib.rs
+    │               └── main.rs
+    ├── nix/
+    │   ├── compat.nix
+    │   ├── default.nix
+    │   ├── shells.nix
+    │   ├── sources.json
+    │   ├── sources.nix
+    │   ├── update.sh
+    │   ├── modules/
+    │   │   ├── _template.nix
+    │   │   ├── cargo-chef.nix
+    │   │   ├── cargo-rdme.nix
+    │   │   ├── darwin.nix
+    │   │   ├── devShells.nix
+    │   │   ├── formatter.nix
+    │   │   ├── go.nix
+    │   │   ├── holochain-nix-integration-test.nix
+    │   │   ├── holochain.nix
+    │   │   ├── holonix-integration-test.nix
+    │   │   ├── lair.nix
+    │   │   ├── launcher.nix
+    │   │   ├── lib.nix
+    │   │   ├── pre-commit.nix
+    │   │   ├── reconciledInputs.nix
+    │   │   ├── release-automation.nix
+    │   │   ├── rust.nix
+    │   │   ├── scaffolding.nix
+    │   │   ├── scripts.nix
+    │   │   ├── sources.nix
+    │   │   ├── srcCleaned.nix
+    │   │   └── writers.nix
+    │   ├── pkgs/
+    │   │   ├── core.nix
+    │   │   └── default.nix
+    │   └── release/
+    │       ├── default.nix
+    │       └── hook/
+    │           ├── default.nix
+    │           └── version/
+    │               └── default.nix
+    ├── scripts/
+    │   ├── cargo-all.sh
+    │   ├── ci-gh-release.sh
+    │   ├── ci-git-config.sh
+    │   ├── format-toml.sh
+    │   ├── local-static.sh
+    │   ├── local-test.sh
+    │   ├── local-tx5-test.sh
+    │   ├── nix_path.sh
+    │   ├── test-hc-launch.sh
+    │   └── update-holonix-version.sh
+    ├── versions/
+    │   ├── 0_1/
+    │   │   ├── flake.lock
+    │   │   └── flake.nix
+    │   ├── 0_2/
+    │   │   ├── flake.lock
+    │   │   └── flake.nix
+    │   ├── 0_2_rc/
+    │   │   ├── flake.lock
+    │   │   └── flake.nix
+    │   ├── 0_3/
+    │   │   ├── flake.lock
+    │   │   └── flake.nix
+    │   ├── 0_3_rc/
+    │   │   ├── flake.lock
+    │   │   └── flake.nix
+    │   ├── 0_4/
+    │   │   ├── flake.lock
+    │   │   └── flake.nix
+    │   ├── 0_4_rc/
+    │   │   ├── flake.lock
+    │   │   └── flake.nix
+    │   └── weekly/
+    │       ├── flake.lock
+    │       └── flake.nix
+    ├── .config/
+    │   ├── nextest-args.nix
+    │   ├── nextest.toml
+    │   └── test-args.nix
+    └── .github/
+        ├── pull_request_template.md
+        ├── actions/
+        │   ├── common-post/
+        │   │   └── action.yml
+        │   ├── common-pre/
+        │   │   └── action.yml
+        │   ├── extend-space/
+        │   │   └── action.yml
+        │   └── update/
+        │       └── action.yml
+        ├── ISSUE_TEMPLATE/
+        │   ├── bug_report.md
+        │   ├── holonix_bug_report.md
+        │   └── release_checklist.md
+        ├── manifest/
+        │   ├── vcpkg-configuration.json
+        │   └── vcpkg.json
+        └── workflows/
+            ├── autorebase.yml
+            ├── autoupdate.yaml
+            ├── command-listener.yml
+            ├── holochain-build-and-test.yml
+            ├── holonix-cache.yml
+            ├── pr-tests.yml
+            ├── release-dispatch.yml
+            ├── release-prepare.yml
+            ├── release.yml
+            ├── ssh-session.yml
+            ├── stale.yml
+            ├── test.yml
+            ├── update-dispatch.yml
+            └── update-holonix-version.yml
+
+================================================
+File: README.md
+================================================
+[![Project](https://img.shields.io/badge/Project-Holochain-blue.svg?style=flat-square)](http://holochain.org/)
+[![Discord](https://img.shields.io/badge/Discord-blue.svg?style=flat-square)](https://discord.gg/k55DS5dmPH)
+[![License: CAL 1.0](https://img.shields.io/badge/License-CAL%201.0-blue.svg)](https://github.com/holochain/cryptographic-autonomy-license)
+![Tests](https://github.com/holochain/holochain/actions/workflows/release.yml/badge.svg)
+[![Twitter Follow](https://img.shields.io/twitter/follow/holochain.svg?style=social&label=Follow)](https://twitter.com/holochain)
+
+
+# Holochain
+
+Holochain is an open-source framework to develop peer-to-peer applications with high levels of security, reliability, and performance.
+
+### Code Status
+
+This code is in initial Beta release. It's ready for limited production use. It is still undergoing security reviews and hardening of network protocols. 
+
+## Running Holochain Applications (hApps)
+
+This repository contains the Holochain core libraries, not the runtime intended for end-users of Holochain applications.
+
+If you just want to install and run Holochain and apps from its AppStore, download the latest release of [Holochain Launcher](https://github.com/holochain/launcher/releases) appropriate for Linux, Mac, or Windows. 
+
+## Installing Holochain for App Development
+
+Visit our developer portal at https://developer.holochain.org/install.
+
+### Contributing to Holochain (this repository)
+
+Holochain is an open source project. We welcome all sorts of participation and are actively working on increasing surface area to accept it. Please see our [contributing guidelines](/CONTRIBUTING.md) for our general practices and protocols on participating in the community, as well as specific expectations around things like code formatting, testing practices, continuous integration, etc.
+
+> Connect with us on [Discord](https://discord.gg/MwPvM4Vffg)
+
+## License
+
+Copyright (C) 2019 - 2024, Holochain Foundation
+
+This program is free software: you can redistribute it and/or modify it under the terms of the license
+provided in the LICENSE file (CAL-1.0). This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
+
+
+
+================================================
+File: Cargo.toml
+================================================
+[workspace]
+members = [
+  "crates/fixt",
+  "crates/fixt/test",
+  "crates/hdk",
+  "crates/hdk_derive",
+  "crates/holo_hash",
+  "crates/hdi",
+  "crates/mock_hdi",
+  "crates/mr_bundle",
+
+  "crates/holochain_integrity_types",
+  "crates/holochain_zome_types",
+  "crates/holochain_types",
+  "crates/holochain",
+  "crates/holochain_cascade",
+  "crates/holochain_chc",
+  "crates/holochain_conductor_api",
+  "crates/holochain_p2p",
+  "crates/holochain_keystore",
+  "crates/holochain_state",
+  "crates/holochain_state_types",
+  "crates/holochain_sqlite",
+  "crates/holochain_trace",
+  "crates/holochain_websocket",
+  "crates/holochain_util",
+  "crates/holochain_metrics",
+  "crates/holochain_nonce",
+  "crates/holochain_secure_primitive",
+  "crates/holochain_conductor_services",
+  "crates/holochain_conductor_config",
+  "crates/timestamp",
+
+  "crates/hc_deepkey_sdk",
+  "crates/hc_deepkey_types",
+
+  "crates/hc",
+  "crates/hc_bundle",
+  "crates/hc_sandbox",
+  "crates/hc_run_local_services",
+  "crates/hc_demo_cli",
+  "crates/hc_service_check",
+  "crates/holochain_terminal",
+
+  "crates/kitsune_p2p/bootstrap",
+  "crates/kitsune_p2p/bootstrap_client",
+  "crates/kitsune_p2p/dht",
+  "crates/kitsune_p2p/dht_arc",
+  "crates/kitsune_p2p/fetch",
+  "crates/kitsune_p2p/kitsune_p2p",
+  "crates/kitsune_p2p/mdns",
+  "crates/kitsune_p2p/timestamp",
+  "crates/kitsune_p2p/types",
+
+  "crates/test_utils/wasm",
+  "crates/test_utils/wasm_common",
+]
+
+exclude = ["crates/release-automation"]
+
+resolver = "2"
+
+[workspace.dependencies]
+# !!!
+# WARNING - PUT NOTHING HERE
+# !!!
+#
+# release automation currently cannot handle workspace.dependencies
+# it will publish unbuildable releases to crates.io
+
+[workspace.lints.clippy]
+nursery = { level = "allow", priority = -1 }
+cargo = { level = "allow", priority = -1 }
+pedantic = { level = "allow", priority = -1 }
+restriction = { level = "allow", priority = -1 }
+style = "deny"
+complexity = "deny"
+perf = "deny"
+correctness = "deny"
+dbg_macro = "deny"
+
+[workspace.lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = [
+  'cfg(build_wasm)',
+  'cfg(loom)',
+] }
+
+[profile.dev]
+debug = 1
+
+[profile.dev.package."*"]
+opt-level = 2
+debug = 0
+debug-assertions = false
+overflow-checks = false
+incremental = false
+codegen-units = 16
+
+[profile.release]
+opt-level = "z"
+lto = true
+
+[patch.crates-io]
+# holochain_deepkey_dna = { path = "../deepkey/crates/holochain_deepkey_dna" }
+
+# task-motel = { path = "../task-motel" }
+# proptest = { path = "/home/michael/gitfork/proptest/proptest" }
+# proptest = { git = "https://github.com/maackle/proptest", branch = "arbitrary-pathbuf" }
+
+# influxive-child-svc = { path = "../influxive/crates/influxive-child-svc" }
+# influxive-otel = { path = "../influxive/crates/influxive-otel" }
+# contrafact = { git = "https://github.com/maackle/contrafact-rs.git", branch = "lambda" }
+# tx5 = { path = "../tx5/crates/tx5" }
+# tx5-core = { path = "../tx5/crates/tx5-core" }
+# tx5-go-pion = { path = "../tx5/crates/tx5-go-pion" }
+# tx5-go-pion-sys = { path = "../tx5/crates/tx5-go-pion-sys" }
+# tx5-go-pion-turn = { path = "../tx5/crates/tx5-go-pion-turn" }
+# tx5-signal = { path = "../tx5/crates/tx5-signal" }
+# sbd-e2e-crypto-client = { path = "../sbd/rust/sbd-e2e-crypto-client" }
+# sbd-server = { path = "../sbd/rust/sbd-server" }
+# tx5 = { git = "https://github.com/holochain/tx5.git", rev = "f0f009f77a84c96c2acded6b27df27ece3f7dbbb" }
+# tx5-signal = { git = "https://github.com/holochain/tx5.git", rev = "f0f009f77a84c96c2acded6b27df27ece3f7dbbb" }
+# tx5-go-pion-turn = { git = "https://github.com/holochain/tx5.git", rev = "f0f009f77a84c96c2acded6b27df27ece3f7dbbb" }
+# isotest = { git = "https://github.com/maackle/isotest-rs.git" }
+# holochain_wasmer_host = { path = "../holochain-wasmer/crates/host" }
+# holochain_wasmer_guest = { git = "https://github.com/holochain/holochain-wasmer.git", rev = "2fc225add8c72cbe49e458a2431c8069c9e405ec" }
+# holochain_wasmer_host = { git = "https://github.com/holochain/holochain-wasmer.git", rev = "2fc225add8c72cbe49e458a2431c8069c9e405ec" }
+# holochain_wasmer_common = { git = "https://github.com/holochain/holochain-wasmer.git", rev = "2fc225add8c72cbe49e458a2431c8069c9e405ec" }
+# holochain_serialized_bytes = { git = "https://github.com/holochain/holochain-serialization.git", branch = "proptest" }
+# holochain_serialized_bytes_derive = { git = "https://github.com/holochain/holochain-serialization.git", branch = "develop" }
+#ghost_actor = { path = "../ghost_actor/crates/ghost_actor" }
+# lair_keystore_api = { path = "../lair/crates/lair_keystore_api" }
+#lair_keystore = { path = "../lair/crates/lair_keystore" }
+#lair_keystore_api_0_0 = { path = "../lair_0_0/crates/lair_keystore_api", package = "lair_keystore_api" }
+#lair_keystore_client_0_0 = { path = "../lair_0_0/crates/lair_keystore_client", package = "lair_keystore_client" }
+#lair_keystore_api = { git = "https://github.com/holochain/lair.git", branch = "secretbox" }
+#lair_keystore_api_0_0 = { git = "https://github.com/holochain/lair.git", branch = "release-0.0.x-bump-sodoken", package = "lair_keystore_api" }
+#lair_keystore_client_0_0 = { git = "https://github.com/holochain/lair.git", branch = "release-0.0.x-bump-sodoken", package = "lair_keystore_client" }
+# r2d2_sqlite = { path = "../r2d2-sqlite" }
+
+
+
+================================================
+File: CHANGELOG.md
+================================================
+# Changelog
+
+This file conveniently consolidates all of the crates individual CHANGELOG.md files and groups them by timestamps at which crates were released. The file is updated every time one or more crates are released.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+# \[Unreleased\]
+
+## Holonix
+
+- Slim down the Rust toolchain [\#2854](https://github.com/holochain/holochain/pull/2854)
+  - choose a manual set of toolchain components and effectively exclude *rust-docs*.
+  - only keep `wasm32-unknown-unknown` as a cross-compilation target.
+- Bump holonix rust version to 1.71.1. [\#2660](https://github.com/holochain/holochain/pull/2660)
+- Add `override` to `devSells.holonix` and `packages.holochain` [\#2862](https://github.com/holochain/holochain/pull/2862)
+
+# 20250303.125144
+
+## [hcterm-0.5.0-dev.21](crates/hcterm/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_cli-0.5.0-dev.21](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain-0.5.0-dev.21](crates/holochain/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_cli\_bundle-0.5.0-dev.21](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.21](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_cascade-0.5.0-dev.21](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_conductor\_config-0.5.0-dev.8](crates/holochain_conductor_config/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_conductor\_services-0.4.0-dev.21](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.21)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.21](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_websocket-0.5.0-dev.21](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_conductor\_api-0.5.0-dev.21](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_p2p-0.5.0-dev.21](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_state-0.5.0-dev.21](crates/holochain_state/CHANGELOG.md#0.5.0-dev.21)
+
+## [holochain\_chc-0.2.0-dev.21](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.21)
+
+## [holochain\_types-0.5.0-dev.21](crates/holochain_types/CHANGELOG.md#0.5.0-dev.21)
+
+- **BREAKING CHANGE**: Replace the `Bundle(AppBundle)` variant in `AppBundleSource` with a `Bytes(Vec<u8>)` variant.
+
+## [holochain\_keystore-0.5.0-dev.20](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.20)
+
+# 20250224.160528
+
+## [hc\_service\_check-0.2.0-dev.12](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.12)
+
+## [hcterm-0.5.0-dev.20](crates/hcterm/CHANGELOG.md#0.5.0-dev.20)
+
+## [holochain\_cli-0.5.0-dev.20](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.20)
+
+## [holochain-0.5.0-dev.20](crates/holochain/CHANGELOG.md#0.5.0-dev.20)
+
+## [holochain\_cli\_bundle-0.5.0-dev.20](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.20)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.12](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.20](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.20)
+
+## [holochain\_cascade-0.5.0-dev.20](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.20)
+
+## [holochain\_conductor\_config-0.5.0-dev.7](crates/holochain_conductor_config/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_conductor\_services-0.4.0-dev.20](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.20)
+
+## [holochain\_metrics-0.5.0-dev.1](crates/holochain_metrics/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.19](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.19)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.20](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.20)
+
+## [holochain\_websocket-0.5.0-dev.20](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.20)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.19](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.19)
+
+## [holochain\_conductor\_api-0.5.0-dev.20](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.20)
+
+## [holochain\_p2p-0.5.0-dev.20](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.20)
+
+## [holochain\_state-0.5.0-dev.20](crates/holochain_state/CHANGELOG.md#0.5.0-dev.20)
+
+## [hdk-0.5.0-dev.19](crates/hdk/CHANGELOG.md#0.5.0-dev.19)
+
+## [holochain\_chc-0.2.0-dev.20](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.20)
+
+## [kitsune\_p2p-0.5.0-dev.13](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_types-0.5.0-dev.20](crates/holochain_types/CHANGELOG.md#0.5.0-dev.20)
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.11](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_keystore-0.5.0-dev.19](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.19)
+
+## [holochain\_sqlite-0.5.0-dev.19](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.19)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.11](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.11)
+
+## [mr\_bundle-0.5.0-dev.5](crates/mr_bundle/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_zome\_types-0.5.0-dev.17](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.17)
+
+# 20250219.004534
+
+## [hc\_service\_check-0.2.0-dev.11](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.11)
+
+## [hcterm-0.5.0-dev.19](crates/hcterm/CHANGELOG.md#0.5.0-dev.19)
+
+## [holochain\_cli-0.5.0-dev.19](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.19)
+
+## [holochain-0.5.0-dev.19](crates/holochain/CHANGELOG.md#0.5.0-dev.19)
+
+- Break dependency from holochain\_state to holochain\_p2p
+- remove `serde(flatten)` attributes from certain enum variants of enums used in admin payloads (\#4719), thereby fixing an oversight of \#4616.
+
+## [holochain\_cli\_bundle-0.5.0-dev.19](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.19)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.11](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.19](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.19)
+
+- Support for the hc sandbox to use the ‘list capability grants’ feature.
+
+## [holochain\_cascade-0.5.0-dev.19](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.19)
+
+## [holochain\_conductor\_config-0.5.0-dev.6](crates/holochain_conductor_config/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_conductor\_services-0.4.0-dev.19](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.19)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.18](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.19](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.19)
+
+## [holochain\_websocket-0.5.0-dev.19](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.19)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.18](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.18)
+
+## [holochain\_conductor\_api-0.5.0-dev.19](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.19)
+
+## [holochain\_p2p-0.5.0-dev.19](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.19)
+
+- Add implementation of Kitsune2 PeerMetaStore.
+
+## [holochain\_state-0.5.0-dev.19](crates/holochain_state/CHANGELOG.md#0.5.0-dev.19)
+
+## [hc\_deepkey\_types-0.9.0-dev.15](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.15)
+
+## [hdk-0.5.0-dev.18](crates/hdk/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_chc-0.2.0-dev.19](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.19)
+
+## [kitsune\_p2p-0.5.0-dev.12](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.12)
+
+## [hdi-0.6.0-dev.15](crates/hdi/CHANGELOG.md#0.6.0-dev.15)
+
+## [holochain\_types-0.5.0-dev.19](crates/holochain_types/CHANGELOG.md#0.5.0-dev.19)
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.10](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.10)
+
+## [hdk\_derive-0.5.0-dev.14](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.14)
+
+- `#[hdk_extern]` validates the annotated function’s return type
+
+## [holochain\_keystore-0.5.0-dev.18](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_sqlite-0.5.0-dev.18](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.18)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.10](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.10)
+
+## [mr\_bundle-0.5.0-dev.4](crates/mr_bundle/CHANGELOG.md#0.5.0-dev.4)
+
+- Use `rustls-tls` instead of `native-tls-vendored` in reqwest due to compatibility issue with Android platform
+
+# 20250212.005142
+
+## [hc\_service\_check-0.2.0-dev.10](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.10)
+
+## [hcterm-0.5.0-dev.18](crates/hcterm/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_cli-0.5.0-dev.18](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain-0.5.0-dev.18](crates/holochain/CHANGELOG.md#0.5.0-dev.18)
+
+- Change most enums that are exposed via the conductor API to be serialized with `tag = "type"` and `content = "value"` \#4616
+- Replace `tiny-keccak` with `sha3` due to dependency on problematic `crunchy` crate
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [holochain\_cli\_bundle-0.5.0-dev.18](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.10](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.18](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_cascade-0.5.0-dev.18](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_conductor\_config-0.5.0-dev.5](crates/holochain_conductor_config/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_conductor\_services-0.4.0-dev.18](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.18)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.17](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.18](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_websocket-0.5.0-dev.18](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.18)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.17](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.17)
+
+## [holochain\_conductor\_api-0.5.0-dev.18](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_state-0.5.0-dev.18](crates/holochain_state/CHANGELOG.md#0.5.0-dev.18)
+
+## [hc\_deepkey\_types-0.9.0-dev.14](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.14)
+
+## [hdk-0.5.0-dev.17](crates/hdk/CHANGELOG.md#0.5.0-dev.17)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [holochain\_p2p-0.5.0-dev.18](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.18)
+
+## [holochain\_state\_types-0.5.0-dev.12](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.12)
+
+## [hdi-0.6.0-dev.14](crates/hdi/CHANGELOG.md#0.6.0-dev.14)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [holochain\_chc-0.2.0-dev.18](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.18)
+
+## [kitsune\_p2p-0.5.0-dev.11](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.11)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [hdk\_derive-0.5.0-dev.13](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_types-0.5.0-dev.18](crates/holochain_types/CHANGELOG.md#0.5.0-dev.18)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.9](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.9)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.9](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_keystore-0.5.0-dev.17](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_sqlite-0.5.0-dev.17](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.17)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.9](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.9)
+
+## [holochain\_zome\_types-0.5.0-dev.16](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.16)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [kitsune\_p2p\_types-0.5.0-dev.9](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.9)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [holochain\_integrity\_types-0.5.0-dev.12](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.12)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [holochain\_nonce-0.5.0-dev.2](crates/holochain_nonce/CHANGELOG.md#0.5.0-dev.2)
+
+## [kitsune\_p2p\_block-0.5.0-dev.5](crates/kitsune_p2p_block/CHANGELOG.md#0.5.0-dev.5)
+
+## [kitsune\_p2p\_dht-0.5.0-dev.3](crates/kitsune_p2p_dht/CHANGELOG.md#0.5.0-dev.3)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [holo\_hash-0.5.0-dev.7](crates/holo_hash/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_secure\_primitive-0.5.0-dev.1](crates/holochain_secure_primitive/CHANGELOG.md#0.5.0-dev.1)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+## [holochain\_timestamp-0.5.0-dev.1](crates/holochain_timestamp/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_bin\_data-0.5.0-dev.5](crates/kitsune_p2p_bin_data/CHANGELOG.md#0.5.0-dev.5)
+
+## [fixt-0.5.0-dev.1](crates/fixt/CHANGELOG.md#0.5.0-dev.1)
+
+- Prevent “TODO” comments from being rendered in cargo docs.
+
+# 20250205.005133
+
+## [hcterm-0.5.0-dev.17](crates/hcterm/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_cli-0.5.0-dev.17](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain-0.5.0-dev.17](crates/holochain/CHANGELOG.md#0.5.0-dev.17)
+
+- added admin\_api capability\_grant\_info for getting a list of grants valid and revoked from the source chain
+
+## [holochain\_cli\_bundle-0.5.0-dev.17](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.17](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_cascade-0.5.0-dev.17](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_conductor\_config-0.5.0-dev.4](crates/holochain_conductor_config/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_conductor\_services-0.4.0-dev.17](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.17)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.16](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.17](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_websocket-0.5.0-dev.17](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.17)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.16](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.16)
+
+## [holochain\_conductor\_api-0.5.0-dev.17](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_state-0.5.0-dev.17](crates/holochain_state/CHANGELOG.md#0.5.0-dev.17)
+
+## [hc\_deepkey\_types-0.9.0-dev.13](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.13)
+
+## [hdk-0.5.0-dev.16](crates/hdk/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_p2p-0.5.0-dev.17](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_state\_types-0.5.0-dev.11](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.11)
+
+## [hdi-0.6.0-dev.13](crates/hdi/CHANGELOG.md#0.6.0-dev.13)
+
+## [holochain\_chc-0.2.0-dev.17](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.17)
+
+## [hdk\_derive-0.5.0-dev.12](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_types-0.5.0-dev.17](crates/holochain_types/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_keystore-0.5.0-dev.16](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_sqlite-0.5.0-dev.16](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_zome\_types-0.5.0-dev.15](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_integrity\_types-0.5.0-dev.11](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.11)
+
+# 20250129.004417
+
+## [hcterm-0.5.0-dev.16](crates/hcterm/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_cli-0.5.0-dev.16](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain-0.5.0-dev.16](crates/holochain/CHANGELOG.md#0.5.0-dev.16)
+
+- Remove the integration step from the app validation and authored ops workflows. Instead, integration is only handled by the integrate workflow.
+- Add integration of `StoreRecord` and `StoreEntry` ops to integrate workflow.
+- The integrate workflow now integrates **all** valid `RegisterAddLink` ops instead of only ones that link to a `StoreEntry`.
+- Update doc-comment about CreateLink Action
+- Fix issue where genesis actions weren’t integrated when others were ready to integrate. When nothing had been integrated yet then we started integration at the value of how many ops were `ready_to_integrate` so if we had other ops that were ready then the range started at them instead of at genesis (index 0).
+- Update `await_consistency` test utility function so that it prints every inconsistent agent when it fails instead of just the first one.
+- Rename the SQL queries that are used to set `RegisterAddLink` and `RegisterRemoveLink` ops to integrated
+
+## [holochain\_cli\_bundle-0.5.0-dev.16](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.16](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.16)
+
+- Revert `hc sandbox create` removal
+
+## [holochain\_cascade-0.5.0-dev.16](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_conductor\_config-0.5.0-dev.3](crates/holochain_conductor_config/CHANGELOG.md#0.5.0-dev.3)
+
+- Add `chc` and `unstable-dpki` feature flags
+
+## [holochain\_conductor\_services-0.4.0-dev.16](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.16)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.15](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.16](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_websocket-0.5.0-dev.16](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.16)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.15](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.15)
+
+## [holochain\_conductor\_api-0.5.0-dev.16](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_state-0.5.0-dev.16](crates/holochain_state/CHANGELOG.md#0.5.0-dev.16)
+
+## [hc\_deepkey\_types-0.9.0-dev.12](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.12)
+
+## [hdk-0.5.0-dev.15](crates/hdk/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_p2p-0.5.0-dev.16](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_state\_types-0.5.0-dev.10](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.10)
+
+## [hdi-0.6.0-dev.12](crates/hdi/CHANGELOG.md#0.6.0-dev.12)
+
+## [holochain\_chc-0.2.0-dev.16](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.16)
+
+## [hdk\_derive-0.5.0-dev.11](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_types-0.5.0-dev.16](crates/holochain_types/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_keystore-0.5.0-dev.15](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_sqlite-0.5.0-dev.15](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_zome\_types-0.5.0-dev.14](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.14)
+
+## [holochain\_integrity\_types-0.5.0-dev.10](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.10)
+
+# 20250122.005106
+
+## [hc\_service\_check-0.2.0-dev.9](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.9)
+
+## [hcterm-0.5.0-dev.15](crates/hcterm/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_cli-0.5.0-dev.15](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain-0.5.0-dev.15](crates/holochain/CHANGELOG.md#0.5.0-dev.15)
+
+- Update `holochain_wasmer_common`.
+
+## [holochain\_cli\_bundle-0.5.0-dev.15](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.15)
+
+- Update `holochain_wasmer_host`
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.9](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.15](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_cascade-0.5.0-dev.15](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_conductor\_config-0.5.0-dev.2](crates/holochain_conductor_config/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_conductor\_services-0.4.0-dev.15](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.15)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.14](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.14)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.15](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_websocket-0.5.0-dev.15](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.15)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.14](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.14)
+
+## [holochain\_conductor\_api-0.5.0-dev.15](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_state-0.5.0-dev.15](crates/holochain_state/CHANGELOG.md#0.5.0-dev.15)
+
+## [hc\_deepkey\_types-0.9.0-dev.11](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.11)
+
+## [hdk-0.5.0-dev.14](crates/hdk/CHANGELOG.md#0.5.0-dev.14)
+
+- Update `holochain_wasmer_guest`.
+
+## [holochain\_p2p-0.5.0-dev.15](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_state\_types-0.5.0-dev.9](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.9)
+
+## [hdi-0.6.0-dev.11](crates/hdi/CHANGELOG.md#0.6.0-dev.11)
+
+- Update `holochain_wasmer_guest`
+
+## [holochain\_chc-0.2.0-dev.15](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.15)
+
+## [kitsune\_p2p-0.5.0-dev.10](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.10)
+
+## [hdk\_derive-0.5.0-dev.10](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_types-0.5.0-dev.15](crates/holochain_types/CHANGELOG.md#0.5.0-dev.15)
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.8](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.8)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.8](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_keystore-0.5.0-dev.14](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.14)
+
+## [holochain\_sqlite-0.5.0-dev.14](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.14)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.8](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.8)
+
+## [mr\_bundle-0.5.0-dev.3](crates/mr_bundle/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_zome\_types-0.5.0-dev.13](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.13)
+
+- Update `holochain_wasmer_common`.
+
+## [kitsune\_p2p\_types-0.5.0-dev.8](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_integrity\_types-0.5.0-dev.9](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_nonce-0.5.0-dev.1](crates/holochain_nonce/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_block-0.5.0-dev.4](crates/kitsune_p2p_block/CHANGELOG.md#0.5.0-dev.4)
+
+## [kitsune\_p2p\_dht-0.5.0-dev.2](crates/kitsune_p2p_dht/CHANGELOG.md#0.5.0-dev.2)
+
+## [holo\_hash-0.5.0-dev.6](crates/holo_hash/CHANGELOG.md#0.5.0-dev.6)
+
+- Update `holochain_wasmer_common`.
+
+## [kitsune\_p2p\_bin\_data-0.5.0-dev.4](crates/kitsune_p2p_bin_data/CHANGELOG.md#0.5.0-dev.4)
+
+## [kitsune\_p2p\_dht\_arc-0.5.0-dev.2](crates/kitsune_p2p_dht_arc/CHANGELOG.md#0.5.0-dev.2)
+
+## [kitsune\_p2p\_timestamp-0.5.0-dev.1](crates/kitsune_p2p_timestamp/CHANGELOG.md#0.5.0-dev.1)
+
+# 20250115.130248
+
+## [hc\_service\_check-0.2.0-dev.8](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.8)
+
+## [hcterm-0.5.0-dev.14](crates/hcterm/CHANGELOG.md#0.5.0-dev.14)
+
+## [holochain\_cli-0.5.0-dev.14](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.14)
+
+## [holochain-0.5.0-dev.14](crates/holochain/CHANGELOG.md#0.5.0-dev.14)
+
+- Remove support for x86\_64-darwin in Holonix. This is becoming hard to support in this version of Holonix. If you are relying on support for a mac with an Intel chip then please migrate to the new [Holonix](https://github.com/holochain/holonix?tab=readme-ov-file#holonix)
+- Add two new commands to the `hc sandbox` for authenticating and making zome calls to a running conductor. See the sandbox documentation for usage instructions. \#4587
+- Update `holochain_wasmer_host`, remove temporary fork of wasmer and update wasmer to 5.x.
+- Disable wasmer module caching when using the feature flag `wasmer_wamr`, as caching is not relevevant when wasms are interpreted.
+- Add a `--create-config` flag to handle config generation
+- Add a `--config-schema` flag to `holochain` that prints out a json schema for the conductor config.
+
+## [holochain\_cli\_bundle-0.5.0-dev.14](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.14)
+
+- Update `holochain_wasmer_host`, remove temporary fork of wasmer and update wasmer to 5.x.
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.8](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.14](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.14)
+
+- **BREAKING** : Config generation moved from `hc sandbox create` to holochain. Use `holochain --create-config` to generate conductor configurations
+- Moved config generation code to a new crate `holochain_conductor_config`.
+
+## [holochain\_cascade-0.5.0-dev.14](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.14)
+
+## [holochain\_conductor\_config-0.5.0-dev.1](crates/holochain_conductor_config/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_conductor\_services-0.4.0-dev.14](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.14)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.13](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.14](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.14)
+
+## [holochain\_websocket-0.5.0-dev.14](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.14)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.13](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.13)
+
+## [holochain\_conductor\_api-0.5.0-dev.14](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.14)
+
+## [holochain\_state-0.5.0-dev.14](crates/holochain_state/CHANGELOG.md#0.5.0-dev.14)
+
+## [hc\_deepkey\_types-0.9.0-dev.10](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.10)
+
+## [hdk-0.5.0-dev.13](crates/hdk/CHANGELOG.md#0.5.0-dev.13)
+
+- Update `holochain_wasmer_guest`.
+
+## [holochain\_p2p-0.5.0-dev.14](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.14)
+
+## [holochain\_state\_types-0.5.0-dev.8](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.8)
+
+## [hdi-0.6.0-dev.10](crates/hdi/CHANGELOG.md#0.6.0-dev.10)
+
+- Update `holochain_wasmer_guest`, remove temporary fork of wasmer and update wasmer to 5.x.
+
+## [holochain\_chc-0.2.0-dev.14](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.14)
+
+## [kitsune\_p2p-0.5.0-dev.9](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.9)
+
+## [hdk\_derive-0.5.0-dev.9](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_types-0.5.0-dev.14](crates/holochain_types/CHANGELOG.md#0.5.0-dev.14)
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.7](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.7)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.7](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_keystore-0.5.0-dev.13](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_sqlite-0.5.0-dev.13](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.13)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.7](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.7)
+
+## [mr\_bundle-0.5.0-dev.2](crates/mr_bundle/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_zome\_types-0.5.0-dev.12](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.12)
+
+- Update `holochain_wasmer_common`.
+
+## [kitsune\_p2p\_types-0.5.0-dev.7](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_integrity\_types-0.5.0-dev.8](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.8)
+
+## [kitsune\_p2p\_block-0.5.0-dev.3](crates/kitsune_p2p_block/CHANGELOG.md#0.5.0-dev.3)
+
+## [holo\_hash-0.5.0-dev.5](crates/holo_hash/CHANGELOG.md#0.5.0-dev.5)
+
+- Update `holochain_wasmer_common`.
+
+## [kitsune\_p2p\_bin\_data-0.5.0-dev.3](crates/kitsune_p2p_bin_data/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_util-0.5.0-dev.1](crates/holochain_util/CHANGELOG.md#0.5.0-dev.1)
+
+# 20250108.004547
+
+## [hcterm-0.5.0-dev.13](crates/hcterm/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_cli-0.5.0-dev.13](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain-0.5.0-dev.13](crates/holochain/CHANGELOG.md#0.5.0-dev.13)
+
+- Added LinkTag helper trait functions to go into and out with serialized bytes
+
+## [holochain\_cli\_bundle-0.5.0-dev.13](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.13](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_cascade-0.5.0-dev.13](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_conductor\_api-0.5.0-dev.13](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_conductor\_services-0.4.0-dev.13](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.13)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.12](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.13](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_websocket-0.5.0-dev.13](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.13)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.12](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.12)
+
+## [holochain\_state-0.5.0-dev.13](crates/holochain_state/CHANGELOG.md#0.5.0-dev.13)
+
+## [hc\_deepkey\_types-0.9.0-dev.9](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.9)
+
+## [hdk-0.5.0-dev.12](crates/hdk/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_p2p-0.5.0-dev.13](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_state\_types-0.5.0-dev.7](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.7)
+
+## [hdi-0.6.0-dev.9](crates/hdi/CHANGELOG.md#0.6.0-dev.9)
+
+## [holochain\_chc-0.2.0-dev.13](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.13)
+
+## [hdk\_derive-0.5.0-dev.8](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_types-0.5.0-dev.13](crates/holochain_types/CHANGELOG.md#0.5.0-dev.13)
+
+## [holochain\_keystore-0.5.0-dev.12](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_sqlite-0.5.0-dev.12](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_zome\_types-0.5.0-dev.11](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_integrity\_types-0.5.0-dev.7](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.7)
+
+# 20250101.005800
+
+## [hcterm-0.5.0-dev.12](crates/hcterm/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_cli-0.5.0-dev.12](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain-0.5.0-dev.12](crates/holochain/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_cli\_bundle-0.5.0-dev.12](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.12](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_cascade-0.5.0-dev.12](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_conductor\_api-0.5.0-dev.12](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_conductor\_services-0.4.0-dev.12](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.12)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.12](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_websocket-0.5.0-dev.12](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_state-0.5.0-dev.12](crates/holochain_state/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_p2p-0.5.0-dev.12](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.12)
+
+## [holochain\_chc-0.2.0-dev.12](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.12)
+
+## [holochain\_types-0.5.0-dev.12](crates/holochain_types/CHANGELOG.md#0.5.0-dev.12)
+
+# 20241225.004431
+
+## [hcterm-0.5.0-dev.11](crates/hcterm/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_cli-0.5.0-dev.11](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain-0.5.0-dev.11](crates/holochain/CHANGELOG.md#0.5.0-dev.11)
+
+- Prevent duplicate calls to `init`. Previously, calling `init` directly would result in 2 calls to `init` if the zome had not been initialised yet and 1 call if the zome had been initialised. Now, calling `init` directly will result in 1 call by the conductor to initialise the zome and all subsequent calls to `init` will return `InitCallbackResult::Pass`. This both fixes surprising behavior and allows `init` to be called directly to initialise a zome if desired.
+
+## [holochain\_cli\_bundle-0.5.0-dev.11](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.11](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_cascade-0.5.0-dev.11](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_conductor\_api-0.5.0-dev.11](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_conductor\_services-0.4.0-dev.11](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.11)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.11](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.11](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_websocket-0.5.0-dev.11](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.11)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.11](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.11)
+
+## [holochain\_state-0.5.0-dev.11](crates/holochain_state/CHANGELOG.md#0.5.0-dev.11)
+
+## [hc\_deepkey\_types-0.9.0-dev.8](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.8)
+
+## [hdk-0.5.0-dev.11](crates/hdk/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_p2p-0.5.0-dev.11](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.11)
+
+## [hdi-0.6.0-dev.8](crates/hdi/CHANGELOG.md#0.6.0-dev.8)
+
+## [holochain\_chc-0.2.0-dev.11](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.11)
+
+## [holochain\_types-0.5.0-dev.11](crates/holochain_types/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_keystore-0.5.0-dev.11](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.11)
+
+## [holochain\_sqlite-0.5.0-dev.11](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.11)
+
+# 20241218.004735
+
+## [hcterm-0.5.0-dev.10](crates/hcterm/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_cli-0.5.0-dev.10](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain-0.5.0-dev.10](crates/holochain/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_cli\_bundle-0.5.0-dev.10](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.10](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_cascade-0.5.0-dev.10](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_conductor\_api-0.5.0-dev.10](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_conductor\_services-0.4.0-dev.10](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.10)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.10](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.10](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_websocket-0.5.0-dev.10](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.10)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.10](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.10)
+
+## [holochain\_state-0.5.0-dev.10](crates/holochain_state/CHANGELOG.md#0.5.0-dev.10)
+
+## [hc\_deepkey\_types-0.9.0-dev.7](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.7)
+
+## [hdk-0.5.0-dev.10](crates/hdk/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_p2p-0.5.0-dev.10](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_state\_types-0.5.0-dev.6](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.6)
+
+## [hdi-0.6.0-dev.7](crates/hdi/CHANGELOG.md#0.6.0-dev.7)
+
+## [holochain\_chc-0.2.0-dev.10](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.10)
+
+## [kitsune\_p2p-0.5.0-dev.8](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.8)
+
+## [hdk\_derive-0.5.0-dev.7](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_types-0.5.0-dev.10](crates/holochain_types/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_keystore-0.5.0-dev.10](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_sqlite-0.5.0-dev.10](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_zome\_types-0.5.0-dev.10](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.10)
+
+## [holochain\_integrity\_types-0.5.0-dev.6](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.6)
+
+## [holo\_hash-0.5.0-dev.4](crates/holo_hash/CHANGELOG.md#0.5.0-dev.4)
+
+# 20241211.005655
+
+## [hcterm-0.5.0-dev.9](crates/hcterm/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_cli-0.5.0-dev.9](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain-0.5.0-dev.9](crates/holochain/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_cli\_bundle-0.5.0-dev.9](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.9](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_cascade-0.5.0-dev.9](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_conductor\_api-0.5.0-dev.9](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_conductor\_services-0.4.0-dev.9](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.9)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.9](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.9](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_websocket-0.5.0-dev.9](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.9)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.9](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.9)
+
+## [holochain\_state-0.5.0-dev.9](crates/holochain_state/CHANGELOG.md#0.5.0-dev.9)
+
+## [hc\_deepkey\_types-0.9.0-dev.6](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.6)
+
+## [hdk-0.5.0-dev.9](crates/hdk/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_p2p-0.5.0-dev.9](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_state\_types-0.5.0-dev.5](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.5)
+
+## [hdi-0.6.0-dev.6](crates/hdi/CHANGELOG.md#0.6.0-dev.6)
+
+## [holochain\_chc-0.2.0-dev.9](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.9)
+
+## [hdk\_derive-0.5.0-dev.6](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_types-0.5.0-dev.9](crates/holochain_types/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_keystore-0.5.0-dev.9](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_sqlite-0.5.0-dev.9](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_zome\_types-0.5.0-dev.9](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.9)
+
+## [holochain\_integrity\_types-0.5.0-dev.5](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.5)
+
+# 20241204.005132
+
+## [hc\_service\_check-0.2.0-dev.7](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.7)
+
+## [hcterm-0.5.0-dev.8](crates/hcterm/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_cli-0.5.0-dev.8](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain-0.5.0-dev.8](crates/holochain/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_cli\_bundle-0.5.0-dev.8](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.7](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.8](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_cascade-0.5.0-dev.8](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_conductor\_api-0.5.0-dev.8](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_conductor\_services-0.4.0-dev.8](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.8)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.8](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.8](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_websocket-0.5.0-dev.8](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.8)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.8](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.8)
+
+## [holochain\_state-0.5.0-dev.8](crates/holochain_state/CHANGELOG.md#0.5.0-dev.8)
+
+## [hc\_deepkey\_types-0.9.0-dev.5](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.5)
+
+## [hdk-0.5.0-dev.8](crates/hdk/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_p2p-0.5.0-dev.8](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_state\_types-0.5.0-dev.4](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.4)
+
+## [hdi-0.6.0-dev.5](crates/hdi/CHANGELOG.md#0.6.0-dev.5)
+
+## [holochain\_chc-0.2.0-dev.8](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.8)
+
+## [kitsune\_p2p-0.5.0-dev.7](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.7)
+
+## [hdk\_derive-0.5.0-dev.5](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_types-0.5.0-dev.8](crates/holochain_types/CHANGELOG.md#0.5.0-dev.8)
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.6](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.6)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.6](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.6)
+
+## [kitsune\_p2p\_mdns-0.5.0-dev.2](crates/kitsune_p2p_mdns/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_keystore-0.5.0-dev.8](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.8)
+
+## [holochain\_sqlite-0.5.0-dev.8](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.8)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.6](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.6)
+
+## [holochain\_zome\_types-0.5.0-dev.8](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.8)
+
+## [kitsune\_p2p\_types-0.5.0-dev.6](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_integrity\_types-0.5.0-dev.4](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.4)
+
+# 20241127.004859
+
+- **BREAKING**: The `InstallAppPayload` now unifies all settings that are per role in a `roles_settings` field and as part of this change adds the option to specify custom modifiers at install time to override the modifiers defined in the dna manifest(s).
+- `hc sandbox generate` and `hc sandbox call install-app` now have an additional optional argument `--roles-settings <path>` where a path to a yaml file can be passed to override role settings defined in the dna manifest(s). An example of such a yaml file can be found here: https://github.com/holochain/holochain/tree/develop/crates/hc\_sandbox/tests/fixtures/roles-settings.yaml
+
+## [hcterm-0.5.0-dev.7](crates/hcterm/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_cli-0.5.0-dev.7](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain-0.5.0-dev.7](crates/holochain/CHANGELOG.md#0.5.0-dev.7)
+
+- **BREAKING**: The `InstallAppPayload` now unifies all settings that are per role in a `roles_settings` field and as part of this change adds the option to specify custom modifiers at install time to override the modifiers defined in the dna manifest(s).
+- Zome call authorization is split into autentication and authorization. Zome calls are authenticated when coming in over the network. The signature must match the hash of the serialized bytes, signed by the provenance of the call, as described above. This applies to zome calls over the App API as well as remote calls. Bridge calls, which are calls that zome call functions can make to other cells on the same conductor, do not require authentication. Authorization through zome call capabilities remains unchanged and is required for any kind of call as before.
+- Remove `release-automation` crate from the `cargo update` script. `release-automation` isn’t used externally so compatibility with all dependency versions isn’t required and it often causes the job to fail.
+
+## [holochain\_cli\_bundle-0.5.0-dev.7](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.7](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.7)
+
+- `hc sandbox generate` and `hc sandbox call install-app` now have an additional optional argument `--roles-settings <path>` where a path to a yaml file can be passed to override role settings defined in the dna manifest(s). An example of such a yaml file can be found here: https://github.com/holochain/holochain/tree/develop/crates/hc\_sandbox/tests/fixtures/roles-settings.yaml
+
+## [holochain\_cascade-0.5.0-dev.7](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_conductor\_api-0.5.0-dev.7](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_conductor\_services-0.4.0-dev.7](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.7)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.7](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.7](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_websocket-0.5.0-dev.7](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.7)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.7](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.7)
+
+## [holochain\_state-0.5.0-dev.7](crates/holochain_state/CHANGELOG.md#0.5.0-dev.7)
+
+## [hdk-0.5.0-dev.7](crates/hdk/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_p2p-0.5.0-dev.7](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_chc-0.2.0-dev.7](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.7)
+
+## [holochain\_types-0.5.0-dev.7](crates/holochain_types/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_keystore-0.5.0-dev.7](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_sqlite-0.5.0-dev.7](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.7)
+
+## [holochain\_zome\_types-0.5.0-dev.7](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.7)
+
+# 20241120.005400
+
+## [hc\_service\_check-0.2.0-dev.6](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.6)
+
+## [hcterm-0.5.0-dev.6](crates/hcterm/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_cli-0.5.0-dev.6](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain-0.5.0-dev.6](crates/holochain/CHANGELOG.md#0.5.0-dev.6)
+
+- **BREAKING**: Zome call API `AppRequest::CallZome` takes simple serialized bytes of the zome call parameters and the signature now. Previously client-side serialization of zome call parameters required to exactly match Holochain’s way of serializing, because Holochain re-serialized the parameters to verify the signature. This is no longer the case. The signature is generated for the **hash of the serialized bytes**, using the **SHA2 512-bit** hashing algorithm. In short, zome call params are serialized, then hashed and the hash is signed. The payload of the `CallZome` request is the serialized bytes and the signature. On the Holochain side the serialized bytes of the zome call parameters are hashed with the same SHA2 512-bit algorithm to verify the signature.
+
+## [holochain\_cli\_bundle-0.5.0-dev.6](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.6](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.6](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_cascade-0.5.0-dev.6](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_conductor\_api-0.5.0-dev.6](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_conductor\_services-0.4.0-dev.6](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.6)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.6](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.6](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_websocket-0.5.0-dev.6](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.6)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.6](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.6)
+
+## [holochain\_state-0.5.0-dev.6](crates/holochain_state/CHANGELOG.md#0.5.0-dev.6)
+
+## [hc\_deepkey\_types-0.9.0-dev.4](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.4)
+
+## [hdk-0.5.0-dev.6](crates/hdk/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_p2p-0.5.0-dev.6](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_state\_types-0.5.0-dev.3](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.3)
+
+## [hdi-0.6.0-dev.4](crates/hdi/CHANGELOG.md#0.6.0-dev.4)
+
+## [holochain\_chc-0.2.0-dev.6](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.6)
+
+## [kitsune\_p2p-0.5.0-dev.6](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.6)
+
+## [hdk\_derive-0.5.0-dev.4](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_types-0.5.0-dev.6](crates/holochain_types/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_keystore-0.5.0-dev.6](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_sqlite-0.5.0-dev.6](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_zome\_types-0.5.0-dev.6](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.6)
+
+## [holochain\_integrity\_types-0.5.0-dev.3](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.3)
+
+## [holo\_hash-0.5.0-dev.3](crates/holo_hash/CHANGELOG.md#0.5.0-dev.3)
+
+# 20241113.005114
+
+## [hc\_service\_check-0.2.0-dev.5](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.5)
+
+## [hcterm-0.5.0-dev.5](crates/hcterm/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_cli-0.5.0-dev.5](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain-0.5.0-dev.5](crates/holochain/CHANGELOG.md#0.5.0-dev.5)
+
+- **BREAKING** Countersigning has been put behind the feature `unstable-countersigning`. Even though in many use cases countersigning is expected to work correctly, it has known problems which can put the source chain into an unrecoverable state. Included in this feature is the HDK function `accept_countersigning_preflight_request` as well as `AppRequest`s related to countersigning and the counersigning workflow itself too. The `unstable-countersigning` feature is included in `unstable-functions`, hence when `unstable-functions` is enabled, so is `unstable-countersigning`.
+- **BREAKING** The following HDK functions have been temporarily removed as “unstable”. They can be re-enabled by building Holochain with the “unstable-functions” feature flag:
+  - `accept_countersigning_preflight_request`
+  - `block_agent`
+  - `unblock_agent`
+  - `get_agent_key_lineage`
+  - `is_same_agent`
+  - `schedule`
+  - the function `sleep` has been removed entirely because it wasn’t implemented
+  - and the HDI function `is_same_agent` Note that installing apps that have been built with an HDK from before this change will not be possible to install on a conductor that has been built without the `unstable-functions` feature. You will get import errors when Holochain tries to compile the WASM. It is valid to install an app that has been compiled without the `unstable-functions` feature onto a conductor which has been compiled with `unstable-functions` but the reverse is not true. \#4371
+- Fix a problem with countersigning where it would stay in resolution when entering an unknown state from a restart. This was intended behaviour previously to ensure the agent got a change to get online before giving up on countersigning but it is not necessary now that we consider network errors to be a failed resolution and always retry.
+
+## [holochain\_cli\_bundle-0.5.0-dev.5](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.5](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.5](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_cascade-0.5.0-dev.5](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_conductor\_api-0.5.0-dev.5](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_conductor\_services-0.4.0-dev.5](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.5)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.5](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.5](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_websocket-0.5.0-dev.5](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.5)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.5](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.5)
+
+## [holochain\_state-0.5.0-dev.5](crates/holochain_state/CHANGELOG.md#0.5.0-dev.5)
+
+## [hc\_deepkey\_types-0.9.0-dev.3](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.3)
+
+## [hdk-0.5.0-dev.5](crates/hdk/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_p2p-0.5.0-dev.5](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.5)
+
+## [hdi-0.6.0-dev.3](crates/hdi/CHANGELOG.md#0.6.0-dev.3)
+
+## [holochain\_chc-0.2.0-dev.5](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.5)
+
+## [kitsune\_p2p-0.5.0-dev.5](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.5)
+
+## [hdk\_derive-0.5.0-dev.3](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_types-0.5.0-dev.5](crates/holochain_types/CHANGELOG.md#0.5.0-dev.5)
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.5](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.5)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.5](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_keystore-0.5.0-dev.5](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.5)
+
+## [holochain\_sqlite-0.5.0-dev.5](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.5)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.5](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.5)
+
+## [mr\_bundle-0.5.0-dev.1](crates/mr_bundle/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_zome\_types-0.5.0-dev.5](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.5)
+
+## [kitsune\_p2p\_types-0.5.0-dev.5](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.5)
+
+# 20241106.004411
+
+## [hc\_service\_check-0.2.0-dev.4](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.4)
+
+## [hcterm-0.5.0-dev.4](crates/hcterm/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_cli-0.5.0-dev.4](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain-0.5.0-dev.4](crates/holochain/CHANGELOG.md#0.5.0-dev.4)
+
+- **BREAKING**: As the DPKI feature is unstable and incomplete, it is disabled with default cargo features and put behind a feature called `unstable-dpki`. If this feature is specified at compile time, DPKI is enabled by default.
+- **BREAKING**: Issuing and persisting warrants is behind a feature `unstable-warrants` now. Warrants have not been tested extensively and there is no way to recover from a warrant. Hence the feature is considered unstable and must be explicitly enabled. Note that once warrants are issued some functions or calls may not work correctly.
+- **BREAKING**: Conductor::get\_dna\_definitions now returns an `IndexMap` to ensure consistent ordering.
+- Add test to make sure sys validation rejects deleting a delete. Unit tests to get zomes to invoke for app validation were removed for these cases of deleting a delete, because the code path cannot be reached by the system.
+- Added a new feature “unstable-sharding” which puts the network sharding behind a feature flag. It will not be possible to configure network sharding unless Holochain is built with this feature enabled. By default, the network tuning parameter `gossip_dynamic_arcs` is ignored, and the parameter `gossip_arc_clamping` must be set to either `"full"` or `"empty"`, the previous default value of `"none"` will prevent the conductor from starting. We intend to stabilise this feature in the future, and it will return to being available without a feature flag. \#4344
+
+## [holochain\_cli\_bundle-0.5.0-dev.4](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.4](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.4](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_cascade-0.5.0-dev.4](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_conductor\_api-0.5.0-dev.4](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_conductor\_services-0.4.0-dev.4](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.4)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.4](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.4](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_websocket-0.5.0-dev.4](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.4)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.4](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.4)
+
+## [holochain\_state-0.5.0-dev.4](crates/holochain_state/CHANGELOG.md#0.5.0-dev.4)
+
+## [hc\_deepkey\_types-0.9.0-dev.2](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.2)
+
+## [hdk-0.5.0-dev.4](crates/hdk/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_p2p-0.5.0-dev.4](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_state\_types-0.5.0-dev.2](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.2)
+
+## [hdi-0.6.0-dev.2](crates/hdi/CHANGELOG.md#0.6.0-dev.2)
+
+## [holochain\_chc-0.2.0-dev.4](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.4)
+
+## [kitsune\_p2p-0.5.0-dev.4](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.4)
+
+- Removed `network_type` from `KitsuneP2pConfig`
+
+## [hdk\_derive-0.5.0-dev.2](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_types-0.5.0-dev.4](crates/holochain_types/CHANGELOG.md#0.5.0-dev.4)
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.4](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.4)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.4](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_keystore-0.5.0-dev.4](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_sqlite-0.5.0-dev.4](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.4)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.4](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.4)
+
+## [holochain\_zome\_types-0.5.0-dev.4](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.4)
+
+## [kitsune\_p2p\_types-0.5.0-dev.4](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.4)
+
+## [holochain\_integrity\_types-0.5.0-dev.2](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.2)
+
+## [kitsune\_p2p\_block-0.5.0-dev.2](crates/kitsune_p2p_block/CHANGELOG.md#0.5.0-dev.2)
+
+## [holo\_hash-0.5.0-dev.2](crates/holo_hash/CHANGELOG.md#0.5.0-dev.2)
+
+- **BREAKING** Renamed `from_raw_39_panicky` to `from_raw_39`.
+- Added function `try_from_raw_39` which returns an Err instead of panicking.
+- Added function `try_from_raw_36_and_type` which returns an Err instead of panicking.
+
+## [kitsune\_p2p\_bin\_data-0.5.0-dev.2](crates/kitsune_p2p_bin_data/CHANGELOG.md#0.5.0-dev.2)
+
+# 20241030.004523
+
+## [hc\_service\_check-0.2.0-dev.3](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.3)
+
+## [hcterm-0.5.0-dev.3](crates/hcterm/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_cli-0.5.0-dev.3](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain-0.5.0-dev.3](crates/holochain/CHANGELOG.md#0.5.0-dev.3)
+
+- Use of WasmZome preserialized\_path has been **deprecated**. Please use the wasm interpreter instead.
+
+- Conductor::get\_dna\_definitions now returns an `IndexMap` to ensure consistent ordering.
+
+## [holochain\_cli\_bundle-0.5.0-dev.3](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.3)
+
+- The flag `--dylib-ios` in `hc bundle dna pack` has been **deprecated**. Please use the wasm interpreter instead.
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.3](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.3](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_cascade-0.5.0-dev.3](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_conductor\_api-0.5.0-dev.3](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.3)
+
+- AppInfo field `cell_info` is now an `IndexMap` to ensure consistent ordering.
+
+## [holochain\_conductor\_services-0.4.0-dev.3](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.3)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.3](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.3](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_websocket-0.5.0-dev.3](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.3)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.3](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.3)
+
+## [holochain\_state-0.5.0-dev.3](crates/holochain_state/CHANGELOG.md#0.5.0-dev.3)
+
+## [hdk-0.5.0-dev.3](crates/hdk/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_p2p-0.5.0-dev.3](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_chc-0.2.0-dev.3](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.3)
+
+## [kitsune\_p2p-0.5.0-dev.3](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_types-0.5.0-dev.3](crates/holochain_types/CHANGELOG.md#0.5.0-dev.3)
+
+- InstalledAppCommon field `role_assignments` is now an IndexMap to ensure consisent ordering.
+- ZomeManifest dylib has been **deprecated**. Please use the wasm interpreter instead.
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.3](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.3)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.3](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.3)
+
+## [kitsune\_p2p\_mdns-0.5.0-dev.1](crates/kitsune_p2p_mdns/CHANGELOG.md#0.5.0-dev.1)
+
+- Bump libmdns to 0.9.1 to avoid constantly logged warnings of “Address already in use”
+
+## [kitsune\_p2p\_proxy-0.5.0-dev.3](crates/kitsune_p2p_proxy/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_keystore-0.5.0-dev.3](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.3)
+
+## [holochain\_sqlite-0.5.0-dev.3](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.3)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.3](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.3)
+
+## [holochain\_zome\_types-0.5.0-dev.3](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.3)
+
+- WasmZome preserialized\_path has been **deprecated**. Please use the wasm interpreter instead.
+
+## [kitsune\_p2p\_types-0.5.0-dev.3](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.3)
+
+# 20241023.004427
+
+## [hc\_service\_check-0.2.0-dev.2](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.2)
+
+## [hcterm-0.5.0-dev.2](crates/hcterm/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_cli-0.5.0-dev.2](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain-0.5.0-dev.2](crates/holochain/CHANGELOG.md#0.5.0-dev.2)
+
+- Add App API calls to interact with an unresolvable countersigning session. State of countersigning can be queried with `AppRequest::GetCountersigningSessionState`, an unresolvable session can be abandoned using `AppRequest::AbandonCountersigningSession` or force-published by making `AppRequest::PublishCountersigningSession`. Abandoning and publishing is only possible for sessions that have been through automatic resolution at least once where Holochain has not been able to make a decision. \#4253
+
+## [holochain\_cli\_bundle-0.5.0-dev.2](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.2](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.2](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_cascade-0.5.0-dev.2](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_conductor\_api-0.5.0-dev.2](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_conductor\_services-0.4.0-dev.2](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.2)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.2](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.2](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_websocket-0.5.0-dev.2](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.2)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.2](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.2)
+
+## [holochain\_state-0.5.0-dev.2](crates/holochain_state/CHANGELOG.md#0.5.0-dev.2)
+
+## [hdk-0.5.0-dev.2](crates/hdk/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_p2p-0.5.0-dev.2](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_chc-0.2.0-dev.2](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.2)
+
+## [kitsune\_p2p-0.5.0-dev.2](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_types-0.5.0-dev.2](crates/holochain_types/CHANGELOG.md#0.5.0-dev.2)
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.2](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.2)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.2](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.2)
+
+## [kitsune\_p2p\_proxy-0.5.0-dev.2](crates/kitsune_p2p_proxy/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_keystore-0.5.0-dev.2](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.2)
+
+## [holochain\_sqlite-0.5.0-dev.2](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.2)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.2](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.2)
+
+## [holochain\_zome\_types-0.5.0-dev.2](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.2)
+
+## [kitsune\_p2p\_types-0.5.0-dev.2](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.2)
+
+# 20241016.174505
+
+## [hc\_service\_check-0.2.0-dev.1](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.1)
+
+## [hcterm-0.5.0-dev.1](crates/hcterm/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_cli-0.5.0-dev.1](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain-0.5.0-dev.1](crates/holochain/CHANGELOG.md#0.5.0-dev.1)
+
+- AdminRequest::ListApps is now sorted by the new AppInfo field `installed_at`, in descending order
+- Return a `RibosomeError` when there is a serialisation error invoking a zome callback. For example, if they have an invalid return type or parameters. This error bubbles-up and causes the zome call to fail, giving nicer errors and removing the panic which crashed the conductor in these situations. \#3803
+
+## [holochain\_cli\_bundle-0.5.0-dev.1](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.1](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.1](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_cascade-0.5.0-dev.1](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_conductor\_api-0.5.0-dev.1](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.1)
+
+- AppInfo now includes a field `installed_at` with the timestamp that the app was installed
+
+## [holochain\_conductor\_services-0.4.0-dev.1](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.1)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.1](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.1](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_websocket-0.5.0-dev.1](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.1)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.1](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.1)
+
+## [holochain\_state-0.5.0-dev.1](crates/holochain_state/CHANGELOG.md#0.5.0-dev.1)
+
+## [hc\_deepkey\_types-0.9.0-dev.1](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.1)
+
+## [hdk-0.5.0-dev.1](crates/hdk/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_p2p-0.5.0-dev.1](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_state\_types-0.5.0-dev.1](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.1)
+
+## [hdi-0.6.0-dev.1](crates/hdi/CHANGELOG.md#0.6.0-dev.1)
+
+## [holochain\_chc-0.2.0-dev.1](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.1)
+
+## [kitsune\_p2p-0.5.0-dev.1](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.1)
+
+## [hdk\_derive-0.5.0-dev.1](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_types-0.5.0-dev.1](crates/holochain_types/CHANGELOG.md#0.5.0-dev.1)
+
+- InstalledAppCommon now includes a field `installed_at` with the timestamp that the app was installed
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.1](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.1](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_proxy-0.5.0-dev.1](crates/kitsune_p2p_proxy/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_keystore-0.5.0-dev.1](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_sqlite-0.5.0-dev.1](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.1](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.1)
+
+## [holochain\_zome\_types-0.5.0-dev.1](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_types-0.5.0-dev.1](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_integrity\_types-0.5.0-dev.1](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_block-0.5.0-dev.1](crates/kitsune_p2p_block/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_dht-0.5.0-dev.1](crates/kitsune_p2p_dht/CHANGELOG.md#0.5.0-dev.1)
+
+## [holo\_hash-0.5.0-dev.1](crates/holo_hash/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_bin\_data-0.5.0-dev.1](crates/kitsune_p2p_bin_data/CHANGELOG.md#0.5.0-dev.1)
+
+## [kitsune\_p2p\_dht\_arc-0.5.0-dev.1](crates/kitsune_p2p_dht_arc/CHANGELOG.md#0.5.0-dev.1)
+
+## [holochain\_trace-0.5.0-dev.1](crates/holochain_trace/CHANGELOG.md#0.5.0-dev.1)
+
+# 20241009.004404
+
+## [hc\_service\_check-0.2.0-dev.0](crates/hc_service_check/CHANGELOG.md#0.2.0-dev.0)
+
+## [hcterm-0.5.0-dev.0](crates/hcterm/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_cli-0.5.0-dev.0](crates/holochain_cli/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain-0.5.0-dev.0](crates/holochain/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_cli\_bundle-0.5.0-dev.0](crates/holochain_cli_bundle/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_cli\_run\_local\_services-0.5.0-dev.0](crates/holochain_cli_run_local_services/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_cli\_sandbox-0.5.0-dev.0](crates/holochain_cli_sandbox/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_cascade-0.5.0-dev.0](crates/holochain_cascade/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_conductor\_api-0.5.0-dev.0](crates/holochain_conductor_api/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_conductor\_services-0.4.0-dev.0](crates/holochain_conductor_services/CHANGELOG.md#0.4.0-dev.0)
+
+## [holochain\_metrics-0.5.0-dev.0](crates/holochain_metrics/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_test\_wasm\_common-0.5.0-dev.0](crates/holochain_test_wasm_common/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_wasm\_test\_utils-0.5.0-dev.0](crates/holochain_wasm_test_utils/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_websocket-0.5.0-dev.0](crates/holochain_websocket/CHANGELOG.md#0.5.0-dev.0)
+
+## [hc\_deepkey\_sdk-0.8.0-dev.0](crates/hc_deepkey_sdk/CHANGELOG.md#0.8.0-dev.0)
+
+## [holochain\_state-0.5.0-dev.0](crates/holochain_state/CHANGELOG.md#0.5.0-dev.0)
+
+## [hc\_deepkey\_types-0.9.0-dev.0](crates/hc_deepkey_types/CHANGELOG.md#0.9.0-dev.0)
+
+## [hdk-0.5.0-dev.0](crates/hdk/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_p2p-0.5.0-dev.0](crates/holochain_p2p/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_state\_types-0.5.0-dev.0](crates/holochain_state_types/CHANGELOG.md#0.5.0-dev.0)
+
+## [hc\_sleuth-0.5.0-dev.0](crates/hc_sleuth/CHANGELOG.md#0.5.0-dev.0)
+
+## [hdi-0.6.0-dev.0](crates/hdi/CHANGELOG.md#0.6.0-dev.0)
+
+## [holochain\_chc-0.2.0-dev.0](crates/holochain_chc/CHANGELOG.md#0.2.0-dev.0)
+
+## [aitia-0.4.0-dev.0](crates/aitia/CHANGELOG.md#0.4.0-dev.0)
+
+## [hdk\_derive-0.5.0-dev.0](crates/hdk_derive/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_types-0.5.0-dev.0](crates/holochain_types/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p-0.5.0-dev.0](crates/kitsune_p2p/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_keystore-0.5.0-dev.0](crates/holochain_keystore/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_sqlite-0.5.0-dev.0](crates/holochain_sqlite/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_bootstrap\_client-0.5.0-dev.0](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_fetch-0.5.0-dev.0](crates/kitsune_p2p_fetch/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_mdns-0.5.0-dev.0](crates/kitsune_p2p_mdns/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_proxy-0.5.0-dev.0](crates/kitsune_p2p_proxy/CHANGELOG.md#0.5.0-dev.0)
+
+## [mr\_bundle-0.5.0-dev.0](crates/mr_bundle/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_zome\_types-0.5.0-dev.0](crates/holochain_zome_types/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_bootstrap-0.4.0-dev.0](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.4.0-dev.0)
+
+## [holochain\_integrity\_types-0.5.0-dev.0](crates/holochain_integrity_types/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_nonce-0.5.0-dev.0](crates/holochain_nonce/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_block-0.5.0-dev.0](crates/kitsune_p2p_block/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_types-0.5.0-dev.0](crates/kitsune_p2p_types/CHANGELOG.md#0.5.0-dev.0)
+
+## [holo\_hash-0.5.0-dev.0](crates/holo_hash/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_secure\_primitive-0.5.0-dev.0](crates/holochain_secure_primitive/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_bin\_data-0.5.0-dev.0](crates/kitsune_p2p_bin_data/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_dht-0.5.0-dev.0](crates/kitsune_p2p_dht/CHANGELOG.md#0.5.0-dev.0)
+
+## [fixt-0.5.0-dev.0](crates/fixt/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_util-0.5.0-dev.0](crates/holochain_util/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_dht\_arc-0.5.0-dev.0](crates/kitsune_p2p_dht_arc/CHANGELOG.md#0.5.0-dev.0)
+
+## [holochain\_trace-0.5.0-dev.0](crates/holochain_trace/CHANGELOG.md#0.5.0-dev.0)
+
+## [kitsune\_p2p\_timestamp-0.5.0-dev.0](crates/kitsune_p2p_timestamp/CHANGELOG.md#0.5.0-dev.0)
+
+# 20241002.004426
+
+## [hcterm-0.4.0-dev.28](crates/hcterm/CHANGELOG.md#0.4.0-dev.28)
+
+## [holochain\_cli-0.4.0-dev.28](crates/holochain_cli/CHANGELOG.md#0.4.0-dev.28)
+
+## [holochain-0.4.0-dev.28](crates/holochain/CHANGELOG.md#0.4.0-dev.28)
+
+## [holochain\_cli\_bundle-0.4.0-dev.27](crates/holochain_cli_bundle/CHANGELOG.md#0.4.0-dev.27)
+
+## [holochain\_cli\_sandbox-0.4.0-dev.28](crates/holochain_cli_sandbox/CHANGELOG.md#0.4.0-dev.28)
+
+## [holochain\_cascade-0.4.0-dev.28](crates/holochain_cascade/CHANGELOG.md#0.4.0-dev.28)
+
+## [holochain\_conductor\_api-0.4.0-dev.28](crates/holochain_conductor_api/CHANGELOG.md#0.4.0-dev.28)
+
+## [holochain\_conductor\_services-0.3.0-dev.28](crates/holochain_conductor_services/CHANGELOG.md#0.3.0-dev.28)
+
+## [holochain\_wasm\_test\_utils-0.4.0-dev.27](crates/holochain_wasm_test_utils/CHANGELOG.md#0.4.0-dev.27)
+
+## [holochain\_websocket-0.4.0-dev.27](crates/holochain_websocket/CHANGELOG.md#0.4.0-dev.27)
+
+## [holochain\_state-0.4.0-dev.28](crates/holochain_state/CHANGELOG.md#0.4.0-dev.28)
+
+## [holochain\_p2p-0.4.0-dev.28](crates/holochain_p2p/CHANGELOG.md#0.4.0-dev.28)
+
+## [hc\_sleuth-0.4.0-dev.27](crates/hc_sleuth/CHANGELOG.md#0.4.0-dev.27)
+
+## [holochain\_chc-0.1.0-dev.8](crates/holochain_chc/CHANGELOG.md#0.1.0-dev.8)
+
+## [holochain\_types-0.4.0-dev.27](crates/holochain_types/CHANGELOG.md#0.4.0-dev.27)
+
+# 20240926.150323
+
+## [hc\_service\_check-0.1.0-dev.19](crates/hc_service_check/CHANGELOG.md#0.1.0-dev.19)
+
+## [hcterm-0.4.0-dev.27](crates/hcterm/CHANGELOG.md#0.4.0-dev.27)
+
+## [holochain\_cli-0.4.0-dev.27](crates/holochain_cli/CHANGELOG.md#0.4.0-dev.27)
+
+## [holochain-0.4.0-dev.27](crates/holochain/CHANGELOG.md#0.4.0-dev.27)
+
+- HC sandbox: Fix `--no-dpki` option which previously enabled DPKI in the conductor when set, instead of disabling it.
+- Remove the out-dated `validation_callback_allow_multiple_identical_agent_activity_fetches` test. Originally, it was to test that an identical op is only fetched from the network once and then looked up in the cache. After a refactor of production code this was no longer the case and so the test was refactored to check that it can fetch from the network multiple times. There can be no guarantee that it will do one over the other so the test is naturally flaky.
+- Update the following tests to add a wait for gossip before creating ops. This adds an extra delay and makes sure that the conductors see each other before continuing with the tests.
+  - `multi_create_link_validation`
+  - `session_rollback_with_chc_enabled`
+  - `alice_can_recover_from_a_session_timeout`
+  - `should_be_able_to_schedule_functions_during_session`
+- Update Makefile default recipe to use the new recipes that build and test the workspace with the feature flags `wasmer_sys` and `wasmer_wamr`. \#4284
+- Add support for parsing the lint-level as a set in the Nix holochain module. e.g. `nursery = { level = "allow", priority = -1 }`. \#4284
+- Add the `nix/` directory as a watch point for `direnv` so it reloads the `devShell` if a file changes in that directory. \#4284
+
+## [holochain\_cli\_bundle-0.4.0-dev.26](crates/holochain_cli_bundle/CHANGELOG.md#0.4.0-dev.26)
+
+## [holochain\_cli\_run\_local\_services-0.4.0-dev.18](crates/holochain_cli_run_local_services/CHANGELOG.md#0.4.0-dev.18)
+
+## [holochain\_cli\_sandbox-0.4.0-dev.27](crates/holochain_cli_sandbox/CHANGELOG.md#0.4.0-dev.27)
+
+## [holochain\_cascade-0.4.0-dev.27](crates/holochain_cascade/CHANGELOG.md#0.4.0-dev.27)
+
+## [holochain\_conductor\_api-0.4.0-dev.27](crates/holochain_conductor_api/CHANGELOG.md#0.4.0-dev.27)
+
+## [holochain\_conductor\_services-0.3.0-dev.27](crates/holochain_conductor_services/CHANGELOG.md#0.3.0-dev.27)
+
+## [holochain\_test\_wasm\_common-0.4.0-dev.19](crates/holochain_test_wasm_common/CHANGELOG.md#0.4.0-dev.19)
+
+## [holochain\_wasm\_test\_utils-0.4.0-dev.26](crates/holochain_wasm_test_utils/CHANGELOG.md#0.4.0-dev.26)
+
+## [holochain\_websocket-0.4.0-dev.26](crates/holochain_websocket/CHANGELOG.md#0.4.0-dev.26)
+
+## [hc\_deepkey\_sdk-0.7.0-dev.8](crates/hc_deepkey_sdk/CHANGELOG.md#0.7.0-dev.8)
+
+## [holochain\_state-0.4.0-dev.27](crates/holochain_state/CHANGELOG.md#0.4.0-dev.27)
+
+## [hc\_deepkey\_types-0.8.0-dev.8](crates/hc_deepkey_types/CHANGELOG.md#0.8.0-dev.8)
+
+## [hdk-0.4.0-dev.19](crates/hdk/CHANGELOG.md#0.4.0-dev.19)
+
+## [holochain\_p2p-0.4.0-dev.27](crates/holochain_p2p/CHANGELOG.md#0.4.0-dev.27)
+
+## [hc\_sleuth-0.4.0-dev.26](crates/hc_sleuth/CHANGELOG.md#0.4.0-dev.26)
+
+## [hdi-0.5.0-dev.17](crates/hdi/CHANGELOG.md#0.5.0-dev.17)
+
+## [holochain\_chc-0.1.0-dev.7](crates/holochain_chc/CHANGELOG.md#0.1.0-dev.7)
+
+## [holochain\_types-0.4.0-dev.26](crates/holochain_types/CHANGELOG.md#0.4.0-dev.26)
+
+## [kitsune\_p2p-0.4.0-dev.23](crates/kitsune_p2p/CHANGELOG.md#0.4.0-dev.23)
+
+## [holochain\_keystore-0.4.0-dev.24](crates/holochain_keystore/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_sqlite-0.4.0-dev.23](crates/holochain_sqlite/CHANGELOG.md#0.4.0-dev.23)
+
+## [kitsune\_p2p\_bootstrap\_client-0.4.0-dev.16](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.4.0-dev.16)
+
+## [kitsune\_p2p\_fetch-0.4.0-dev.15](crates/kitsune_p2p_fetch/CHANGELOG.md#0.4.0-dev.15)
+
+## [kitsune\_p2p\_proxy-0.4.0-dev.15](crates/kitsune_p2p_proxy/CHANGELOG.md#0.4.0-dev.15)
+
+## [kitsune\_p2p\_bootstrap-0.3.0-dev.16](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.3.0-dev.16)
+
+## [kitsune\_p2p\_types-0.4.0-dev.15](crates/kitsune_p2p_types/CHANGELOG.md#0.4.0-dev.15)
+
+# 20240925.004452
+
+## [hc\_service\_check-0.1.0-dev.18](crates/hc_service_check/CHANGELOG.md#0.1.0-dev.18)
+
+## [hcterm-0.4.0-dev.26](crates/hcterm/CHANGELOG.md#0.4.0-dev.26)
+
+## [holochain\_cli-0.4.0-dev.26](crates/holochain_cli/CHANGELOG.md#0.4.0-dev.26)
+
+## [holochain-0.4.0-dev.26](crates/holochain/CHANGELOG.md#0.4.0-dev.26)
+
+- Countersigning sessions no longer unlock at the end time without checking the outcome. There is a new workflow which will take appropriate actions when the session completes or times out. The majority of the logic is unchanged except for timeouts. If a timeout occurs and Holochain has been up throughout the session then the session will be abandoned. If Holochain crashes or is restarted during the session but is able to recover state from the database, it will attempt to discover what the other participants did. This changes a failure mode that used to be silent to one that will explicitly prevent new writes to your source chain. We are going to provide tooling to resolve this situation in the following change. \#4188
+- Internal rework of chain locking logic. This is used when a countersigning session is in progress, to prevent other actions from being committed during the session. There was a race condition where two countersigning sessions being run one after another could result in responses relevant to the first session accidentally unlocking the new session. That effectively meant that on a larger network, countersigning sessions would get cancelled when nothing had actually gone wrong. The rework of locking made fixing the bug simpler, but the key to the fix was in the `countersigning_success` function. That now checks that incoming signatures are actually for the current session. \#4148
+
+## [holochain\_cli\_bundle-0.4.0-dev.25](crates/holochain_cli_bundle/CHANGELOG.md#0.4.0-dev.25)
+
+## [holochain\_cli\_run\_local\_services-0.4.0-dev.17](crates/holochain_cli_run_local_services/CHANGELOG.md#0.4.0-dev.17)
+
+## [holochain\_cli\_sandbox-0.4.0-dev.26](crates/holochain_cli_sandbox/CHANGELOG.md#0.4.0-dev.26)
+
+## [holochain\_cascade-0.4.0-dev.26](crates/holochain_cascade/CHANGELOG.md#0.4.0-dev.26)
+
+## [holochain\_conductor\_api-0.4.0-dev.26](crates/holochain_conductor_api/CHANGELOG.md#0.4.0-dev.26)
+
+## [holochain\_conductor\_services-0.3.0-dev.26](crates/holochain_conductor_services/CHANGELOG.md#0.3.0-dev.26)
+
+## [holochain\_test\_wasm\_common-0.4.0-dev.18](crates/holochain_test_wasm_common/CHANGELOG.md#0.4.0-dev.18)
+
+## [holochain\_wasm\_test\_utils-0.4.0-dev.25](crates/holochain_wasm_test_utils/CHANGELOG.md#0.4.0-dev.25)
+
+## [holochain\_websocket-0.4.0-dev.25](crates/holochain_websocket/CHANGELOG.md#0.4.0-dev.25)
+
+## [hc\_deepkey\_sdk-0.7.0-dev.7](crates/hc_deepkey_sdk/CHANGELOG.md#0.7.0-dev.7)
+
+## [holochain\_state-0.4.0-dev.26](crates/holochain_state/CHANGELOG.md#0.4.0-dev.26)
+
+## [hc\_deepkey\_types-0.8.0-dev.7](crates/hc_deepkey_types/CHANGELOG.md#0.8.0-dev.7)
+
+## [hdk-0.4.0-dev.18](crates/hdk/CHANGELOG.md#0.4.0-dev.18)
+
+## [holochain\_p2p-0.4.0-dev.26](crates/holochain_p2p/CHANGELOG.md#0.4.0-dev.26)
+
+## [holochain\_state\_types-0.4.0-dev.15](crates/holochain_state_types/CHANGELOG.md#0.4.0-dev.15)
+
+## [hc\_sleuth-0.4.0-dev.25](crates/hc_sleuth/CHANGELOG.md#0.4.0-dev.25)
+
+## [hdi-0.5.0-dev.16](crates/hdi/CHANGELOG.md#0.5.0-dev.16)
+
+## [holochain\_chc-0.1.0-dev.6](crates/holochain_chc/CHANGELOG.md#0.1.0-dev.6)
+
+## [aitia-0.3.0-dev.6](crates/aitia/CHANGELOG.md#0.3.0-dev.6)
+
+## [hdk\_derive-0.4.0-dev.15](crates/hdk_derive/CHANGELOG.md#0.4.0-dev.15)
+
+## [holochain\_types-0.4.0-dev.25](crates/holochain_types/CHANGELOG.md#0.4.0-dev.25)
+
+## [kitsune\_p2p-0.4.0-dev.22](crates/kitsune_p2p/CHANGELOG.md#0.4.0-dev.22)
+
+## [holochain\_keystore-0.4.0-dev.23](crates/holochain_keystore/CHANGELOG.md#0.4.0-dev.23)
+
+## [holochain\_sqlite-0.4.0-dev.22](crates/holochain_sqlite/CHANGELOG.md#0.4.0-dev.22)
+
+## [kitsune\_p2p\_bootstrap\_client-0.4.0-dev.15](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.4.0-dev.15)
+
+## [kitsune\_p2p\_fetch-0.4.0-dev.14](crates/kitsune_p2p_fetch/CHANGELOG.md#0.4.0-dev.14)
+
+## [kitsune\_p2p\_mdns-0.4.0-dev.3](crates/kitsune_p2p_mdns/CHANGELOG.md#0.4.0-dev.3)
+
+## [kitsune\_p2p\_proxy-0.4.0-dev.14](crates/kitsune_p2p_proxy/CHANGELOG.md#0.4.0-dev.14)
+
+## [mr\_bundle-0.4.0-dev.8](crates/mr_bundle/CHANGELOG.md#0.4.0-dev.8)
+
+## [holochain\_zome\_types-0.4.0-dev.18](crates/holochain_zome_types/CHANGELOG.md#0.4.0-dev.18)
+
+## [kitsune\_p2p\_bootstrap-0.3.0-dev.15](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.3.0-dev.15)
+
+## [holochain\_integrity\_types-0.4.0-dev.15](crates/holochain_integrity_types/CHANGELOG.md#0.4.0-dev.15)
+
+## [kitsune\_p2p\_block-0.4.0-dev.12](crates/kitsune_p2p_block/CHANGELOG.md#0.4.0-dev.12)
+
+## [kitsune\_p2p\_types-0.4.0-dev.14](crates/kitsune_p2p_types/CHANGELOG.md#0.4.0-dev.14)
+
+## [holo\_hash-0.4.0-dev.13](crates/holo_hash/CHANGELOG.md#0.4.0-dev.13)
+
+## [kitsune\_p2p\_bin\_data-0.4.0-dev.12](crates/kitsune_p2p_bin_data/CHANGELOG.md#0.4.0-dev.12)
+
+## [kitsune\_p2p\_dht-0.4.0-dev.10](crates/kitsune_p2p_dht/CHANGELOG.md#0.4.0-dev.10)
+
+## [fixt-0.4.0-dev.4](crates/fixt/CHANGELOG.md#0.4.0-dev.4)
+
+## [holochain\_util-0.4.0-dev.5](crates/holochain_util/CHANGELOG.md#0.4.0-dev.5)
+
+## [kitsune\_p2p\_dht\_arc-0.4.0-dev.10](crates/kitsune_p2p_dht_arc/CHANGELOG.md#0.4.0-dev.10)
+
+## [holochain\_trace-0.4.0-dev.6](crates/holochain_trace/CHANGELOG.md#0.4.0-dev.6)
+
+# 20240918.004220
+
+## [hc\_service\_check-0.1.0-dev.17](crates/hc_service_check/CHANGELOG.md#0.1.0-dev.17)
+
+## [hcterm-0.4.0-dev.25](crates/hcterm/CHANGELOG.md#0.4.0-dev.25)
+
+## [holochain\_cli-0.4.0-dev.25](crates/holochain_cli/CHANGELOG.md#0.4.0-dev.25)
+
+## [holochain-0.4.0-dev.25](crates/holochain/CHANGELOG.md#0.4.0-dev.25)
+
+## [holochain\_cli\_bundle-0.4.0-dev.24](crates/holochain_cli_bundle/CHANGELOG.md#0.4.0-dev.24)
+
+- Add feature flags `wasmer_sys` and `wasmer_wamr` to toggle between using the current wasm compiler and the new, experimental wasm interpreter. Bundling pre-compiled and pre-serialized DNAs is not supported in the `wasmer_wamr` feature.
+
+## [holochain\_cli\_run\_local\_services-0.4.0-dev.16](crates/holochain_cli_run_local_services/CHANGELOG.md#0.4.0-dev.16)
+
+## [holochain\_cli\_sandbox-0.4.0-dev.25](crates/holochain_cli_sandbox/CHANGELOG.md#0.4.0-dev.25)
+
+## [holochain\_cascade-0.4.0-dev.25](crates/holochain_cascade/CHANGELOG.md#0.4.0-dev.25)
+
+## [holochain\_conductor\_api-0.4.0-dev.25](crates/holochain_conductor_api/CHANGELOG.md#0.4.0-dev.25)
+
+## [holochain\_conductor\_services-0.3.0-dev.25](crates/holochain_conductor_services/CHANGELOG.md#0.3.0-dev.25)
+
+## [holochain\_test\_wasm\_common-0.4.0-dev.17](crates/holochain_test_wasm_common/CHANGELOG.md#0.4.0-dev.17)
+
+## [holochain\_wasm\_test\_utils-0.4.0-dev.24](crates/holochain_wasm_test_utils/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_websocket-0.4.0-dev.24](crates/holochain_websocket/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_state-0.4.0-dev.25](crates/holochain_state/CHANGELOG.md#0.4.0-dev.25)
+
+## [holochain\_p2p-0.4.0-dev.25](crates/holochain_p2p/CHANGELOG.md#0.4.0-dev.25)
+
+## [hc\_sleuth-0.4.0-dev.24](crates/hc_sleuth/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_chc-0.1.0-dev.5](crates/holochain_chc/CHANGELOG.md#0.1.0-dev.5)
+
+## [holochain\_state\_types-0.4.0-dev.14](crates/holochain_state_types/CHANGELOG.md#0.4.0-dev.14)
+
+## [holochain\_types-0.4.0-dev.24](crates/holochain_types/CHANGELOG.md#0.4.0-dev.24)
+
+## [kitsune\_p2p-0.4.0-dev.21](crates/kitsune_p2p/CHANGELOG.md#0.4.0-dev.21)
+
+## [hc\_deepkey\_sdk-0.7.0-dev.6](crates/hc_deepkey_sdk/CHANGELOG.md#0.7.0-dev.6)
+
+## [holochain\_keystore-0.4.0-dev.22](crates/holochain_keystore/CHANGELOG.md#0.4.0-dev.22)
+
+## [holochain\_sqlite-0.4.0-dev.21](crates/holochain_sqlite/CHANGELOG.md#0.4.0-dev.21)
+
+## [kitsune\_p2p\_bootstrap\_client-0.4.0-dev.14](crates/kitsune_p2p_bootstrap_client/CHANGELOG.md#0.4.0-dev.14)
+
+## [kitsune\_p2p\_fetch-0.4.0-dev.13](crates/kitsune_p2p_fetch/CHANGELOG.md#0.4.0-dev.13)
+
+## [kitsune\_p2p\_proxy-0.4.0-dev.13](crates/kitsune_p2p_proxy/CHANGELOG.md#0.4.0-dev.13)
+
+## [hc\_deepkey\_types-0.8.0-dev.6](crates/hc_deepkey_types/CHANGELOG.md#0.8.0-dev.6)
+
+## [hdk-0.4.0-dev.17](crates/hdk/CHANGELOG.md#0.4.0-dev.17)
+
+## [kitsune\_p2p\_bootstrap-0.3.0-dev.14](crates/kitsune_p2p_bootstrap/CHANGELOG.md#0.3.0-dev.14)
+
+## [hdi-0.5.0-dev.15](crates/hdi/CHANGELOG.md#0.5.0-dev.15)
+
+## [holochain\_zome\_types-0.4.0-dev.17](crates/holochain_zome_types/CHANGELOG.md#0.4.0-dev.17)
+
+## [kitsune\_p2p\_types-0.4.0-dev.13](crates/kitsune_p2p_types/CHANGELOG.md#0.4.0-dev.13)
+
+## [hdk\_derive-0.4.0-dev.14](crates/hdk_derive/CHANGELOG.md#0.4.0-dev.14)
+
+## [holochain\_integrity\_types-0.4.0-dev.14](crates/holochain_integrity_types/CHANGELOG.md#0.4.0-dev.14)
+
+## [holo\_hash-0.4.0-dev.12](crates/holo_hash/CHANGELOG.md#0.4.0-dev.12)
+
+# 20240912.222358
+
+## [hcterm-0.4.0-dev.24](crates/hcterm/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_cli-0.4.0-dev.24](crates/holochain_cli/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain-0.4.0-dev.24](crates/holochain/CHANGELOG.md#0.4.0-dev.24)
+
+- Add `danger_generate_throwaway_device_seed` to allow creation and use of a random device seed for test situations, where a proper device seed is not needed. \#4238
+- Add `allow_throwaway_random_dpki_agent_key` to allow creation of a random (unrecoverable) DPKI agent when a device seed is not specified. \#4238
+- Fixes issue \#3679 where websocket connections would be closed if a message was received that failed to deserialize. The new behaviour isn’t perfect because you will get a timeout instead, but the websocket will remain open and you can continue to send further valid message. There is another issue to track partial deserialization \#4251 so we can respond with an error message instead of a timeout. \#4252
+
+## [holochain\_cli\_sandbox-0.4.0-dev.24](crates/holochain_cli_sandbox/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_cascade-0.4.0-dev.24](crates/holochain_cascade/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_conductor\_api-0.4.0-dev.24](crates/holochain_conductor_api/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_conductor\_services-0.3.0-dev.24](crates/holochain_conductor_services/CHANGELOG.md#0.3.0-dev.24)
+
+## [holochain\_state-0.4.0-dev.24](crates/holochain_state/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_p2p-0.4.0-dev.24](crates/holochain_p2p/CHANGELOG.md#0.4.0-dev.24)
+
+## [holochain\_chc-0.1.0-dev.4](crates/holochain_chc/CHANGELOG.md#0.1.0-dev.4)
+
+# 20240911.004238
+
+- Added an optional `chc_url` cli argument to `holochain_cli_sandbox`
+- Made `chc` feature default for `hc-sandbox`
+
+## [hcterm-0.4.0-dev.23](crates/hcterm/CHANGELOG.md#0.4.0-dev.23)
+
+## [holochain\_cli-0.4.0-dev.23](crates/holochain_cli/CHANGELOG.md#0.4.0-dev.23)
+
+## [holochain-0.4.0-dev.23](crates/holochain/CHANGELOG.md#0.4.0-dev.23)
+
+- Fixes issue \#3679 where websocket connections would be closed if a message was received that failed to deserialize. The new behaviour isn’t perfect because you will get a timeout instead, but the websocket will remain open and you can continue to send further valid message. There is another issue to track partial deserialization \#4251 so we can respond with an error message instead of a timeout. \#4252
+
+## [holochain\_cli\_bundle-0.4.0-dev.23](crates/holochain_cli_bundle/CHANGELOG.md#0.4.0-dev.23)
+
+## [holochain\_cli\_sandbox-0.4.0-dev.23](crates/holochain_cli_sandbox/CHANGELOG.md#0.4.0-dev.23)
+
+## [holochain\_cascade-0.4.0-dev.23](crates/holochain_cascade/CHANGELOG.md#0.4.0-dev.23)
+
+## [holochain\_conductor\_api-0.4.0-dev.23](crates/holochain_conductor_api/CHANGELOG.md#0.4.0-dev.23)
+
+## [holochain\_conductor\_services-0.3.0-dev.23](crates/holochain_conductor_services/CHANGELOG.md#0.3.0-dev.23)
+
+## [holochain\_wasm\_test\_utils-0.4.0-dev.23](crates/holochain_wasm_test_utils/CHANGELOG.md#0.4.0-dev.23)
+
