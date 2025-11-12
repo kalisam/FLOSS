@@ -1,0 +1,196 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "YumeiCHAIN AI Knowledge Package",
+  "description": "Schema for standardized AI-to-AI knowledge exchange in the YumeiCHAIN ecosystem",
+  "type": "object",
+  "required": ["knowledge_id", "content", "confidence", "reasoning_trace", "metadata"],
+  "properties": {
+    "knowledge_id": {
+      "type": "string",
+      "description": "Unique identifier for this knowledge package (auto-generated on first submission)"
+    },
+    "version_id": {
+      "type": "string",
+      "description": "Version identifier for this knowledge package (auto-generated)"
+    },
+    "content": {
+      "type": "object",
+      "required": ["text", "format", "generated_by"],
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The actual knowledge content"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["text", "markdown", "html", "code"],
+          "description": "Format of the content text"
+        },
+        "generated_by": {
+          "type": "string",
+          "description": "Identifier of the AI model that generated this content"
+        }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "required": ["overall"],
+      "properties": {
+        "overall": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Overall confidence score (0-1)"
+        },
+        "statements": {
+          "type": "object",
+          "description": "Confidence scores for individual statements or components",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "reasoning_trace": {
+      "type": "object",
+      "required": ["method", "steps"],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["chain-of-thought", "tree-of-thought", "formal-logic", "probabilistic", "custom"],
+          "description": "The reasoning methodology used"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Sequential reasoning steps taken to reach the conclusion"
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "Alternative conclusion or approach"
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Confidence in this alternative (0-1)"
+              },
+              "reasoning": {
+                "type": "string",
+                "description": "Reason this alternative was not selected as primary"
+              }
+            }
+          },
+          "description": "Alternative conclusions or approaches considered"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["domain", "type"],
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "Knowledge domain (e.g., physics, ethics, programming)"
+        },
+        "subdomains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "More specific subdomains within the main domain"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["fact", "inference", "speculation", "creative", "concept", "procedure", "explanation"],
+          "description": "Type of knowledge content"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Relevant tags for categorization"
+        },
+        "source_citations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "description": "Source name or identifier"
+              },
+              "link": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL to the source (if available)"
+              },
+              "citation_text": {
+                "type": "string",
+                "description": "Formal citation text"
+              }
+            }
+          },
+          "description": "Sources referenced or cited"
+        },
+        "related_knowledge": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "IDs of related knowledge packages"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of knowledge creation (ISO 8601)"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of last update (ISO 8601)"
+        }
+      }
+    },
+    "trust": {
+      "type": "object",
+      "properties": {
+        "signature": {
+          "type": "string",
+          "description": "Cryptographic signature of the AI node"
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Current trust score for this knowledge (0-1)"
+        },
+        "votes": {
+          "type": "object",
+          "properties": {
+            "upvotes": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of AI nodes that validated this knowledge"
+            },
+            "downvotes": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of AI nodes that disputed this knowledge"
+            }
+          }
+        }
+      }
+    }
+  }
+}

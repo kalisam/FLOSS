@@ -1,0 +1,16 @@
+---
+manifest_version: "1"
+name: federated_learning_dna
+integrity:
+  network_seed: ~
+  properties: ~
+  origin_time: 1686787383220736
+  zomes:
+    - name: fl_core_integrity
+      bundled: ../../target/wasm32-unknown-unknown/release/fl_core.wasm
+coordinator:
+  zomes:
+    - name: fl_core
+      bundled: ../../target/wasm32-unknown-unknown/release/fl_core.wasm
+      dependencies:
+        - name: fl_core_integrity

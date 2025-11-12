@@ -1,0 +1,18 @@
+[package]
+name = "amazon_rose_forest"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hdk = "0.1.0"
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+rand = "0.8"
+nanoid = "0.4"
+sha2 = "0.10.6"
+
+[workspace]
+members = [
+  "dna/zomes/fl_core",
+]
