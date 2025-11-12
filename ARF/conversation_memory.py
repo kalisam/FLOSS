@@ -83,17 +83,21 @@ class Understanding:
 class ConversationMemory:
     """
     Holochain-inspired local-first memory for cross-AI coordination.
-    
+
     Each agent maintains their own memory, but memories can be:
     - Composed (via MultiScaleEmbedding aggregation)
     - Shared (via export/import)
     - Verified (via cryptographic hashes)
-    
+
     This is the computational substrate for distributed intelligence coordination.
+
+    Supports two backends:
+    - 'file': Local file-based storage (default)
+    - 'holochain': Distributed storage via Holochain DNA
     """
-    
+
     def __init__(self, agent_id: str, storage_path: Optional[str] = None,
-                 validate_ontology: bool = True):
+                 validate_ontology: bool = True, backend: str = 'file'):
         """
         Initialize memory for a specific agent.
 
@@ -101,11 +105,20 @@ class ConversationMemory:
             agent_id: Identifier for this agent (e.g., "claude-sonnet-4.5", "human-primary")
             storage_path: Where to persist memory (default: ./memory/{agent_id}/)
             validate_ontology: Whether to validate against ontology (default: True)
+            backend: Storage backend - 'file' (default) or 'holochain'
         """
         self.agent_id = agent_id
         self.validate_ontology = validate_ontology
+        self.backend = backend
 
-        # Storage
+        # Initialize backend
+        if backend == 'holochain':
+            self.hc_client = HolochainClient()
+            logger.info(f"Initialized ConversationMemory with Holochain backend for agent: {agent_id}")
+        else:
+            self.hc_client = None
+
+        # Storage (for file backend)
         if storage_path is None:
             storage_path = f"./memory/{agent_id}"
         self.storage_path = Path(storage_path)
@@ -130,10 +143,11 @@ class ConversationMemory:
             self.embeddings = None
             logger.warning("Running without embeddings; recall will be text-only")
 
-        # Load existing memory if present
-        self._load()
+        # Load existing memory if present (file backend only)
+        if backend == 'file':
+            self._load()
 
-        logger.info(f"Initialized ConversationMemory for agent: {agent_id}")
+        logger.info(f"Initialized ConversationMemory for agent: {agent_id} (backend: {backend})")
     
     def transmit(self, understanding_dict: Dict, skip_validation: bool = False) -> Optional[str]:
         """
@@ -159,6 +173,43 @@ class ConversationMemory:
         Raises:
             ValueError: If understanding is malformed
         """
+        # Route to appropriate backend
+        if self.backend == 'holochain':
+            return self._transmit_holochain(understanding_dict, skip_validation)
+        else:
+            return self._transmit_file(understanding_dict, skip_validation)
+
+    def _transmit_holochain(self, understanding_dict: Dict, skip_validation: bool = False) -> Optional[str]:
+        """Transmit via Holochain backend."""
+        if 'content' not in understanding_dict:
+            raise ValueError("Understanding must have 'content' field")
+
+        try:
+            # Call Holochain zome
+            result = self.hc_client.call_zome(
+                'memory_coordinator',
+                'transmit_understanding',
+                {
+                    'content': understanding_dict['content'],
+                    'context': understanding_dict.get('context'),
+                }
+            )
+
+            # Result is the ActionHash as a string
+            logger.info(f"Transmitted understanding to Holochain: {result}")
+            self.validation_stats['total_attempts'] += 1
+            self.validation_stats['validation_passed'] += 1
+
+            return result
+
+        except Exception as e:
+            logger.error(f"Failed to transmit to Holochain: {e}")
+            self.validation_stats['total_attempts'] += 1
+            self.validation_stats['validation_failed'] += 1
+            return None
+
+    def _transmit_file(self, understanding_dict: Dict, skip_validation: bool = False) -> Optional[str]:
+        """Transmit via file backend (original implementation)."""
         # Track validation attempt
         self.validation_stats['total_attempts'] += 1
 
@@ -342,18 +393,22 @@ class ConversationMemory:
     def recall(self, query: str, across_scales: bool = True, top_k: int = 5) -> List[Dict]:
         """
         Find relevant prior understanding.
-        
+
         This is where the magic happens: searching across nested reference frames
         to find understanding that's relevant to the current query.
-        
+
         Args:
             query: What are we looking for?
             across_scales: Search at multiple levels of composition?
             top_k: How many results to return?
-        
+
         Returns:
             List of Understanding dicts, ranked by relevance
         """
+        # Route to appropriate backend
+        if self.backend == 'holochain':
+            return self._recall_holochain(query, top_k)
+
         if self.embeddings is None:
             # Fallback: simple text matching
             return self._text_search(query, top_k)
@@ -590,6 +645,119 @@ class ConversationMemory:
                     logger.error(f"Failed to load embeddings: {e}", exc_info=True)
                     # Fall back to fresh embeddings
                     self.embeddings = MultiScaleEmbedding()
+
+    def _recall_holochain(self, query: str, top_k: int = 5) -> List[Dict]:
+        """Recall via Holochain backend."""
+        try:
+            # Call Holochain zome with query
+            results = self.hc_client.call_zome(
+                'memory_coordinator',
+                'recall_understandings',
+                {
+                    'agent': None,  # Will use current agent
+                    'content_contains': query,
+                    'after_timestamp': None,
+                    'limit': top_k,
+                }
+            )
+
+            # Convert Understanding objects to dicts
+            return [self._holochain_understanding_to_dict(u) for u in results]
+
+        except Exception as e:
+            logger.error(f"Failed to recall from Holochain: {e}")
+            return []
+
+    def _holochain_understanding_to_dict(self, understanding: Dict) -> Dict:
+        """Convert Holochain Understanding to our dict format."""
+        return {
+            'content': understanding['content'],
+            'agent_id': str(understanding['agent']),
+            'timestamp': str(understanding['created_at']),
+            'context': understanding.get('context'),
+            'is_decision': False,  # Not directly available from Holochain
+            'coherence_score': understanding['triple']['confidence'],
+            'metadata': {
+                'triple': understanding['triple'],
+                'content_hash': understanding['content_hash'],
+            },
+        }
+
+
+class HolochainClient:
+    """
+    Simple Holochain client for calling zome functions.
+
+    This provides a bridge between Python and Holochain DNA via subprocess calls.
+    In production, this could use websocket connections or the conductor API.
+    """
+
+    def __init__(self, app_port: int = 8888, app_id: str = "rose-forest"):
+        """
+        Initialize Holochain client.
+
+        Args:
+            app_port: Port where Holochain conductor is running (default: 8888)
+            app_id: Application ID (default: rose-forest)
+        """
+        self.app_port = app_port
+        self.app_id = app_id
+        logger.info(f"Initialized HolochainClient for app '{app_id}' on port {app_port}")
+
+    def call_zome(self, zome: str, function: str, payload: Dict) -> Any:
+        """
+        Call a zome function via subprocess.
+
+        Args:
+            zome: Zome name (e.g., 'memory_coordinator')
+            function: Function name (e.g., 'transmit_understanding')
+            payload: Function arguments as dict
+
+        Returns:
+            Result from the zome function
+
+        Raises:
+            RuntimeError: If the call fails
+        """
+        import subprocess
+
+        # Build hc command
+        # In production, this would use proper conductor API or websockets
+        # For now, we document the expected interface
+        cmd = [
+            'hc',
+            'call',
+            '--app-id', self.app_id,
+            '--zome', zome,
+            '--fn', function,
+            json.dumps(payload)
+        ]
+
+        logger.debug(f"Calling Holochain: {' '.join(cmd)}")
+
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+
+            if result.returncode != 0:
+                raise RuntimeError(f"Holochain call failed: {result.stderr}")
+
+            # Parse JSON response
+            return json.loads(result.stdout)
+
+        except subprocess.TimeoutExpired:
+            raise RuntimeError("Holochain call timed out")
+        except json.JSONDecodeError as e:
+            raise RuntimeError(f"Failed to parse Holochain response: {e}")
+        except FileNotFoundError:
+            logger.warning("'hc' command not found - Holochain backend unavailable")
+            raise RuntimeError(
+                "Holochain CLI not found. Install Holochain or use 'file' backend."
+            )
 
 
 # Demo / Test
