@@ -36,6 +36,7 @@ from __future__ import annotations
 import json
 import hashlib
 import re
+import asyncio
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Any, Tuple
@@ -50,6 +51,15 @@ try:
 except ImportError:
     EMBEDDINGS_AVAILABLE = False
     logging.warning("embedding_frames_of_scale not found; will use mock embeddings")
+
+# Import committee validation system
+try:
+    from validation.committee import TripleValidationCommittee
+    from validation.agent_pool import ValidatorPool
+    COMMITTEE_VALIDATION_AVAILABLE = True
+except ImportError:
+    COMMITTEE_VALIDATION_AVAILABLE = False
+    logging.warning("Committee validation not available; using basic validation only")
 
 import numpy as np
 
@@ -97,7 +107,8 @@ class ConversationMemory:
     """
 
     def __init__(self, agent_id: str, storage_path: Optional[str] = None,
-                 validate_ontology: bool = True, backend: str = 'file'):
+                 validate_ontology: bool = True, backend: str = 'file',
+                 use_committee_validation: bool = False, committee_use_mock: bool = True):
         """
         Initialize memory for a specific agent.
 
@@ -106,10 +117,13 @@ class ConversationMemory:
             storage_path: Where to persist memory (default: ./memory/{agent_id}/)
             validate_ontology: Whether to validate against ontology (default: True)
             backend: Storage backend - 'file' (default) or 'holochain'
+            use_committee_validation: Use LLM committee for validation (default: False)
+            committee_use_mock: Use mock LLM for committee (default: True)
         """
         self.agent_id = agent_id
         self.validate_ontology = validate_ontology
         self.backend = backend
+        self.use_committee_validation = use_committee_validation
 
         # Initialize backend
         if backend == 'holochain':
@@ -135,6 +149,19 @@ class ConversationMemory:
             'validation_failed': 0,
             'validation_skipped': 0,
         }
+
+        # Initialize committee validation (if enabled)
+        self.committee = None
+        if use_committee_validation:
+            if COMMITTEE_VALIDATION_AVAILABLE:
+                self.committee = TripleValidationCommittee(use_mock=committee_use_mock)
+                logger.info("Initialized committee validation")
+            else:
+                logger.warning(
+                    "Committee validation requested but not available. "
+                    "Falling back to basic validation."
+                )
+                self.use_committee_validation = False
 
         # Fractal embeddings (if available)
         if EMBEDDINGS_AVAILABLE:
@@ -227,12 +254,14 @@ class ConversationMemory:
                 return None
 
         # Validate triple
+        committee_result = None
         if skip_validation:
             self.validation_stats['validation_skipped'] += 1
             if triple:
                 logger.info(f"Skipping validation for triple: {triple}")
         elif triple:
-            is_valid, error_msg = self._validate_triple(triple)
+            context = understanding_dict.get('context', understanding_dict.get('content', ''))
+            is_valid, error_msg, committee_result = self._validate_triple(triple, context)
             if not is_valid:
                 logger.error(f"Ontology validation failed: {error_msg}")
                 logger.error(f"Triple: {triple}")
@@ -242,6 +271,11 @@ class ConversationMemory:
             else:
                 logger.debug(f"Validation passed for triple: {triple}")
                 self.validation_stats['validation_passed'] += 1
+                # Store committee result in understanding metadata if available
+                if committee_result:
+                    if 'metadata' not in understanding_dict:
+                        understanding_dict['metadata'] = {}
+                    understanding_dict['metadata']['committee_validation'] = committee_result
 
         # Create Understanding object
         understanding = Understanding(
@@ -347,44 +381,85 @@ class ConversationMemory:
         content_hash = hashlib.md5(content.encode()).hexdigest()[:8]
         return (self.agent_id, 'stated', f"understanding_{content_hash}")
 
-    def _validate_triple(self, triple: Tuple[str, str, str]) -> Tuple[bool, Optional[str]]:
+    def _validate_triple(self, triple: Tuple[str, str, str], context: str = "") -> Tuple[bool, Optional[str], Optional[Dict]]:
         """
         Validate a triple against the ontology.
 
         Args:
             triple: (subject, predicate, object) tuple
+            context: Context text from which triple was extracted
 
         Returns:
-            (is_valid, error_message) tuple
+            (is_valid, error_message, committee_result) tuple
+            committee_result is None if committee validation not used
         """
         if not self.validate_ontology:
-            return (True, None)
+            return (True, None, None)
 
         subject, predicate, obj = triple
 
-        # For now, use simple validation rules
-        # In production, this would call Holochain ontology zome
+        # Use committee validation if enabled
+        if self.use_committee_validation and self.committee is not None:
+            try:
+                # Run async validation in sync context
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # If we're already in an async context, create a new thread
+                    import concurrent.futures
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                        future = executor.submit(
+                            asyncio.run,
+                            self.committee.validate(triple, context or "No context provided")
+                        )
+                        result = future.result(timeout=15.0)
+                else:
+                    # Run async validation
+                    result = loop.run_until_complete(
+                        self.committee.validate(triple, context or "No context provided")
+                    )
 
+                # Store committee result in metadata
+                committee_metadata = result.to_dict()
+
+                # Return committee decision
+                if result.accepted:
+                    logger.info(
+                        f"Committee accepted triple: {result.yes_votes}/{result.total_votes} votes, "
+                        f"confidence={result.confidence:.2f}"
+                    )
+                    return (True, None, committee_metadata)
+                else:
+                    logger.warning(
+                        f"Committee rejected triple: {result.yes_votes}/{result.total_votes} votes"
+                    )
+                    return (False, "Committee validation rejected triple", committee_metadata)
+
+            except Exception as e:
+                logger.error(f"Committee validation error: {e}")
+                logger.warning("Falling back to basic validation")
+                # Fall through to basic validation
+
+        # Basic validation (fallback or when committee not enabled)
         # Rule 1: Predicate must be known
         # Synchronized with ontology_integrity/src/lib.rs get_relation()
         known_predicates = {'is_a', 'part_of', 'related_to', 'has_property',
                            'improves_upon', 'capable_of', 'trained_on',
                            'evaluated_on', 'stated'}
         if predicate not in known_predicates:
-            return (False, f"Unknown predicate: {predicate}")
+            return (False, f"Unknown predicate: {predicate}", None)
 
         # Rule 2: Subject and object must be non-empty
         if not subject or not obj:
-            return (False, "Subject and object must be non-empty")
+            return (False, "Subject and object must be non-empty", None)
 
         # Rule 3: No empty strings after stripping
         if not subject.strip() or not obj.strip():
-            return (False, "Subject and object must be non-empty after stripping")
+            return (False, "Subject and object must be non-empty after stripping", None)
 
         # TODO: Call Holochain zome for full validation
         # result = holochain_call('ontology_integrity', 'validate_triple', ...)
 
-        return (True, None)
+        return (True, None, None)
 
     def get_validation_stats(self) -> Dict[str, int]:
         """Get validation statistics."""

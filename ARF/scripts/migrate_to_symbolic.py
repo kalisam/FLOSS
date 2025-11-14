@@ -13,6 +13,7 @@ This script:
 import logging
 import json
 import time
+import argparse
 from pathlib import Path
 from typing import Dict, List, Tuple
 from dataclasses import dataclass, asdict
@@ -37,12 +38,20 @@ class MigrationStats:
     migration_failed: int = 0
     no_triple_extracted: int = 0
     validation_failed: int = 0
+    committee_validations: int = 0  # New: count of committee validations used
+    committee_rejections: int = 0   # New: count of committee rejections
 
     def success_rate(self) -> float:
         """Calculate migration success rate."""
         if self.total_understandings == 0:
             return 0.0
         return self.successfully_migrated / self.total_understandings
+
+    def committee_false_positive_rate(self) -> float:
+        """Calculate estimated false positive rate based on committee rejections."""
+        if self.committee_validations == 0:
+            return 0.0
+        return self.committee_rejections / self.committee_validations
 
 
 def find_all_memory_stores(base_path: Path = None) -> List[Path]:
@@ -89,7 +98,8 @@ def migrate_understanding(
         return (False, "Could not extract triple")
 
     # Validate triple
-    is_valid, error_msg = memory._validate_triple(triple)
+    context = understanding_dict.get('context', content)
+    is_valid, error_msg, committee_result = memory._validate_triple(triple, context)
     if not is_valid:
         return (False, f"Validation failed: {error_msg}")
 
@@ -106,22 +116,35 @@ def migrate_understanding(
         'validation_status': 'passed',
     }
 
+    # Add committee validation result if available
+    if committee_result:
+        understanding_dict['migration_metadata']['committee_validation'] = committee_result
+
     return (True, "Migrated successfully")
 
 
-def migrate_memory_store(store_path: Path, stats: MigrationStats) -> List[Dict]:
+def migrate_memory_store(
+    store_path: Path,
+    stats: MigrationStats,
+    use_committee: bool = False,
+    committee_use_mock: bool = True
+) -> List[Dict]:
     """
     Migrate a single memory store.
 
     Args:
         store_path: Path to memory store
         stats: MigrationStats to update
+        use_committee: Use committee validation (default: False)
+        committee_use_mock: Use mock LLM for committee (default: True)
 
     Returns:
         List of failed migrations for manual review
     """
     agent_id = store_path.name
     logger.info(f"Migrating memory store for agent: {agent_id}")
+    if use_committee:
+        logger.info("Committee validation ENABLED")
 
     stats.total_agents += 1
 
@@ -138,7 +161,9 @@ def migrate_memory_store(store_path: Path, stats: MigrationStats) -> List[Dict]:
     memory = ConversationMemory(
         agent_id=agent_id,
         storage_path=store_path,
-        validate_ontology=True
+        validate_ontology=True,
+        use_committee_validation=use_committee,
+        committee_use_mock=committee_use_mock
     )
 
     failed_migrations = []
@@ -153,6 +178,11 @@ def migrate_memory_store(store_path: Path, stats: MigrationStats) -> List[Dict]:
                 stats.already_migrated += 1
             else:
                 stats.successfully_migrated += 1
+                # Track committee validations
+                if 'migration_metadata' in understanding_dict:
+                    metadata = understanding_dict['migration_metadata']
+                    if 'committee_validation' in metadata:
+                        stats.committee_validations += 1
         else:
             stats.migration_failed += 1
             failed_migrations.append({
@@ -165,6 +195,9 @@ def migrate_memory_store(store_path: Path, stats: MigrationStats) -> List[Dict]:
                 stats.no_triple_extracted += 1
             elif "Validation failed" in message:
                 stats.validation_failed += 1
+                # Track committee rejections
+                if "Committee validation rejected" in message:
+                    stats.committee_rejections += 1
 
     # Save migrated understandings back to file
     with open(understandings_file, 'w') as f:
@@ -180,6 +213,21 @@ def migrate_memory_store(store_path: Path, stats: MigrationStats) -> List[Dict]:
 
 def generate_migration_report(stats: MigrationStats, failed: List[Dict], output_path: Path):
     """Generate detailed migration report."""
+    # Committee validation section (if used)
+    committee_section = ""
+    if stats.committee_validations > 0:
+        fpr = stats.committee_false_positive_rate() * 100
+        committee_section = f"""
+## Committee Validation Metrics
+
+- **Committee Validations**: {stats.committee_validations}
+- **Committee Rejections**: {stats.committee_rejections}
+- **Estimated False Positive Rate**: {fpr:.1f}%
+- **Target**: <5.0%
+- **Status**: {'✅ PASS' if fpr < 5.0 else '❌ FAIL'}
+
+"""
+
     report = f"""
 # Conversation Memory Migration Report
 
@@ -192,6 +240,7 @@ def generate_migration_report(stats: MigrationStats, failed: List[Dict], output_
 - **Migration Failed**: {stats.migration_failed}
 - **Success Rate**: {stats.success_rate()*100:.1f}%
 
+{committee_section}
 ## Failure Breakdown
 
 - **No Triple Extracted**: {stats.no_triple_extracted}
@@ -235,10 +284,27 @@ def generate_migration_report(stats: MigrationStats, failed: List[Dict], output_
 
 def main():
     """Main migration entry point."""
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='Migrate conversation memory to symbolic-first architecture')
+    parser.add_argument(
+        '--committee',
+        action='store_true',
+        help='Enable committee-based LLM validation (reduces false positives)'
+    )
+    parser.add_argument(
+        '--real-llm',
+        action='store_true',
+        help='Use real LLM for committee validation (default: mock)'
+    )
+    args = parser.parse_args()
+
     start_time = time.time()
 
     logger.info("=" * 60)
     logger.info("Starting Conversation Memory Migration")
+    if args.committee:
+        logger.info("Committee Validation: ENABLED")
+        logger.info(f"LLM Mode: {'REAL' if args.real_llm else 'MOCK'}")
     logger.info("=" * 60)
 
     stats = MigrationStats()
@@ -263,7 +329,12 @@ def main():
     # Migrate each store
     for store_path in stores:
         try:
-            failed = migrate_memory_store(store_path, stats)
+            failed = migrate_memory_store(
+                store_path,
+                stats,
+                use_committee=args.committee,
+                committee_use_mock=not args.real_llm
+            )
             all_failed.extend(failed)
         except Exception as e:
             logger.error(f"Error migrating {store_path}: {e}", exc_info=True)
