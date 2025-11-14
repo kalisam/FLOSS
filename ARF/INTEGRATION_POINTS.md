@@ -1,6 +1,6 @@
 # ARF Integration Points
 
-**Version**: 1.0 (Phase 4 Post-Merge)
+**Version**: 1.1 (Phase 5 Post-Merge)
 **Date**: 2025-11-14
 **Status**: ACTIVE
 
@@ -683,24 +683,68 @@ result = await asyncio.wait_for(operation(), timeout=5.0)
 
 ---
 
-## Future Integration Points
+## Phase 5 Integration Points (IMPLEMENTED)
 
-### Planned for Phase 5
+### Integration Point 7: Budget Engine → All Operations
 
-- **LLM Committee Validation**: Multi-agent triple validation
-- **Pattern Library**: Meaningful mixing validation service
-- **Autonomous Budgeting**: Resource allocation integration
+**Purpose**: Resource-bounded autonomy for all Holochain operations
+
+**Key Integrations**:
+- Budget tracking for Rose Forest operations (add_knowledge, link_edge, etc.)
+- Budget enforcement for Memory operations (transmit, validate, compose)
+- Budget integration with Committee Validation (10 RU per validation)
+- Budget tracking for Pattern Library operations (15 RU per pattern)
+
+**Files**:
+- `ARF/dnas/rose_forest/zomes/memory_coordinator/src/budget.rs`
+- `ARF/dnas/rose_forest/BUDGET_SYSTEM.md`
+- `ARF/cli/budget.py` (future)
+
+### Integration Point 8: Committee Validation → Memory & Patterns
+
+**Purpose**: Multi-agent consensus for triple and pattern validation
+
+**Key Integrations**:
+- Integration with ConversationMemory for triple validation
+- Integration with Pattern Library for pattern quality validation
+- Budget-aware validation (graceful degradation on low budget)
+- Metrics tracking for false positive reduction
+
+**Files**:
+- `ARF/validation/committee.py`
+- `ARF/validation/agent_pool.py`
+- `ARF/validation/models.py`
+- `ARF/conversation_memory.py` (committee integration)
+
+### Integration Point 9: Pattern Library → Infinity Bridge
+
+**Purpose**: Meaningful sensor mixing validation for Infinity Bridge
+
+**Key Integrations**:
+- 23+ validated patterns for sensor correlation
+- 5 validation criteria (≥2 required)
+- DHT-based pattern discovery and indexing
+- Community contribution workflow
+
+**Files**:
+- `ARF/dnas/infinity_bridge/zomes/patterns/src/lib.rs`
+- `ARF/dnas/infinity_bridge/zomes/patterns/README.md`
+- `ARF/dnas/infinity_bridge/zomes/patterns/VERIFICATION.md`
+
+**See**: `ARF/PHASE_5_INTEGRATION.md` for detailed integration patterns
 
 ### Planned for Phase 6
 
 - **Distributed Tracing**: OpenTelemetry across all components
 - **Metrics Dashboard**: Prometheus/Grafana integration
 - **Debug Tooling**: Advanced debugging CLI commands
+- **Pattern Discovery**: ML-based pattern mining from sensor data
 
 ---
 
 ## Related Documentation
 
+- `ARF/PHASE_5_INTEGRATION.md` - **NEW**: Phase 5 detailed integration guide
 - `ARF/ARCHITECTURE_OVERVIEW.md` - System architecture
 - `ARF/dev/ROADMAP_PHASE4_PLUS.md` - Development roadmap
 - `ARF/cli/README.md` - CLI usage guide
@@ -714,7 +758,7 @@ result = await asyncio.wait_for(operation(), timeout=5.0)
 
 ---
 
-**Version**: 1.0
+**Version**: 1.1 (Phase 5 Update)
 **Status**: ACTIVE
 **Last Updated**: 2025-11-14
 **Maintainer**: FLOSSI0ULLK Development Team
