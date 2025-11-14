@@ -3,6 +3,11 @@ Recursive Self-Aggregation (RSA) orchestrator for pony swarm.
 
 Implements Algorithm 1 from paper (Appendix B).
 Research: RSA achieves 15-30% improvement over single-agent baselines.
+
+Phase 4.1 Optimizations:
+- Parallel generation requests (async/await)
+- Adaptive parameter selection
+- Optimized embedding computation
 """
 
 import asyncio
@@ -12,6 +17,7 @@ import time
 from typing import List, Dict, Any, Optional
 from .pony_agent import DesktopPonyAgent
 from .embedding import SwarmEmbeddingManager
+from .adaptive_params import AdaptiveParameterSelector, RSAParams
 
 logger = logging.getLogger(__name__)
 
@@ -29,15 +35,17 @@ class PonySwarm:
         self,
         num_ponies: int = 4,
         pony_names: Optional[List[str]] = None,
-        use_mock: bool = True
+        use_mock: bool = True,
+        use_adaptive_params: bool = True
     ):
         self.num_ponies = num_ponies
         self.use_mock = use_mock
-        
+        self.use_adaptive_params = use_adaptive_params
+
         # Default pony names
         if not pony_names:
             pony_names = ["Pinkie Pie", "Rainbow Dash", "Twilight Sparkle", "Fluttershy"]
-        
+
         # Initialize ponies
         self.ponies: List[DesktopPonyAgent] = []
         for i in range(num_ponies):
@@ -49,19 +57,24 @@ class PonySwarm:
                 use_mock=use_mock
             )
             self.ponies.append(pony)
-        
+
         # Embedding manager
         self.embedding_manager = SwarmEmbeddingManager()
-        
+
+        # Adaptive parameter selector
+        self.param_selector = AdaptiveParameterSelector() if use_adaptive_params else None
+
         # Performance metrics
         self.metrics: Dict[str, Any] = {
             'total_queries': 0,
             'avg_diversity': [],
-            'iteration_times': []
+            'iteration_times': [],
+            'param_selections': []
         }
-        
+
         mode = "MOCK" if use_mock else "REAL"
-        logger.info(f"Initialized swarm with {num_ponies} ponies [{mode} inference]")
+        adaptive = " + ADAPTIVE" if use_adaptive_params else ""
+        logger.info(f"Initialized swarm with {num_ponies} ponies [{mode}{adaptive} inference]")
     
     async def __aenter__(self):
         """Async context manager entry."""
@@ -81,28 +94,42 @@ class PonySwarm:
     async def recursive_self_aggregation(
         self,
         query: str,
-        K: int = 2,
-        T: int = 3,
+        K: Optional[int] = None,
+        T: Optional[int] = None,
         user_state: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Recursive Self-Aggregation (RSA) - Algorithm 1 from paper.
-        
+
         Args:
             query: User question/task
-            K: Aggregation size (number of responses to combine)
-            T: Number of refinement iterations
+            K: Aggregation size (None for adaptive selection)
+            T: Number of refinement iterations (None for adaptive selection)
             user_state: User context for wellbeing checks
-        
+
         Returns:
             Dict with final response, metrics, and iteration history
         """
         N = self.num_ponies
         user_state = user_state or {}
-        
+
+        # Adaptive parameter selection
+        if self.use_adaptive_params and (K is None or T is None):
+            params = self.param_selector.select_parameters(query)
+            K = K or params.K
+            T = T or params.T
+            self.metrics['param_selections'].append({
+                'query': query[:50],
+                'params': {'N': N, 'K': K, 'T': T}
+            })
+        else:
+            # Use defaults if not specified
+            K = K or 2
+            T = T or 3
+
         start_time = time.time()
         self.metrics['total_queries'] += 1
-        
+
         logger.info(f"Starting RSA: query='{query[:50]}...', N={N}, K={K}, T={T}")
         
         # Priority 1: Check for crisis indicators
@@ -117,18 +144,26 @@ class PonySwarm:
         # ============================================================
         # STEP 1: INITIALIZATION - Generate initial population
         # ============================================================
-        
+
         logger.info(f"Step 1: Generating initial population ({N} responses)")
-        
+
         population = []
-        tasks = [pony.generate_response(query) for pony in self.ponies]
-        responses = await asyncio.gather(*tasks)
-        
-        for i, response in enumerate(responses):
+
+        # OPTIMIZATION: Generate responses and embeddings in parallel
+        response_tasks = [pony.generate_response(query) for pony in self.ponies]
+        responses = await asyncio.gather(*response_tasks)
+
+        # OPTIMIZATION: Generate all embeddings in parallel
+        embedding_tasks = [
+            self.ponies[i].generate_embedding(responses[i])
+            for i in range(len(responses))
+        ]
+        embeddings = await asyncio.gather(*embedding_tasks)
+
+        for i, (response, embedding) in enumerate(zip(responses, embeddings)):
             population.append(response)
-            
-            # Generate and store embedding
-            embedding = await self.ponies[i].generate_embedding(response)
+
+            # Store embedding
             self.embedding_manager.add_pony_response(
                 pony_id=self.ponies[i].pony_id,
                 iteration=1,
@@ -156,24 +191,39 @@ class PonySwarm:
         for t in range(2, T + 1):
             iter_start = time.time()
             logger.info(f"Step {t}: Recursive aggregation (K={K})")
-            
-            new_population = []
-            
-            # For each pony, sample K responses and aggregate
+
+            # OPTIMIZATION: Generate all aggregation prompts first
+            aggregation_data = []
             for i in range(N):
                 # Subsampling: Sample K indices WITHOUT replacement
                 subset_indices = random.sample(range(N), K)
                 subset = [population[idx] for idx in subset_indices]
-                
+
                 # Build aggregation prompt
                 agg_prompt = self._build_aggregation_prompt(query, subset, K)
-                
-                # Generate improved response
-                improved = await self.ponies[i].generate_response(agg_prompt)
-                new_population.append(improved)
-                
-                # Store embedding
-                embedding = await self.ponies[i].generate_embedding(improved)
+
+                aggregation_data.append({
+                    'pony_index': i,
+                    'prompt': agg_prompt,
+                    'subset_indices': subset_indices
+                })
+
+            # OPTIMIZATION: Generate all improved responses in parallel
+            response_tasks = [
+                self.ponies[data['pony_index']].generate_response(data['prompt'])
+                for data in aggregation_data
+            ]
+            new_population = await asyncio.gather(*response_tasks)
+
+            # OPTIMIZATION: Generate all embeddings in parallel
+            embedding_tasks = [
+                self.ponies[i].generate_embedding(new_population[i])
+                for i in range(len(new_population))
+            ]
+            embeddings = await asyncio.gather(*embedding_tasks)
+
+            # Store all embeddings
+            for i, (improved, embedding) in enumerate(zip(new_population, embeddings)):
                 self.embedding_manager.add_pony_response(
                     pony_id=self.ponies[i].pony_id,
                     iteration=t,
@@ -181,7 +231,7 @@ class PonySwarm:
                     vector=embedding,
                     metadata={
                         'timestamp': time.time(),
-                        'aggregated_from': subset_indices
+                        'aggregated_from': aggregation_data[i]['subset_indices']
                     }
                 )
             
