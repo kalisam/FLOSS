@@ -43,6 +43,30 @@ else:
         "rich>=13.0.0",
     ]
 
+# Optional dependencies for specific features
+extras_require = {
+    "swarm": [
+        "aiohttp>=3.9.0",
+    ],
+    "bridge": [
+        "pyyaml",
+        "h5py",
+        "websockets>=10.0",
+    ],
+    "dev": [
+        "pytest>=7.0.0",
+        "pytest-asyncio>=0.21.0",
+        "pytest-cov>=4.0.0",
+        "black>=23.0.0",
+        "ruff>=0.1.0",
+    ],
+}
+
+# "all" includes everything
+extras_require["all"] = list(set(
+    dep for extra_deps in extras_require.values() for dep in extra_deps
+))
+
 setup(
     name="arf",
     version="0.1.0",
@@ -55,6 +79,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
+    extras_require=extras_require,
     entry_points={
         "console_scripts": [
             "arf=cli.main:cli_main",
