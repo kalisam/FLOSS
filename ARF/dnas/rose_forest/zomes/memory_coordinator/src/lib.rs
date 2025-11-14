@@ -2,6 +2,11 @@ use hdk::prelude::*;
 use serde::{Deserialize, Serialize};
 use ontology_integrity::{KnowledgeTriple, validate_triple};
 use sha2::{Sha256, Digest};
+use rose_forest_integrity::BudgetEntry;
+
+mod budget;
+use budget::{consume_budget, get_budget_state, BudgetState};
+use budget::{COST_TRANSMIT_UNDERSTANDING, COST_RECALL_UNDERSTANDINGS, COST_COMPOSE_MEMORIES, COST_VALIDATE_TRIPLE};
 
 /// Entry types for the memory coordinator zome
 #[hdk_entry_defs]
@@ -11,6 +16,7 @@ pub enum EntryTypes {
     ADR(ADR),
     MemoryComposition(MemoryComposition),
     KnowledgeTriple(KnowledgeTriple),
+    BudgetEntry(BudgetEntry),
 }
 
 /// Link types for memory queries
@@ -19,6 +25,7 @@ pub enum LinkTypes {
     AgentToUnderstanding,
     TripleToUnderstanding,
     ADRToUnderstanding,
+    AgentBudget,
 }
 
 /// An understanding transmitted by an agent
@@ -125,16 +132,20 @@ pub struct ValidationStats {
 /// 5. Returns the hash of the Understanding entry
 #[hdk_extern]
 pub fn transmit_understanding(input: UnderstandingInput) -> ExternResult<ActionHash> {
+    // Get agent info early for budget check
+    let agent_info = agent_info()?;
+    let agent_key = agent_info.agent_latest_pubkey;
+
+    // Check and consume budget (transmit + validate costs)
+    let total_cost = COST_TRANSMIT_UNDERSTANDING + COST_VALIDATE_TRIPLE;
+    consume_budget(&agent_key, total_cost)?;
+
     // Extract triple from content
     let triple = extract_triple(&input.content)?;
 
     // Validate triple against ontology
     validate_triple(&triple)
         .map_err(|e| wasm_error!(WasmErrorInner::Guest(format!("Ontology validation failed: {:?}", e))))?;
-
-    // Get agent info
-    let agent_info = agent_info()?;
-    let agent_key = agent_info.agent_latest_pubkey;
 
     // Create Understanding entry
     let understanding = Understanding {
@@ -180,8 +191,12 @@ pub fn transmit_understanding(input: UnderstandingInput) -> ExternResult<ActionH
 /// 1. Queries the DHT for links from agent to understandings
 /// 2. Applies filters (content search, timestamp, etc.)
 /// 3. Returns matching understandings
+/// 4. Charges budget based on number of results returned
 #[hdk_extern]
 pub fn recall_understandings(query: RecallQuery) -> ExternResult<Vec<Understanding>> {
+    // Get agent info for budget check
+    let current_agent = agent_info()?.agent_latest_pubkey;
+
     let mut results = vec![];
 
     // Query by agent
@@ -221,6 +236,10 @@ pub fn recall_understandings(query: RecallQuery) -> ExternResult<Vec<Understandi
         results.truncate(limit);
     }
 
+    // Charge budget based on number of results (0.1 RU per result)
+    let recall_cost = COST_RECALL_UNDERSTANDINGS * results.len() as f32;
+    consume_budget(&current_agent, recall_cost)?;
+
     Ok(results)
 }
 
@@ -231,10 +250,14 @@ pub fn recall_understandings(query: RecallQuery) -> ExternResult<Vec<Understandi
 /// 2. Merges them with the current agent's understandings
 /// 3. Deduplicates based on content hash
 /// 4. Creates a MemoryComposition entry to track the composition
+/// 5. Charges budget for the composition operation
 #[hdk_extern]
 pub fn compose_memories(other_agent: AgentPubKey) -> ExternResult<MemoryComposition> {
     let agent_info = agent_info()?;
     let my_agent = agent_info.agent_latest_pubkey;
+
+    // Check and consume budget for composition
+    consume_budget(&my_agent, COST_COMPOSE_MEMORIES)?;
 
     // Get my understandings
     let my_understandings = recall_understandings(RecallQuery {
@@ -308,6 +331,13 @@ pub fn compose_memories(other_agent: AgentPubKey) -> ExternResult<MemoryComposit
     debug!("Composed memories: {} new, {} duplicates skipped", new_count, dup_count);
 
     Ok(composition)
+}
+
+/// Get current budget status for the calling agent
+#[hdk_extern]
+pub fn budget_status(_: ()) -> ExternResult<BudgetState> {
+    let agent_key = agent_info()?.agent_latest_pubkey;
+    get_budget_state(&agent_key)
 }
 
 /// Get validation statistics for all understandings
