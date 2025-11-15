@@ -5,8 +5,10 @@ mod vector_ops;
 mod budget;
 
 use vector_ops::Vector;
-use budget::{consume_budget, get_budget_state, BudgetState};
+use budget::{consume_budget, get_budget_state, BudgetState, BudgetEngine};
 use budget::{COST_ADD_KNOWLEDGE, COST_LINK_EDGE, COST_CREATE_THOUGHT_CREDENTIAL};
+// Export memory operation costs
+pub use budget::{COST_TRANSMIT_UNDERSTANDING, COST_RECALL_UNDERSTANDINGS, COST_COMPOSE_MEMORIES, COST_VALIDATE_TRIPLE};
 use std::collections::BTreeMap;
 
 #[derive(Serialize, Deserialize, Debug)]
